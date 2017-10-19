@@ -6,6 +6,6 @@
                 $files[] = $file;
             }
         }
-        var_dump($files);
+        //var_dump($files);
     })();
 ?>

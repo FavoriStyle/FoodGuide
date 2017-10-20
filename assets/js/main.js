@@ -656,9 +656,11 @@ function stack_prepare(){
     function groupMarkers // группируем заведения на главной
     (){
         setTimeout(()=>{
-            console.log('initMarkersDone() called');
-            if (!window.quickMapFilter) var quickMapFilter = ()=>{};
-            quickMapFilter()
+            try{
+                quickMapFilter();
+            } catch(e){
+                groupMarkers();
+            }
         }, 500);
     };
     //*/

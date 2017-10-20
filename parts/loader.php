@@ -18,6 +18,8 @@ License: MIT
     foreach ([
         //parts to be loaded
         'reformat_css',
+        'disable-emojis/disable-emojis',
+
     ] as $part){
         url_require("https://raw.githubusercontent.com/$settings[user]/$settings[repo]/master/parts/$part.php");
     }

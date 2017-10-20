@@ -16,7 +16,7 @@
                 file_put_contents(
                     $_SERVER['DOCUMENT_ROOT'] . '/wp-content/cache/autoptimize/css/' . $file,
                     (function($contents){
-                        $res = preg_replace(
+                        $res = @preg_replace(
                             '(https?:)?\/\/foodguide.in.ua\/.*?\/fonts?\/(\.\.\/\.\.\/fonts?\/)?',
                             'https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.1-a/assets/fonts/',
                             $contents,

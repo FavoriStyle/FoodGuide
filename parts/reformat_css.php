@@ -15,12 +15,15 @@
 			if (!in_array($file, $list)){
                 file_put_contents(
                     $_SERVER['DOCUMENT_ROOT'] . '/wp-content/cache/autoptimize/css/' . $file,
-                    preg_replace(
-                        '(https?:)?\/\/foodguide.in.ua\/.*?\/fonts?\/(\.\.\/\.\.\/fonts?\/)?',
-                        'https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.1-a/assets/fonts/',
-                        file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/wp-content/cache/autoptimize/css/' . $file,
-                        true)
-                    ),
+                    (function($contents){
+                        $res = preg_replace(
+                            '(https?:)?\/\/foodguide.in.ua\/.*?\/fonts?\/(\.\.\/\.\.\/fonts?\/)?',
+                            'https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.1-a/assets/fonts/',
+                            $contents,
+                            true
+                        );
+                        if ($res) return $res; else return $contents;
+                    })(file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/wp-content/cache/autoptimize/css/' . $file)),
                     LOCK_EX);
                 $list[] = $file;
             }

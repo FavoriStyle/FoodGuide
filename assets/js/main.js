@@ -22,12 +22,12 @@ function addForEachObj(obj){
 }
 
 function normalize_social_icon(){
-    div = document.querySelector('#masthead > div.header-container.grid-main > div.menu-tools > div.site-tools > div.social-icons > div');
-    ul = document.querySelector('#masthead > div.header-container.grid-main > div.menu-tools > div.site-tools > div.social-icons > ul');
+    var div = document.querySelector('#masthead > div.header-container.grid-main > div.menu-tools > div.site-tools > div.social-icons > div');
+    var ul = document.querySelector('#masthead > div.header-container.grid-main > div.menu-tools > div.site-tools > div.social-icons > ul');
     div.innerHTML = ul.innerHTML;
     ul.parentNode.removeChild(ul);
-    light_image = div.querySelector('li > a > img.s-icon.s-icon-light');
-    dark_image = div.querySelector('li > a > img.s-icon.s-icon-dark');
+    var light_image = div.querySelector('li > a > img.s-icon.s-icon-light');
+    var dark_image = div.querySelector('li > a > img.s-icon.s-icon-dark');
     light_image.style.display = 'inline';
     dark_image.style.display = 'none';
     dark_image.parentNode.style.borderColor = '#E8E8E8';
@@ -82,7 +82,7 @@ function модернизируй(что){
     }
 }
 function stack_prepare(){
-    блог =  177;
+    window.блог =  177;
 }
 (function(){
 
@@ -203,7 +203,7 @@ function stack_prepare(){
     (function //ровняем блоки вопросов и ответов
     (){
         if(is('faq-page')){
-            arr = $($('.main-sections > section')[0]).find('section');
+            var arr = $($('.main-sections > section')[0]).find('section');
             for(var i=0; i<arr.length/2; i++){
                 var section1 = $(arr[i]),
                     section2 = $(arr[i + arr.length/2]);
@@ -272,8 +272,8 @@ function stack_prepare(){
     //*
     (function //принудительно ресайзим афишу
     (){
-        var a = false,
-            b = false;
+        var a = false, //is used
+            b = false; //used too
         function tmp(a){
             if (!eval(a) && eval('this').height() >= 100){
                 eval(a + ' = true');
@@ -342,9 +342,9 @@ function stack_prepare(){
     //*
     (function //генерируем динамические стиля для кастомного слайдера в афише
     (){
-        styles = '';
+        var styles = '';
         for(var i = 2; i <= 101;){
-            delay = 10 ; //задержка в сек.
+            var delay = 10 ; //задержка в сек.
             styles += gen_dynamic_style('.slides-advs-fixed ul  li:nth-child(' + i + '), .slides-advs-fixed ul  li:nth-child(' + i + ') div', 'animation-delay', (i++ -1)*delay + '.0s');
         }
         $('head').append('<style name="appended-dynamically-first">' + styles + '</style>');
@@ -381,7 +381,7 @@ function stack_prepare(){
     (function //делаем кнопку "хочу здесь быть" кнопкой регистрации
     (){
         if(is('main-page')){
-            a = $('.want-to-be-here a');
+            var a = $('.want-to-be-here a');
             a.removeAttr('href');
             a.css('cursor', 'pointer');
             subscribe(a);
@@ -392,7 +392,7 @@ function stack_prepare(){
     (function //делаем кнопку "зарегистрироваться сейчас" реальной кнопкой регистрации
     (){
         if(is('offert-page')){
-            a = $('section.get-work-with-us a');
+            var a = $('section.get-work-with-us a');
             a.removeAttr('href');
             a.css('cursor', 'pointer');
             subscribe(a);
@@ -400,21 +400,24 @@ function stack_prepare(){
     })();
     //*/
     //*
-    (function //сворачиваем текст в футере, первом слева виджете
+    (function minimizeFooterText //сворачиваем текст в футере, первом слева виджете
     (){
-        var p = $('#footer > div > div > div > div.widget-area.__footer-0.widget-area-1 > div:nth-child(1) > div > div.widget-content > div > p:nth-child(2)'),
-            uncutted_text = p.html() + '</br><a style="cursor:pointer;">' + bottom_widget_minimize_word + '...</a>',
-            cutted_text = p.html().split(bottom_widget_split_word)[0] + '. <a style="cursor:pointer;">' + bottom_widget_restore_word + '...</a>',
-            showing_uncutted = false;
-        p.html(cutted_text);
-        function click(){
-            p.html(uncutted_text);
-            p.children('a').click(function(){
-                p.html(cutted_text);
-                p.children('a').click(click);
-            });
+        try{
+            var p = $('#footer > div > div > div > div.widget-area.__footer-0.widget-area-1 > div:nth-child(1) > div > div.widget-content > div > p:nth-child(2)'),
+                uncutted_text = p.html() + '</br><a style="cursor:pointer;">' + bottom_widget_minimize_word + '...</a>',
+                cutted_text = p.html().split(bottom_widget_split_word)[0] + '. <a style="cursor:pointer;">' + bottom_widget_restore_word + '...</a>';
+            p.html(cutted_text);
+            function click(){
+                p.html(uncutted_text);
+                p.children('a').click(function(){
+                    p.html(cutted_text);
+                    p.children('a').click(click);
+                });
+            }
+            p.children('a').click(click);
+        } catch(e){
+            setTimeout(minimizeFooterText, 100);
         }
-        p.children('a').click(click);
     })();
     //*/
     //*
@@ -455,6 +458,10 @@ function stack_prepare(){
     //*
     (function //скрываем возможность регистрации с платными аккаунтами, если предопределено настройками
     (){
+        if(!window['app']){
+            var app = {};
+            window.app = app;
+        }
         if(is('plan-listing-page') && app.paymentBlocked){
             var a = $('.elm-main.elm-price-table-main > div > div > div > div > div.ptable-item:not(:nth-of-type(1))'),
                 b = '#969696', c = '#cecece';
@@ -576,7 +583,7 @@ function stack_prepare(){
                         count: count + shiftPosition,
                         lang: /([a-z]{2})(-[A-Z]{2})?/.exec(html.attr('lang'))[1]
                     }),
-                    success: (data, state)=>{
+                    success: function a(data, state){
                         if(state != 'success') a(); else {
                             if (data.type == 'error') console.error(data.message + (data.stack ? '\nStack:\n' + data.stack : '')); else {
                                 $('.footer-items-container .footer-items-single-item').each((i,e)=>{
@@ -623,7 +630,7 @@ function stack_prepare(){
                         act: 'get_item_location_by_name',
                         name: /\/item\/([^\/]+)/.exec(location.pathname)[1]
                     },
-                    success: (data, state)=>{
+                    success: (data)=>{
                         if (data.type == 'error') console.error(data.message + (data.stack ? '\nStack:\n' + data.stack : '')); else {
                             __mainInterface({
                                 coords: {
@@ -650,6 +657,7 @@ function stack_prepare(){
     (){
         setTimeout(()=>{
             console.log('initMarkersDone() called');
+            if (!window.quickMapFilter) var quickMapFilter = ()=>{};
             quickMapFilter()
         }, 500);
     };
@@ -750,7 +758,7 @@ function stack_prepare(){
 
     /* Глобальные данные */
 
-    initMarkersDone = function(){
+    window.initMarkersDone = function(){
         if (initMarkersDoneCounter == 1){
             try{
                 setSObuttonAction();

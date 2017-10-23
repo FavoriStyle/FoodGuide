@@ -2,6 +2,7 @@
     (function(){
         add_action('wp_print_scripts', function(){
             global $wp_scripts, $wp_styles;
+            var_dump($wp_scripts);
             echo 'SCRIPTS: ';
             foreach( $wp_scripts->queue as $handle ) :
                 echo $handle . ' | ';

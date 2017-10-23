@@ -11,7 +11,7 @@
                 echo $handle . ' | ';
             endforeach;
         });
-        add_action('template_redirect', function(){
+        add_action('plugins_loaded', function(){
             global $wp_scripts, $wp_styles;
             echo "\n\n" . json_encode($wp_scripts) . "\n\n" . json_encode($wp_styles) . "\n\n";
             foreach ([

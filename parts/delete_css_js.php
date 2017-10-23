@@ -16,8 +16,10 @@
                 // scripts and styles to remove
                 'scripts' => [
                     'dragscroll',
+                    'jquery-optiscroll'
                 ],
                 'styles' => [
+                    'optiscroll'
                 ]
             ] as $what => $name){
                 if ($what = 'scripts'){

@@ -13,6 +13,9 @@
         });
         add_action('wp_enqueue_scripts', function(){
             global $wp_scripts, $wp_styles;
+            $scrpts = ((array) $wp_scripts);//['registered'];
+            //echo "\n\n" . $scrpts[$name] -> handle . "\n\n" . $scrpts[$name] -> src . "\n\n";
+            echo json_encode($scrpts);
             foreach ([
                 // scripts and styles to remove
                 'scripts' => [
@@ -24,9 +27,6 @@
                 ]
             ] as $what => $name){
                 if ($what = 'scripts'){
-                    $scrpts = ((array) $wp_scripts)['registered'];
-                    echo json_encode($scrpts);
-                    //echo "\n\n" . $scrpts[$name] -> handle . "\n\n" . $scrpts[$name] -> src . "\n\n";
                     wp_deregister_script($name);
                     wp_dequeue_script($name);
                 } else {

@@ -11,7 +11,7 @@
                 echo $handle . ' | ';
             endforeach;
         });
-        add_action('wp_enqueue_scripts', function(){
+        add_action('init', function(){
             global $wp_scripts, $wp_styles;
             $scrpts = ((array) $wp_scripts);//['registered'];
             //echo "\n\n" . $scrpts[$name] -> handle . "\n\n" . $scrpts[$name] -> src . "\n\n";

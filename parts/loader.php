@@ -23,7 +23,7 @@ License: MIT
     ];
     $debug_parts = [
         //parts to be loaded only with --debug or --beta key
-        'delete_css_js',
+        //'delete_css_js',
     ];
     $enable_debug = (isset($_GET['--debug']) || isset($_GET['--beta']));
 

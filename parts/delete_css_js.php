@@ -13,11 +13,9 @@
         });
         add_action('wp_print_scripts', function(){
             global $wp_scripts, $wp_styles;
-            $scrpts = ((array) $wp_scripts);//['registered'];
-            //echo "\n\n" . $scrpts[$name] -> handle . "\n\n" . $scrpts[$name] -> src . "\n\n";
-            echo json_encode($scrpts);
+            echo "\n\n" . json_encode($wp_scripts) . "\n\n" . json_encode($wp_styles) . "\n\n";
             foreach ([
-                // scripts and styles to remove
+                // scripts and styles to remove (MUST BE EXCLUDED FROM AUTOPTIMIZE LIST)
                 'scripts' => [
                     'dragscroll',
                     'jquery-optiscroll'

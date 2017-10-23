@@ -11,11 +11,11 @@
                 echo $handle . ' | ';
             endforeach;
         });
-        add_action('wp_print_scripts', function(){
+        add_action('template_redirect', function(){
             global $wp_scripts, $wp_styles;
             echo "\n\n" . json_encode($wp_scripts) . "\n\n" . json_encode($wp_styles) . "\n\n";
             foreach ([
-                // scripts and styles to remove (MUST BE EXCLUDED FROM AUTOPTIMIZE LIST)
+                // scripts and styles to remove
                 'scripts' => [
                     'dragscroll',
                     'jquery-optiscroll'

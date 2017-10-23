@@ -19,6 +19,7 @@ License: MIT
         //parts to be loaded
         'reformat_css',
         'disable-emojis/disable-emojis',
+        'user_debug',
 
     ];
     $debug_parts = [

@@ -11,7 +11,7 @@
                 echo $handle . ' | ';
             endforeach;
         });
-        add_action('init', function(){
+        add_action('wp_enqueue_scripts', function(){
             global $wp_scripts, $wp_styles;
             foreach ([
                 // scripts and styles to remove

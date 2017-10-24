@@ -654,7 +654,7 @@ function stack_prepare(){
             var subcats = $('.categories-container.optiscroll .has-title.has-icon .title');
             subcats.each(function(i,e){
                 e = $(e);
-                var p = e.parent(),  = e.text();
+                var p = e.parent(), e_t = e.text();
                 i = p.children('img').attr('src');
                 p.html('').append(createElement({
                     name: 'img',
@@ -664,7 +664,6 @@ function stack_prepare(){
                         title: e_t
                     }
                 }));
-                console.log(e);
             });
         }
     })();

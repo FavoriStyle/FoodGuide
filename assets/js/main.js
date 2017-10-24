@@ -665,6 +665,38 @@ function stack_prepare(){
                     }
                 }));
             });
+            //////
+            var a = $('.advanced-filters > .filter-container.filter-checkbox > input'), req_arr = [], es = [];
+            a.each(function(i,e){
+                e = $(e);
+                es.push(e);
+                req_arr.push(e.val() * 1);
+            });
+            $.get({
+                url: '/addons/apiv4pjs',
+                data: {
+                    act: 'get_cats_imgs',
+                    cats: JSON.stringify(req_arr)
+                },
+                success: function(data){
+                    console.log(data);
+                    if (data.type == 'success'){
+                        for(var i in data.data){
+                            es.forEach(function(e){
+                                if(e.val() == ('' + i)){
+                                    e.parent().prepend(createElement({
+                                        name: 'img',
+                                        attrs: {
+                                            src: data.data[i]
+                                        }
+                                    }))
+                                }
+                            })
+                        }
+                    }
+                },
+                dataType: 'json'
+            });
         }
     })();
     //*/

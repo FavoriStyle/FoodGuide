@@ -664,6 +664,7 @@ function stack_prepare(){
                         title: e_t
                     }
                 }));
+                console.log(e);
             });
         }
     })();

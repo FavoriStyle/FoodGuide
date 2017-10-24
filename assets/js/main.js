@@ -683,11 +683,15 @@ function stack_prepare(){
                     if (data.type == 'success'){
                         for(var i in data.data){
                             es.forEach(function(e){
+                                var ep = e.parent(),
+                                    epcst = ep.children('span').text();
                                 if(e.val() == ('' + i)){
-                                    e.parent().prepend(createElement({
+                                    ep.prepend(createElement({
                                         name: 'img',
                                         attrs: {
-                                            src: data.data[i]
+                                            src: data.data[i],
+                                            title: epcst,
+                                            alt: epcst
                                         }
                                     }))
                                 }

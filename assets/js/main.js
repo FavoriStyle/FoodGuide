@@ -171,7 +171,8 @@ function stack_prepare(){
     initMarkersDoneCounter = 0,
     gen_dynamic_style = function(selector='*',rule='',value='',append=false){var res=selector+'{'+'-webkit-'+rule+':'+value+';'+'-moz-'+rule+':'+value+';'+'-o-'+rule+':'+value+';'+rule+':'+value+';}';if(append){$('head').append('<style>'+res+'</style>');}return res;},
     getXmlHttp = function(){var xmlhttp;try{xmlhttp=new ActiveXObject("Msxml2.XMLHTTP");}catch(e){try{xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");}catch(E){xmlhttp=false;}}if(!xmlhttp&&typeof XMLHttpRequest!='undefined'){xmlhttp=new XMLHttpRequest();}return xmlhttp;},
-    dateOps = function(){console.log('Usage: dateOps.months(count)');};
+    dateOps = function(){console.log('Usage: dateOps.months(count)');},
+    createElement = function(options){var d={name:'div',html:'',attrs:{}},i;for(i in d)if(!options[i])options[i]=d[i];var a=document.createElement(options.name);a.innerHTML=options.html;for(i in options.attrs){a.setAttribute(i,options.attrs[i])};return a};
 
     /* Дополнения локальных объектов */
 
@@ -650,9 +651,19 @@ function stack_prepare(){
     (function //на странице категорий нормализируем слайдер
     (){
         if(is('categories-page')){
-            var subcats = $('.categories-container.optiscroll .has-title.has-icon img');
+            var subcats = $('.categories-container.optiscroll .has-title.has-icon .title');
             subcats.each(function(i,e){
-                console.log([i,e]);
+                e = $(e);
+                var p = e.parent(),  = e.text();
+                i = p.children('img').attr('src');
+                p.html('').append(createElement({
+                    name: 'img',
+                    attrs: {
+                        src: i,
+                        alt: e_t,
+                        title: e_t
+                    }
+                }));
             });
         }
     })();

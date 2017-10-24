@@ -646,6 +646,17 @@ function stack_prepare(){
         }
     })();
     //*/
+    //*
+    (function //на странице категорий нормализируем слайдер
+    (){
+        if(is('categories-page')){
+            var subcats = $('.categories-container.optiscroll .has-title.has-icon img');
+            subcats.each(function(i,e){
+                console.log([i,e]);
+            });
+        }
+    })();
+    //*/
     
     /* Локальные функции (для исполнения по вызовам) */
 

@@ -1,6 +1,5 @@
 <?php
     (function(){
-        define('_USER_DEBUG_MODE', (isset($_GET['--beta']) || isset($_GET['--debug']) || isset($_GET['--devel'])));
         if(!_USER_DEBUG_MODE){
             add_action('wp_enqueue_scripts', function(){
                 ?>

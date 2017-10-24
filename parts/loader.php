@@ -10,6 +10,8 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
+define('_USER_DEBUG_MODE', (isset($_GET['--beta']) || isset($_GET['--debug']) || isset($_GET['--devel'])));
+
 (function(){
     $settings = [
 		'user' => 'FavoriStyle',
@@ -26,9 +28,8 @@ License: MIT
         //parts to be loaded only with --debug or --beta key
         //'delete_css_js',
     ];
-    $enable_debug = (isset($_GET['--debug']) || isset($_GET['--beta']));
 
-    if($enable_debug){
+    if(_USER_DEBUG_MODE){
         foreach ($debug_parts as $part) {
             $parts[] = $part;
         }

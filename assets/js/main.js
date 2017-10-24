@@ -648,7 +648,7 @@ function stack_prepare(){
     })();
     //*/
     //*
-    (function //на странице категорий нормализируем слайдер
+    $(window).load(function //на странице категорий нормализируем слайдер
     (){
         if(is('categories-page')){
             var subcats = $('.categories-container.optiscroll .has-title.has-icon .title');
@@ -666,7 +666,7 @@ function stack_prepare(){
                 }));
             });
         }
-    })();
+    });
     //*/
     
     /* Локальные функции (для исполнения по вызовам) */

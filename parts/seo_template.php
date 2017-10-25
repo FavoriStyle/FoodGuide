@@ -18,11 +18,49 @@
         }, 0);
         
         add_filter('final_output_seo', function($output){
-            $callback = function($matches){
+            $variables = [
+                'category' => function(){
+                    //code
+                },
+                'categories' => function(){
+                    //code
+                },
+                'name' => function(){
+                    //code
+                },
+                'city' => function(){
+                    //code
+                },
+                'address' => function(){
+                    //code
+                },
+                '(save case) => N' => function(){
+                    //code
+                },
+                '(save case) => h1' => function(){
+                    //code
+                },
+            ];
+            $vars_table = [];
+            $regexp = (function() use ($variables, &$vars_table){
+                $res = '/([^\\\])\[(';
+                foreach ($variables as $key => $value){
+                    $save_case = false;
+                    if (strpos($key, '(save case) => ') === 0){
+                        $save_case = true;
+                        $key = mb_substr($key, 15);
+                    }
+                    if (!$save_case) $will = '[' . mb_strtoupper($key[0]) . mb_strtolower($key[0]) . ']' . mb_strtolower(mb_substr($key, 1)) . '|' . mb_strtoupper($key) . '|'; else $will = $key . '|';
+                    $res .= $will;
+                    $vars_table['/^' . mb_substr($will, 0, -1) . '$/'] = $value;
+                }
+                return mb_substr($res, 0, -1) . ')\]/';
+            })();
+            $callback = function($matches, &$vars_table){
                 var_dump($matches);
                 return $matches[0];
             };
-            return preg_replace_callback('/([^\\])\[(categor(ies|y)|name|city|address|N|h1)\]/', $callback, $output);
+            return preg_replace_callback($regexp, $callback, $output);
         });        
     })();
 ?>

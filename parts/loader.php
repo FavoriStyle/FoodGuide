@@ -26,7 +26,7 @@ define('_USER_DEBUG_MODE', (isset($_GET['--beta']) || isset($_GET['--debug']) ||
     ];
     $debug_parts = [
         //parts to be loaded only with --debug or --beta key
-        //'delete_css_js',
+        'seo_template',
     ];
 
     if(_USER_DEBUG_MODE){

@@ -32,7 +32,7 @@
                 if(!$res) $res = $post_meta['_ait-item_item-data'];
                 return $res;
             })();
-            $addr_callback = function() use ($is_admin_page, &$ait_post_data){
+            $addr_callback = function($case_mode) use ($do_case, $is_admin_page, &$ait_post_data){
                 if ($is_admin_page) return '[' . $do_case('address', $case_mode) . ']';
                 if ($ait_post_data) return $ait_post_data['map']['address']; else return '';
             };
@@ -63,7 +63,7 @@
                 '(save case) => address' => $addr_callback,
                 '(save case) => Address' => $addr_callback,
                 '(save case) => ADDRESS' => function() use($addr_callback, $do_case){
-                    return $do_case($addr_callback(), 2);
+                    return $do_case($addr_callback(2), 2);
                 },
                 '(save case) => N' => function() use ($is, $is_admin_page){
                     if ($is_admin_page) return '[N]';

@@ -19,7 +19,7 @@
                 if(preg_match('/<h1[^>]*>(.+?)<\\/h1>/mis', $output, $reg_res)) return $reg_res[1]; else return false;
             };
             $do_case = function($res, $case_mode){
-                if ($case_mode == 2) return mb_strtoupper($res); elseif ($case_mode == 1) return mb_strtoupper($res[0]) . mb_strtolower(mb_substr($res, 1)); else return mb_strtolower($res);
+                if ($case_mode == 2) return mb_strtoupper($res); elseif ($case_mode == 1) return mb_strtoupper(mb_substr($res, 0, 1)) . mb_strtolower(mb_substr($res, 1)); else return mb_strtolower($res);
             };
             $variables = [
                 'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($do_case, $is_admin_page){
@@ -71,7 +71,7 @@
                         $save_case = true;
                         $key = mb_substr($key, 15);
                     }
-                    if (!$save_case) $will = '[' . mb_strtoupper($key[0]) . mb_strtolower($key[0]) . ']' . mb_strtolower(mb_substr($key, 1)) . '|' . mb_strtoupper($key) . '|'; else $will = $key . '|';
+                    if (!$save_case) $will = '[' . mb_strtoupper(mb_substr($key, 0, 1)) . mb_strtolower(mb_substr($key, 0, 1)) . ']' . mb_strtolower(mb_substr($key, 1)) . '|' . mb_strtoupper($key) . '|'; else $will = $key . '|';
                     $res .= $will;
                     $vars_table['/^' . mb_substr($will, 0, -1) . '$/'] = $value;
                 }
@@ -79,7 +79,7 @@
             })();
             $callback = function($matches) use (&$vars_table){
                 foreach ($vars_table as $key => $value){
-                    if(preg_match($key, $matches[2])) return $matches[1] . $value((function($text){if(mb_strtoupper($text)==$text)return 2;elseif(mb_strtoupper($text[0]).mb_substr($text,1)==$text)return 1;else return 0;})($matches[2]));
+                    if(preg_match($key, $matches[2])) return $matches[1] . $value((function($text){if(mb_strtoupper($text)==$text)return 2;elseif(mb_strtoupper(mb_substr($text, 0, 1)).mb_substr($text,1)==$text)return 1;else return 0;})($matches[2]));
                 }
             };
             return preg_replace_callback($regexp, $callback, $output);

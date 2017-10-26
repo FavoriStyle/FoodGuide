@@ -22,11 +22,12 @@ define('_USER_DEBUG_MODE', (isset($_GET['--beta']) || isset($_GET['--debug']) ||
         'reformat_css',
         'disable-emojis/disable-emojis',
         'user_debug',
+        'seo_template',
 
     ];
     $debug_parts = [
         //parts to be loaded only with --debug or --beta key
-        'seo_template',
+        //'seo_template',
     ];
 
     if(_USER_DEBUG_MODE){

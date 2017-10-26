@@ -20,7 +20,9 @@
             $variables = [
                 'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */){
                     global $post;
-                    return json_encode($post);
+                    ob_start();
+                    var_dump($post);
+                    return ob_get_clean();
                     //code
                 },
                 'categories' => function($case_mode){

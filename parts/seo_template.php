@@ -39,12 +39,11 @@
                     if ($is_admin_page) return '[' . $do_case('name', $case_mode) . ']';
                     global $post;
                     return $do_case($post -> post_title, $case_mode);
-                    //code
                 },
                 'city' => function($case_mode) use ($do_case, $is_admin_page){
                     if ($is_admin_page) return '[' . $do_case('city', $case_mode) . ']';
-                    //code
-                    return '[' . $do_case('city will be here', $case_mode) . ']';
+                    global $post;
+                    return $do_case(explode(',', get_post_meta($post -> ID, '_ait-item_item-data', true)['map']['address'])[0], $case_mode);
                 },
                 'address' => function($case_mode) use ($do_case, $is_admin_page){
                     if ($is_admin_page) return '[' . $do_case('address', $case_mode) . ']';

@@ -21,19 +21,19 @@
                 return '';
             };
             $variables = [
-                'category' => function(){
+                'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */){
                     //code
                 },
-                'categories' => function(){
+                'categories' => function($case_mode){
                     //code
                 },
-                'name' => function(){
+                'name' => function($case_mode){
                     //code
                 },
-                'city' => function(){
+                'city' => function($case_mode){
                     //code
                 },
-                'address' => function(){
+                'address' => function($case_mode){
                     //code
                 },
                 '(save case) => N' => function() use ($is){
@@ -61,6 +61,10 @@
                 return mb_substr($res, 0, -1) . ')\]/';
             })();
             $callback = function($matches) use (&$vars_table){
+                $res = $matches[1]; // one symbol before
+                foreach ($vars_table as $key => $value){
+                    if(preg_match($key, $matches[2])) $value((function($text){if(mb_strtoupper($text)==$text)return 2;elseif(mb_strtoupper($text[0]).mb_substr($text,1)==$text)return 1;else return 0;})($matches[2]));
+                }
                 var_dump($matches);
                 return $matches[0];
             };

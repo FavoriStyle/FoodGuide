@@ -13,6 +13,7 @@
             $is = function($class) use ($output){
                 if(preg_match('/<html[^>]*class="[^>"]*( |\\b)' . $class . '[^>"]*"[^>]*>/', $output)) return true; else return false;
             };
+            $is_admin_page = !!preg_match('/\\/wp\\-admin\\//', $_SERVER['REQUEST_URI']);
             $get_first_header = function() use ($output){
                 $reg_res = [];
                 if(preg_match('/<h1[^>]*>(.+?)<\\/h1>/mis', $output, $reg_res)) return $reg_res[1]; else return false;
@@ -21,36 +22,43 @@
                 if ($case_mode == 2) return mb_strtoupper($res); elseif ($case_mode == 1) return mb_strtoupper($res[0]) . mb_strtolower(mb_substr($res, 1)); else return mb_strtolower($res);
             };
             $variables = [
-                'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($do_case){
+                'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($do_case, $is_admin_page){
+                    if ($is_admin_page) return '[' . $do_case('category', $case_mode) . ']';
                     //global $post;
                     //ob_start();
                     //var_dump($post -> post_title);
                     //return ob_get_clean();
                     return '[' . $do_case('category will be here', $case_mode) . ']';
                 },
-                'categories' => function($case_mode) use ($do_case){
+                'categories' => function($case_mode) use ($do_case, $is_admin_page){
+                    if ($is_admin_page) return '[' . $do_case('categories', $case_mode) . ']';
                     //code
                     return '[' . $do_case('categories will be here', $case_mode) . ']';
                 },
-                'name' => function($case_mode) use ($do_case){
+                'name' => function($case_mode) use ($do_case, $is_admin_page){
+                    if ($is_admin_page) return '[' . $do_case('name', $case_mode) . ']';
                     global $post;
                     return $do_case($post -> post_title, $case_mode);
                     //code
                 },
-                'city' => function($case_mode) use ($do_case){
+                'city' => function($case_mode) use ($do_case, $is_admin_page){
+                    if ($is_admin_page) return '[' . $do_case('city', $case_mode) . ']';
                     //code
                     return '[' . $do_case('city will be here', $case_mode) . ']';
                 },
-                'address' => function($case_mode) use ($do_case){
+                'address' => function($case_mode) use ($do_case, $is_admin_page){
+                    if ($is_admin_page) return '[' . $do_case('address', $case_mode) . ']';
                     //code
                     return '[' . $do_case('address will be here', $case_mode) . ']';
                 },
-                '(save case) => N' => function() use ($is){
+                '(save case) => N' => function() use ($is, $is_admin_page){
+                    if ($is_admin_page) return '[N]';
                     $reg_res = [];
                     if ($is('categories-page') && preg_match('/\/page\/(\d+)\//', $_SERVER['REQUEST_URI'], $reg_res)) return $reg_res[1];
                     return '1';
                 },
-                '(save case) => h1' => function() use ($get_first_header){
+                '(save case) => h1' => function() use ($get_first_header, $is_admin_page){
+                    if ($is_admin_page) return '[h1]';
                     return (function($a){if($a)return$a;else return '';})($get_first_header());
                 },
             ];

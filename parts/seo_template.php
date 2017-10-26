@@ -31,7 +31,7 @@
                 'categories' => function($case_mode){
                     //code
                 },
-                'name' => function($case_mode, $do_case){
+                'name' => function($case_mode) use ($do_case){
                     global $post;
                     return $do_case($post -> post_title, $case_mode);
                     //code

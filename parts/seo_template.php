@@ -11,16 +11,11 @@
         }, 0);
         add_filter('final_output_seo', function($output){
             $is = function($class) use ($output){
-                if(preg_match('/<html[^>]*class="[^>"]*( |\\b)' + $class + '[^>"]*"[^>]*>/', $output)) return true; else return false;
+                if(preg_match('/<html[^>]*class="[^>"]*( |\\b)' . $class . '[^>"]*"[^>]*>/', $output)) return true; else return false;
             };
-            $get_first_tag_inner_html = function($tag) use ($output){
-                $DOM = new DOMDocument;
-                if ($DOM -> loadHTML($output)){
-                    $elems = $dom -> getElementsByTagName($tag);
-                    var_dump($elems);
-                    return $elems[0] -> nodeValue;
-                }
-                return '';
+            $get_first_header = function() use ($output){
+                $reg_res = [];
+                if(preg_match('/<h1[^>]*>(.+?)<\\/h1>/mis', $output, $reg_res)) return $reg_res[1]; else return false;
             };
             $variables = [
                 'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */){
@@ -41,10 +36,10 @@
                 '(save case) => N' => function() use ($is){
                     $reg_res = [];
                     if ($is('categories-page') && preg_match('/\/page\/(\d+)\//', $_SERVER['REQUEST_URI'], $reg_res)) return $reg_res[1];
-                    return '';
+                    return '1';
                 },
-                '(save case) => h1' => function() use ($get_first_tag_inner_html){
-                    return $get_first_tag_inner_html('h1');
+                '(save case) => h1' => function() use ($get_first_header){
+                    return (function($a){if($a)return$a;else return '';})($get_first_header());
                 },
             ];
             $vars_table = [];
@@ -63,12 +58,9 @@
                 return mb_substr($res, 0, -1) . ')\]/';
             })();
             $callback = function($matches) use (&$vars_table){
-                $res = $matches[1]; // one symbol before
                 foreach ($vars_table as $key => $value){
-                    if(preg_match($key, $matches[2])) $value((function($text){if(mb_strtoupper($text)==$text)return 2;elseif(mb_strtoupper($text[0]).mb_substr($text,1)==$text)return 1;else return 0;})($matches[2]));
+                    if(preg_match($key, $matches[2])) return $matches[1] . $value((function($text){if(mb_strtoupper($text)==$text)return 2;elseif(mb_strtoupper($text[0]).mb_substr($text,1)==$text)return 1;else return 0;})($matches[2]));
                 }
-                var_dump($matches);
-                return $matches[0];
             };
             return preg_replace_callback($regexp, $callback, $output);
         });        

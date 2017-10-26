@@ -19,6 +19,8 @@
             };
             $variables = [
                 'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */){
+                    global $post;
+                    return json_encode($post);
                     //code
                 },
                 'categories' => function($case_mode){

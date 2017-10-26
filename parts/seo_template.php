@@ -21,6 +21,15 @@
             $do_case = function($res, $case_mode){
                 if ($case_mode == 2) return mb_strtoupper($res); elseif ($case_mode == 1) return mb_strtoupper(mb_substr($res, 0, 1)) . mb_strtolower(mb_substr($res, 1)); else return mb_strtolower($res);
             };
+            $ait_post_data = (function(){
+                global $post;
+                if(!$post) return false;
+                return get_post_meta($post -> ID, '_ait-item_item-data', true);
+            })();
+            $addr_callback = function() use ($is_admin_page, &$ait_post_data){
+                if ($is_admin_page) return '[' . $do_case('address', $case_mode) . ']';
+                if ($ait_post_data) return $ait_post_data['map']['address']; else return '';
+            };
             $variables = [
                 'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($do_case, $is_admin_page){
                     if ($is_admin_page) return '[' . $do_case('category', $case_mode) . ']';
@@ -40,15 +49,15 @@
                     global $post;
                     return $do_case($post -> post_title, $case_mode);
                 },
-                'city' => function($case_mode) use ($do_case, $is_admin_page){
+                'city' => function($case_mode) use ($do_case, $is_admin_page, &$ait_post_data){
                     if ($is_admin_page) return '[' . $do_case('city', $case_mode) . ']';
                     global $post;
-                    return $do_case(explode(',', get_post_meta($post -> ID, '_ait-item_item-data', true)['map']['address'])[0], $case_mode);
+                    if ($ait_post_data) return $do_case(explode(',', $ait_post_data['map']['address'])[0], $case_mode); else return '';
                 },
-                'address' => function($case_mode) use ($do_case, $is_admin_page){
-                    if ($is_admin_page) return '[' . $do_case('address', $case_mode) . ']';
-                    //code
-                    return '[' . $do_case('address will be here', $case_mode) . ']';
+                '(save case) => address' => $addr_callback,
+                '(save case) => Address' => $addr_callback,
+                '(save case) => ADDRESS' => function() use($addr_callback, $do_case){
+                    return $do_case($addr_callback(), 2);
                 },
                 '(save case) => N' => function() use ($is, $is_admin_page){
                     if ($is_admin_page) return '[N]';

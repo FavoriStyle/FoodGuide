@@ -21,26 +21,29 @@
                 if ($case_mode == 2) return mb_strtoupper($res); elseif ($case_mode == 1) return mb_strtoupper($res[0]) . mb_strtolower(mb_substr($res, 1)); else return mb_strtolower($res);
             };
             $variables = [
-                'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */){
+                'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($do_case){
                     //global $post;
                     //ob_start();
                     //var_dump($post -> post_title);
                     //return ob_get_clean();
-                    //code
+                    return '[' . $do_case('category will be here', $case_mode) . ']';
                 },
-                'categories' => function($case_mode){
+                'categories' => function($case_mode) use ($do_case){
                     //code
+                    return '[' . $do_case('categories will be here', $case_mode) . ']';
                 },
                 'name' => function($case_mode) use ($do_case){
                     global $post;
                     return $do_case($post -> post_title, $case_mode);
                     //code
                 },
-                'city' => function($case_mode){
+                'city' => function($case_mode) use ($do_case){
                     //code
+                    return '[' . $do_case('city will be here', $case_mode) . ']';
                 },
-                'address' => function($case_mode){
+                'address' => function($case_mode) use ($do_case){
                     //code
+                    return '[' . $do_case('address will be here', $case_mode) . ']';
                 },
                 '(save case) => N' => function() use ($is){
                     $reg_res = [];

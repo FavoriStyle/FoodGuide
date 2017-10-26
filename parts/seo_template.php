@@ -16,7 +16,9 @@
             $get_first_tag_inner_html = function($tag) use ($output){
                 $DOM = new DOMDocument;
                 if ($DOM -> loadHTML($output)){
-                    return ($dom -> getElementsByTagName($tag))[0] -> nodeValue;
+                    $elems = $dom -> getElementsByTagName($tag);
+                    var_dump($elems);
+                    return $elems[0] -> nodeValue;
                 }
                 return '';
             };

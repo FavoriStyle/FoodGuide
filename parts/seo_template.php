@@ -1,23 +1,25 @@
 <?php
     (function(){
         ob_start();
-        
         add_action('shutdown', function(){
             $final = '';
-        
-            // We'll need to get the number of ob levels we're in, so that we can iterate over each, collecting
-            // that buffer's output into the final output.
             $levels = ob_get_level();
-        
             for ($i = 0; $i < $levels; $i++) {
                 $final .= ob_get_clean();
             }
-        
-            // Apply any filters to the final output
             echo apply_filters('final_output_seo', $final);
         }, 0);
-        
         add_filter('final_output_seo', function($output){
+            $is = function($class) use ($output){
+                if(preg_match('/<html[^>]*class="[^>"]*( |\\b)' + $class + '[^>"]*"[^>]*>/', $output)) return true; else return false;
+            };
+            $get_first_tag_inner_html = function($tag) use ($output){
+                $DOM = new DOMDocument;
+                if ($DOM -> loadHTML($output)){
+                    return ($dom -> getElementsByTagName($tag))[0] -> nodeValue;
+                }
+                return '';
+            };
             $variables = [
                 'category' => function(){
                     //code
@@ -34,11 +36,13 @@
                 'address' => function(){
                     //code
                 },
-                '(save case) => N' => function(){
-                    //code
+                '(save case) => N' => function() use ($is){
+                    $reg_res = [];
+                    if ($is('categories-page') && preg_match('/\/page\/(\d+)\//', $_SERVER['REQUEST_URI'], $reg_res)) return $reg_res[1];
+                    return '';
                 },
-                '(save case) => h1' => function(){
-                    //code
+                '(save case) => h1' => function() use ($get_first_tag_inner_html){
+                    return $get_first_tag_inner_html('h1');
                 },
             ];
             $vars_table = [];

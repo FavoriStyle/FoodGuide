@@ -60,7 +60,7 @@
                 }
                 return mb_substr($res, 0, -1) . ')\]/';
             })();
-            $callback = function($matches, &$vars_table){
+            $callback = function($matches) use (&$vars_table){
                 var_dump($matches);
                 return $matches[0];
             };

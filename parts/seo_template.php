@@ -21,10 +21,16 @@
             $do_case = function($res, $case_mode){
                 if ($case_mode == 2) return mb_strtoupper($res); elseif ($case_mode == 1) return mb_strtoupper(mb_substr($res, 0, 1)) . mb_strtolower(mb_substr($res, 1)); else return mb_strtolower($res);
             };
-            $ait_post_data = (function(){
+            $post_meta = (function(){
                 global $post;
                 if(!$post) return false;
-                return get_post_meta($post -> ID, '_ait-item_item-data', true);
+                return get_post_meta($post -> ID);
+            })();
+            $ait_post_data = (function() use ($post_meta){
+                if(!$post_meta) return false;
+                $res = @unserialize($post_meta['_ait-item_item-data'][0]);
+                if(!$res) $res = $post_meta['_ait-item_item-data'];
+                return $res;
             })();
             $addr_callback = function() use ($is_admin_page, &$ait_post_data){
                 if ($is_admin_page) return '[' . $do_case('address', $case_mode) . ']';

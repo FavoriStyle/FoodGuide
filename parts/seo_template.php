@@ -1,5 +1,23 @@
 <?php
     (function(){
+        $mysql_result = function($sql){
+            $sql = preg_replace_callback('/FROM\s+`(.+?)`/ms', function($matches){
+                global $wpdb;
+                if(!(mb_strpos($matches[1], $wpdb -> prefix) === 0)) $matches[1] = $wpdb -> prefix . $matches[1];
+                return 'FROM `' . $matches[1] . '`';
+            }, $sql);
+            $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+            if (!$mysqli -> connect_errno){
+                $res = [];
+                $result = $mysqli -> query($sql);
+                if($result){
+                    while($res[] = $result -> fetch_assoc()){/*like a null loop*/}
+                    array_pop($res);
+                    return $res;
+                }
+            }
+            return false;
+        };
         ob_start();
         add_action('shutdown', function(){
             $final = '';
@@ -7,9 +25,9 @@
             for ($i = 0; $i < $levels; $i++) {
                 $final .= ob_get_clean();
             }
-            echo apply_filters('final_output_seo', $final);
+            echo apply_filters('place_restricted_css_to_cdn', apply_filters('final_output_seo', $final));
         }, 0);
-        add_filter('final_output_seo', function($output){
+        add_filter('final_output_seo', function($output) use ($mysql_result){
             $is = function($class) use ($output){
                 if(preg_match('/<html[^>]*class="[^>"]*( |\\b)' . $class . '[^>"]*"[^>]*>/', $output)) return true; else return false;
             };
@@ -37,18 +55,18 @@
                 if ($ait_post_data) return $ait_post_data['map']['address']; else return '';
             };
             $variables = [
-                'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($do_case, $is_admin_page){
+                'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($do_case, $is_admin_page, $mysql_result){
                     if ($is_admin_page) return '[' . $do_case('category', $case_mode) . ']';
-                    //global $post;
-                    //ob_start();
-                    //var_dump($post -> post_title);
-                    //return ob_get_clean();
-                    return '[' . $do_case('category will be here', $case_mode) . ']';
-                },
-                'categories' => function($case_mode) use ($do_case, $is_admin_page){
-                    if ($is_admin_page) return '[' . $do_case('categories', $case_mode) . ']';
-                    //code
-                    return '[' . $do_case('categories will be here', $case_mode) . ']';
+                    global $post;
+                    ob_start();
+                    $a = $mysql_result('SELECT * FROM `posts_main_categories` WHERE `post_id` = ' . $post -> ID);
+                    if ($a && count($a) > 0) $a = $a[0]['category_id']; else {
+                        $a = $mysql_result('SELECT `' . get_locale() . '` FROM `custom_translates` WHERE `string` = "default item category id"');
+                        if ($a && count($a) > 0) $a = $a[0][get_locale()]; else $a = false;
+                        if (!$a || $a == '') $a = 0;
+                    }
+                    $a = $mysql_result('SELECT `name` FROM `terms` WHERE `term_id` = ' . $a);
+                    if ($a && count($a) > 0) return $do_case(iconv(mb_detect_encoding($a[0]['name'], mb_detect_order(), true), "UTF-8", $a[0]['name']), $case_mode); else return '';
                 },
                 'name' => function($case_mode) use ($do_case, $is_admin_page){
                     if ($is_admin_page) return '[' . $do_case('name', $case_mode) . ']';
@@ -97,6 +115,19 @@
                 }
             };
             return preg_replace_callback($regexp, $callback, $output);
-        });        
+        });
+        add_filter('place_restricted_css_to_cdn', function($output){
+            $cdn_css = [
+                'reset.css',
+                'alert.css',
+            ];
+            foreach($cdn_css as $i => $css){
+                $cdn_css[$i] = str_replace('/', '\\/', preg_quote($css));
+            }
+            $cdn_css = implode('|', $cdn_css);
+            return preg_replace_callback('/https?:\/\/[^\/]+\/wp\-content\/themes\/[^\/]+\/design\/css\/(' . $cdn_css . ')/mis', function($matches){
+                return 'https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.1-g/assets/css/' . $matches[1];
+            }, $output);
+        });
     })();
 ?>

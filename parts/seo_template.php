@@ -78,6 +78,10 @@
                     global $post;
                     if ($ait_post_data) return $do_case(explode(',', $ait_post_data['map']['address'])[0], $case_mode); else return '';
                 },
+                'page: _x(lang)' => function($case_mode) use ($do_case, $is_admin_page){
+                    if ($is_admin_page) return '[{' . $do_case('page: _x(lang)', $case_mode) . '}]';
+                    return $do_case(mb_substr(__('Page %s', 'ait'), 0, -3), $case_mode);
+                },
                 '(save case) => address' => $addr_callback,
                 '(save case) => Address' => $addr_callback,
                 '(save case) => ADDRESS' => function() use($addr_callback, $do_case){
@@ -89,13 +93,16 @@
                     if ($is('categories-page') && preg_match('/\/page\/(\d+)\//', $_SERVER['REQUEST_URI'], $reg_res)) return $reg_res[1];
                     return '1';
                 },
-                '(save case) => h1' => function() use ($get_first_header, $is_admin_page){
+                '(save case) => h1' => function() use ($get_first_header, $is_admin_page, $do_case){
                     if ($is_admin_page) return '[{h1}]';
-                    return (function($a){if($a)return$a;else return '';})($get_first_header());
+                    return (function($a){if($a)return$a;else return '';})($do_case(trim(strip_tags($get_first_header())), 1));
                 },
             ];
             $vars_table = [];
-            $regexp = (function() use ($variables, &$vars_table){
+            $perform_regexp_from_str = function($str){
+                return str_replace('/', '\\/', preg_quote($str));
+            };
+            $regexp = (function() use ($variables, &$vars_table, $perform_regexp_from_str){
                 $res = '/([^\\\])\\[\\{(';
                 foreach ($variables as $key => $value){
                     $save_case = false;
@@ -103,7 +110,7 @@
                         $save_case = true;
                         $key = mb_substr($key, 15);
                     }
-                    if (!$save_case) $will = '[' . mb_strtoupper(mb_substr($key, 0, 1)) . mb_strtolower(mb_substr($key, 0, 1)) . ']' . mb_strtolower(mb_substr($key, 1)) . '|' . mb_strtoupper($key) . '|'; else $will = $key . '|';
+                    if (!$save_case) $will = '[' . $perform_regexp_from_str(mb_strtoupper(mb_substr($key, 0, 1)) . mb_strtolower(mb_substr($key, 0, 1))) . ']' . $perform_regexp_from_str(mb_strtolower(mb_substr($key, 1))) . '|' . $perform_regexp_from_str(mb_strtoupper($key)) . '|'; else $will = $key . '|';
                     $res .= $will;
                     $vars_table['/^' . mb_substr($will, 0, -1) . '$/'] = $value;
                 }

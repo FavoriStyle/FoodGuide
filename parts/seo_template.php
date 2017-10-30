@@ -22,7 +22,7 @@
         add_action('shutdown', function(){
             $final = '';
             $levels = ob_get_level();
-            for ($i = 0; $i < $levels; $i++) {
+            for ($i = 0; $i < $levels; $i++){
                 $final .= ob_get_clean();
             }
             echo apply_filters('place_restricted_css_to_cdn', apply_filters('final_output_seo', $final));
@@ -51,12 +51,12 @@
                 return $res;
             })();
             $addr_callback = function($case_mode) use ($do_case, $is_admin_page, &$ait_post_data){
-                if ($is_admin_page) return '[' . $do_case('address', $case_mode) . ']';
+                if ($is_admin_page) return '[{' . $do_case('address', $case_mode) . '}]';
                 if ($ait_post_data) return $ait_post_data['map']['address']; else return '';
             };
             $variables = [
                 'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($do_case, $is_admin_page, $mysql_result){
-                    if ($is_admin_page) return '[' . $do_case('category', $case_mode) . ']';
+                    if ($is_admin_page) return '[{' . $do_case('category', $case_mode) . '}]';
                     global $post;
                     ob_start();
                     $a = $mysql_result('SELECT * FROM `posts_main_categories` WHERE `post_id` = ' . $post -> ID);
@@ -69,12 +69,12 @@
                     if ($a && count($a) > 0) return $do_case(iconv(mb_detect_encoding($a[0]['name'], mb_detect_order(), true), "UTF-8", $a[0]['name']), $case_mode); else return '';
                 },
                 'name' => function($case_mode) use ($do_case, $is_admin_page){
-                    if ($is_admin_page) return '[' . $do_case('name', $case_mode) . ']';
+                    if ($is_admin_page) return '[{' . $do_case('name', $case_mode) . '}]';
                     global $post;
                     return $do_case($post -> post_title, $case_mode);
                 },
                 'city' => function($case_mode) use ($do_case, $is_admin_page, &$ait_post_data){
-                    if ($is_admin_page) return '[' . $do_case('city', $case_mode) . ']';
+                    if ($is_admin_page) return '[{' . $do_case('city', $case_mode) . '}]';
                     global $post;
                     if ($ait_post_data) return $do_case(explode(',', $ait_post_data['map']['address'])[0], $case_mode); else return '';
                 },
@@ -84,19 +84,19 @@
                     return $do_case($addr_callback(2), 2);
                 },
                 '(save case) => N' => function() use ($is, $is_admin_page){
-                    if ($is_admin_page) return '[N]';
+                    if ($is_admin_page) return '[{N}]';
                     $reg_res = [];
                     if ($is('categories-page') && preg_match('/\/page\/(\d+)\//', $_SERVER['REQUEST_URI'], $reg_res)) return $reg_res[1];
                     return '1';
                 },
                 '(save case) => h1' => function() use ($get_first_header, $is_admin_page){
-                    if ($is_admin_page) return '[h1]';
+                    if ($is_admin_page) return '[{h1}]';
                     return (function($a){if($a)return$a;else return '';})($get_first_header());
                 },
             ];
             $vars_table = [];
             $regexp = (function() use ($variables, &$vars_table){
-                $res = '/([^\\\])\[(';
+                $res = '/([^\\\])\\[\\{(';
                 foreach ($variables as $key => $value){
                     $save_case = false;
                     if (strpos($key, '(save case) => ') === 0){
@@ -107,7 +107,7 @@
                     $res .= $will;
                     $vars_table['/^' . mb_substr($will, 0, -1) . '$/'] = $value;
                 }
-                return mb_substr($res, 0, -1) . ')\]/';
+                return mb_substr($res, 0, -1) . ')\\}\\]/';
             })();
             $callback = function($matches) use (&$vars_table){
                 foreach ($vars_table as $key => $value){
@@ -117,17 +117,8 @@
             return preg_replace_callback($regexp, $callback, $output);
         });
         add_filter('place_restricted_css_to_cdn', function($output){
-            $cdn_css = [
-                'reset.css',
-                'alert.css',
-            ];
-            foreach($cdn_css as $i => $css){
-                $cdn_css[$i] = str_replace('/', '\\/', preg_quote($css));
-            }
-            $cdn_css = implode('|', $cdn_css);
-            return preg_replace_callback('/https?:\/\/[^\/]+\/wp\-content\/themes\/[^\/]+\/design\/css\/(' . $cdn_css . ')/mis', function($matches){
-                return 'https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.1-g/assets/css/' . $matches[1];
-            }, $output);
+            //if (!preg_match('/' . preg_quote('https://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/cache/fgc/style-0.0.1.css') . '/', $output)) $output = str_replace('</body>', '<link href="https://' + $_SERVER['HTTP_HOST'] + '/wp-content/uploads/cache/fgc/style-0.0.1.css" rel="stylesheet"></body>');
+            return $output;
         });
     })();
 ?>

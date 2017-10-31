@@ -95,7 +95,7 @@
                     $a = $mysql_result('SELECT `single` FROM `categories_singles` WHERE `category` = FROM_BASE64(\'' . base64_encode($cat) . '\')', (function(){
                         return new class {
                             public function log($a){
-                                var_dump($a);
+                                //var_dump($a);
                             }
                             public function warn($a){}
                             public function error($a){}

@@ -48,7 +48,7 @@
             $page_num = (function() use (&$is_paginating){
                 $reg_res = [];
                 $is_paginating = !!preg_match('/\/page\/(\d+)\//', $_SERVER['REQUEST_URI'], $reg_res);
-                if ($is_paginating) return $reg_res[1]; else return '0';
+                if ($is_paginating) return $reg_res[1]; else return '1';
             })();
             $is_admin_page = !!preg_match('/\\/wp\\-admin\\//', $_SERVER['REQUEST_URI']);
             $get_first_header = function() use ($output){
@@ -136,7 +136,7 @@
                 },
                 '(regexp) => setDefault\\(([^\\)]+?)\\);\\s*setNumbered\\(([^\\)]+?)\\)' => function($matches) use ($page_num, $is_admin_page){
                     if ($is_admin_page) return '[{' . $matches[0] . '}]';
-                    return ($page_num == 0 ? $matches[1] : $matches[2]);
+                    return ($page_num == 1 ? $matches[1] : $matches[2]);
                 },
             ];
             $vars_table = [];
@@ -184,7 +184,7 @@
             return preg_replace_callback($regexp, $callback, $output);
         });
         add_filter('place_restricted_css_to_cdn', function($output){
-            //if (!preg_match('/' . preg_quote('https://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/cache/fgc/style-0.0.1.css') . '/', $output)) $output = str_replace('</body>', '<link href="https://' + $_SERVER['HTTP_HOST'] + '/wp-content/uploads/cache/fgc/style-0.0.1.css" rel="stylesheet"></body>');
+            //if (!preg_match('/' . preg_quote('https://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/cache/fgc/style-0.0.1.css') . '/', $output)) $output = str_replace('</body>', '<link href="https://' . $_SERVER['HTTP_HOST'] . '/wp-content/uploads/cache/fgc/style-0.0.1.css" rel="stylesheet"></body>');
             return $output;
         });
     })();

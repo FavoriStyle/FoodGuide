@@ -24,9 +24,9 @@
     $templates = new class{
         private $cache = [];
         public function __get($name){
-            if(!isset($this -> cache[$name])) $this -> cache[$name] = new class{
+            if(!isset($this -> cache[$name])) $this -> cache[$name] = new class($name){
                 private $str = '';
-                public function __construct(){
+                public function __construct($name){
                     $this -> str = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/wp-content/themes/FGC/templates/' . $name . '.tpl');
                     $this -> str = ($this -> str ? $this -> str : '');
                 }

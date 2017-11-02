@@ -43,7 +43,8 @@
 
     add_action('admin_menu', function() use (&$dashicons, &$templates){
         add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$templates){
-            echo $templates -> ea_item_add;
+            $templates -> multiple_to_single_matching -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));
+            echo $templates -> multiple_to_single_matching;
         }, $dashicons -> f145);
     });
    

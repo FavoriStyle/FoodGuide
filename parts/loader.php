@@ -4,13 +4,11 @@
 Plugin Name: FGC OpenParts parts loader
 Description: Adds avaiability to load external code from GitHub
 Plugin URI: https://github.com/FavoriStyle/FoodGuide/
-Version: 0.0.4-a
+Version: 0.0.5-b
 Author: KaMeHb-UA
 Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
-
-define('_USER_DEBUG_MODE', (isset($_GET['--beta']) || isset($_GET['--debug']) || isset($_GET['--devel'])));
 
 (function(){
     $settings = [
@@ -19,15 +17,15 @@ define('_USER_DEBUG_MODE', (isset($_GET['--beta']) || isset($_GET['--debug']) ||
     ];
     $parts = [
         //parts to be loaded
-        'reformat_css',
+        //'reformat_css',
         'disable-emojis/disable-emojis',
         'user_debug',
-        'seo_template',
+        'final_buffer',
 
     ];
     $debug_parts = [
-        //parts to be loaded only with --debug or --beta key
-        //'seo_template',
+        //parts to be loaded only with --debug or --devel key
+        'native_admin_addon',
     ];
 
     if(_USER_DEBUG_MODE){
@@ -36,7 +34,7 @@ define('_USER_DEBUG_MODE', (isset($_GET['--beta']) || isset($_GET['--debug']) ||
         }
     }
     foreach ($parts as $part){
-        url_require("https://raw.githubusercontent.com/$settings[user]/$settings[repo]/master/parts/$part.php", $enable_debug);
+        url_require("https://raw.githubusercontent.com/$settings[user]/$settings[repo]/master/parts/$part.php");
     }
 })();
 

@@ -10,6 +10,8 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
+define('_USER_DEBUG_MODE', (isset($_GET['--debug']) || isset($_GET['--devel'])));
+
 (function(){
 	function makeDir($path){
 		 return file_exists($path) || mkdir($path, 0755, true);
@@ -18,7 +20,7 @@ License: MIT
 		makeDir(WPMU_PLUGIN_DIR . '/openparts');
 		makeDir(WPMU_PLUGIN_DIR . '/openparts/cache');
 		$cache = false;
-		if($unsafe){
+		if(_USER_DEBUG_MODE){
 			file_put_contents(WPMU_PLUGIN_DIR . '/openparts/cache/unsafe_list.json', '', FILE_APPEND | LOCK_EX);
 			$list = json_decode(file_get_contents(WPMU_PLUGIN_DIR . '/openparts/cache/unsafe_list.json'), true);
 			if (!$list) $list = [];
@@ -54,10 +56,10 @@ License: MIT
 			return $cache;
 		}
 	}
-    function url_require($src, $unsafe = false){
+    function url_require($src){
         return require(do_cache($src, $unsafe));
 	}
-    function url_require_once($src, $unsafe = false){
+    function url_require_once($src){
         return require_once(do_cache($src, $unsafe));
 	}
 	url_require_once((function($settings){
@@ -66,7 +68,7 @@ License: MIT
 		'user' => 'FavoriStyle',
 		'repo' => 'FoodGuide',
 		'file' => 'parts/loader.php',
-	]), (isset($_GET['--debug']) || isset($_GET['--beta'])));
+	]));
 })();
 
 ?>

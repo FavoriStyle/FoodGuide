@@ -3,16 +3,16 @@
     $dashicons = new class{
         private $stack = [];
         public function __get($name){
-            if(!in_array($name, $this -> stack)) $this -> $stack[] = $name;
+            if(!in_array($name, $this -> stack)) $this -> stack[] = $name;
             return "dashicons-fa-u-$name";
         }
         public function generateCSS(){
             $css = '';
-            foreach($this -> $stack as $symbol){
+            foreach($this -> stack as $symbol){
                 $css .= ",.dashicons-fa-u-$symbol:before";
             }
             $css = mb_substr($css, 1) . '{font-family:FontAwesome;}';
-            foreach($this -> $stack as $symbol){
+            foreach($this -> stack as $symbol){
                 $css .= ".dashicons-fa-u-$symbol:before{content:\"\\$symbol\";}";
             }
             return $css;

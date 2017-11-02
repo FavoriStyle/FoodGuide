@@ -26,8 +26,8 @@
                 while($res[] = $result -> fetch_assoc()){/*like a null loop*/}
                 array_pop($res);
                 return $res;
-            }
-        }
+            } else $debugConsole -> error('Cannon get result: ' . $result);
+        } else $debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno);
         return false;
     });
 
@@ -76,7 +76,17 @@
         add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$templates, $mysql_result){
             $templates -> multiple_to_single_matching -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));
             $templates -> multiple_to_single_matching -> set('mtsm_tip', 'Tip will be here');
-            $templates -> multiple_to_single_matching -> set('main_matching', json_encode($mysql_result('SELECT * FROM `categories_singles`')));
+            $templates -> multiple_to_single_matching -> set('main_matching', json_encode($mysql_result('SELECT * FROM `categories_singles`', new class{
+                public function log($a){
+                    var_dump($a);
+                }
+                public function warn($a){
+                    var_dump($a);
+                }
+                public function error($a){
+                    var_dump($a);
+                }
+            })));
             echo $templates -> multiple_to_single_matching;
         }, $FontAwesome -> f145);
     });

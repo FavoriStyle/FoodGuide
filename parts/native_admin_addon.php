@@ -28,6 +28,7 @@
                 private $str = '';
                 public function __construct(){
                     $this -> str = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/wp-content/themes/FGC/templates/' . $name . '.tpl');
+                    $this -> str = ($this -> str ? $this -> str : '');
                 }
                 public function __toString(){
                     return $this -> str;

@@ -20,6 +20,23 @@
                     </script>
                 <?php
             });
+        } else {
+            add_action('wp_enqueue_scripts', function(){
+                ?>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function waitForJQuery(){
+                            if(!window.jQuery) setTimeout(waitForJQuery, 10); else document.dispatchEvent(new Event('jQuery loaded', {}));
+                        });
+                        document.addEventListener('DOMContentLoaded', function(){
+                            var a = document.getElementsByTagName('a');
+                            for (var i in a){
+                                var b = a[i].getAttribute('href');
+                                a[i].setAttribute('href', (b.indexOf('?') + 1) ? b + '&--debug' : b + '?--debug');
+                            }
+                        });
+                    </script>
+                <?php
+            });
         }
     })();
 ?>

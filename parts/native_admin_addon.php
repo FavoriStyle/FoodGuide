@@ -26,7 +26,7 @@
     });
 
     add_action('admin_enqueue_scripts', function() use (&$dashicons){
-        echo $dashicons -> generateCSS();
+        echo '<style>' . $dashicons -> generateCSS() . '</style>';
     });
    
 ?>

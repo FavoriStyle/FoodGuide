@@ -21,7 +21,7 @@
                 <?php
             });
         } else {
-            add_action('wp_enqueue_scripts', function(){
+            $enqueuer = function(){
                 ?>
                     <script>
                         document.addEventListener('DOMContentLoaded', function waitForJQuery(){
@@ -36,7 +36,10 @@
                         });
                     </script>
                 <?php
-            });
+            };
+            add_action('wp_enqueue_scripts', $enqueuer);
+            add_action('admin_enqueue_scripts', $enqueuer);
+            add_action('login_enqueue_scripts', $enqueuer);
         }
     })();
 ?>

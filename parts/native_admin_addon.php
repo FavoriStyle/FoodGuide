@@ -21,9 +21,28 @@
         }
     };
 
-    add_action('admin_menu', function() use (&$dashicons){
-        add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function(){
-            echo 'There will be a page';
+    $templates = new class{
+        private $cache = [];
+        public function __get($name){
+            if(!isset($this -> cache[$name])) $this -> cache[$name] = new class{
+                private $str = '';
+                public function __construct(){
+                    $this -> str = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/wp-content/themes/FGC/templates/' . $name . '.tpl');
+                }
+                public function __toString(){
+                    return $this -> str;
+                }
+                public function set($what, $val){
+                    $this -> str = implode($val, explode('{' . $what . '}', $this -> str));
+                }
+            };
+            return $this -> cache[$name];
+        }
+    };
+
+    add_action('admin_menu', function() use (&$dashicons, &$templates){
+        add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$templates){
+            echo $templates -> ea_item_add;
         }, $dashicons -> f145);
     });
    

@@ -25,6 +25,7 @@
             if($result){
                 while($res[] = $result -> fetch_assoc()){/*like a null loop*/}
                 array_pop($res);
+                $debugConsole -> log($res);
                 return $res;
             } else $debugConsole -> error('Cannon get result: ' . $result);
         } else $debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno);

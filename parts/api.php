@@ -12,12 +12,12 @@
             if (!$mysqli -> connect_errno){
                 $res = [];
                 $result = $mysqli -> query($query);
-                if($result){
+                if($result && $result !== true){
                     while($res[] = $result -> fetch_assoc()){/*like a null loop*/}
                     array_pop($res);
                     $this -> debugConsole -> log($res);
                     return $res;
-                } else $this -> debugConsole -> error('Cannot get result: ' . $result);
+                } else $this -> debugConsole -> warn('Cannot get result. It is normal for UPDATE-like queries');
             } else $this -> debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno);
             return false;
         }

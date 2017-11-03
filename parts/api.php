@@ -8,7 +8,7 @@
                 if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
                 return $matches[1] . ' `' . $matches[2] . '`';
             };
-            $query = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', $callback);
+            $query = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', $callback, $query);
             $this -> debugConsole -> log($query);
             $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
             if (!$mysqli -> connect_errno){

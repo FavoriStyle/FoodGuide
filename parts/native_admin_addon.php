@@ -113,6 +113,7 @@
             }
             foreach($mysql_result('SELECT terms.name FROM `terms` as terms JOIN `term_taxonomy` as tax WHERE tax.taxonomy = \'ait-items\' AND terms.term_id = tax.term_id') as $row){
                 $row['name'] = $utf8($row['name']);
+                $row['name'] = mb_strtoupper(mb_substr($row['name'], 0, 1)) . mb_strtolower(mb_substr($row['name'], 1));
                 if(!isset($temp[$row['name']])) $temp[$row['name']] = '';
             }
             $templates -> multiple_to_single_matching -> set('main_matching', json_encode($temp));

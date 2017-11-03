@@ -35,6 +35,15 @@
         } else $debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno);
         return false;
     });
+    
+    if(isset($_GET['--save-state'])){
+        $sql = '';
+        foreach ($_POST as $key => $value){
+            $sql .= 'REPLACE INTO `SaN288SaNcategories_singles` (category, single) VALUES (FROM_BASE64(\'' . base64_encode($key) . '\'), FROM_BASE64(\'' . base64_encode($value) . '\')); ';
+        }
+        $mysql_result($sql);
+        die('{"state":"done"}');
+    }
 
     $utf8 = function($str){
         return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);

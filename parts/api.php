@@ -34,7 +34,6 @@
             } else $this -> debugConsole = $debugConsole;
         }
         public function update_singles($array){
-            var_dump($array);
             foreach ($array as $key => $value){
                 $this -> mysql_result('REPLACE INTO `categories_singles` (category, single) VALUES (FROM_BASE64(\'' . base64_encode($key) . '\'), FROM_BASE64(\'' . base64_encode($value) . '\'))');
             }

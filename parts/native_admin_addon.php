@@ -35,15 +35,6 @@
         } else $debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno);
         return false;
     });
-    
-    if(isset($_GET['--save-state'])){
-        $sql = '';
-        foreach ($_POST as $key => $value){
-            $sql .= 'REPLACE INTO `SaN288SaNcategories_singles` (category, single) VALUES (FROM_BASE64(\'' . base64_encode($key) . '\'), FROM_BASE64(\'' . base64_encode($value) . '\')); ';
-        }
-        $mysql_result($sql);
-        die('{"state":"done"}');
-    }
 
     $utf8 = function($str){
         return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
@@ -93,6 +84,16 @@
     add_action('admin_menu', function() use (&$FontAwesome, &$templates, $mysql_result, $utf8){
         /*must be initialized for pseudoasync callback first*/ $FontAwesome -> f0c7;
         add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$FontAwesome, &$templates, $mysql_result, $utf8){
+
+            if(isset($_GET['--save-state'])){
+                $sql = '';
+                foreach ($_POST as $key => $value){
+                    $sql .= 'REPLACE INTO `SaN288SaNcategories_singles` (category, single) VALUES (FROM_BASE64(\'' . base64_encode($key) . '\'), FROM_BASE64(\'' . base64_encode($value) . '\')); ';
+                }
+                $mysql_result($sql);
+                //return '{"state":"done"}';
+            }
+
             $templates -> multiple_to_single_matching -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));
             $templates -> multiple_to_single_matching -> set('mtsm_tip', 'Tip will be here');
             $temp = $mysql_result('SELECT * FROM `categories_singles`', new class{

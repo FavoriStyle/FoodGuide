@@ -35,11 +35,10 @@
         }
         public function update_singles($array){
             var_dump($array);
-            $sql = '';
             foreach ($array as $key => $value){
-                $sql .= 'REPLACE INTO `categories_singles` (category, single) VALUES (FROM_BASE64(\'' . base64_encode($key) . '\'), FROM_BASE64(\'' . base64_encode($value) . '\')); ';
+                $this -> mysql_result('REPLACE INTO `categories_singles` (category, single) VALUES (FROM_BASE64(\'' . base64_encode($key) . '\'), FROM_BASE64(\'' . base64_encode($value) . '\'))');
             }
-            if($this -> mysql_result($sql)) die('{"state":"done"}'); else die('{"state":"error"}');
+            die('{"state":"done"}');
         }
     }
 

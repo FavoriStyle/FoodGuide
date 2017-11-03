@@ -3,13 +3,11 @@
     class API{
         private $debugConsole = false;
         private function mysql_result($query){
-            $this -> debugConsole -> log($query);
             $query = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', function($matches){
                 global $wpdb;
                 if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
                 return $matches[1] . ' `' . $matches[2] . '`';
             }, $query);
-            $this -> debugConsole -> log($query);
             $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
             if (!$mysqli -> connect_errno){
                 $res = [];
@@ -19,7 +17,7 @@
                     array_pop($res);
                     $this -> debugConsole -> log($res);
                     return $res;
-                } else $this -> debugConsole -> error('Cannon get result: ' . $result);
+                } else $this -> debugConsole -> error('Cannot get result: ' . $result);
             } else $this -> debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno);
             return false;
         }
@@ -36,12 +34,12 @@
             } else $this -> debugConsole = $debugConsole;
         }
         public function update_singles($array){
+            var_dump($array);
             $sql = '';
             foreach ($array as $key => $value){
                 $sql .= 'REPLACE INTO `categories_singles` (category, single) VALUES (FROM_BASE64(\'' . base64_encode($key) . '\'), FROM_BASE64(\'' . base64_encode($value) . '\')); ';
             }
-            $this -> mysql_result($sql);
-            die('{"state":"done"}');
+            if($this -> mysql_result($sql)) die('{"state":"done"}'); else die('{"state":"error"}');
         }
     }
 

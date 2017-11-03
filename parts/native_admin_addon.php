@@ -82,6 +82,7 @@
     };
 
     add_action('admin_menu', function() use (&$FontAwesome, &$templates, $mysql_result, $utf8){
+        /*must be initialized for pseudoasync callback first*/ $FontAwesome -> f0c7;
         add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$FontAwesome, &$templates, $mysql_result, $utf8){
             $templates -> multiple_to_single_matching -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));
             $templates -> multiple_to_single_matching -> set('mtsm_tip', 'Tip will be here');

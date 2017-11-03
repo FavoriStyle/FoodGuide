@@ -83,21 +83,21 @@
             $templates -> multiple_to_single_matching -> set('mtsm_tip', 'Tip will be here');
             $temp = $mysql_result('SELECT * FROM `categories_singles`', new class{
                 public function log($a){
-                    var_dump($a);
+                    //var_dump($a);
                 }
                 public function warn($a){
-                    var_dump($a);
+                    //var_dump($a);
                 }
                 public function error($a){
-                    var_dump($a);
+                    //var_dump($a);
                 }
             });
             foreach ($temp as $i => $row) {
                 $temp[$utf8($row['category'])] = $utf8($row['single']);
                 unset($temp[$i]);
             }
-            var_dump($temp);
-            $templates -> multiple_to_single_matching -> set('main_matching', json_encode());
+            //var_dump($temp);
+            $templates -> multiple_to_single_matching -> set('main_matching', json_encode($temp));
             echo $templates -> multiple_to_single_matching;
         }, $FontAwesome -> f145);
     });

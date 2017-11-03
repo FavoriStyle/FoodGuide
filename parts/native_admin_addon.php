@@ -91,7 +91,7 @@
                     $sql .= 'REPLACE INTO `SaN288SaNcategories_singles` (category, single) VALUES (FROM_BASE64(\'' . base64_encode($key) . '\'), FROM_BASE64(\'' . base64_encode($value) . '\')); ';
                 }
                 $mysql_result($sql);
-                //return '{"state":"done"}';
+                die('{"state":"done"}');
             }
 
             $templates -> multiple_to_single_matching -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));

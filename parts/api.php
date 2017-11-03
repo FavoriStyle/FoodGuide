@@ -3,6 +3,7 @@
     class API{
         private $debugConsole = false;
         private function mysql_result($query){
+            $this -> debugConsole -> log($query);
             $query = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', function($matches){
                 global $wpdb;
                 if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];

@@ -26,6 +26,7 @@ License: MIT
     $debug_parts = [
         //parts to be loaded only with --debug or --devel key
         'native_admin_addon',
+        'api',
     ];
 
     if(_USER_DEBUG_MODE){

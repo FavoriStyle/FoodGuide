@@ -3,12 +3,11 @@
     class API{
         private $debugConsole = false;
         private function mysql_result($query){
-            $callback = function($matches){
+            $query = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', function($matches){
                 global $wpdb;
                 if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
                 return $matches[1] . ' `' . $matches[2] . '`';
-            };
-            $query = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', $callback, $query);
+            }, $query);
             $this -> debugConsole -> log($query);
             $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
             if (!$mysqli -> connect_errno){
@@ -33,7 +32,7 @@
                     public function warn($a){}
                     public function error($a){}
                 };
-            }
+            } else $this -> debugConsole = $debugConsole;
         }
         public function update_singles($array){
             $sql = '';

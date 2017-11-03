@@ -46,7 +46,17 @@
     }
 
     if (preg_match('/addons\/apiv4pjs\/?\?.+/', $_SERVER['REQUEST_URI'])){
-        $API = new API;
+        $API = new API(new class{
+            public function log($a){
+                var_dump($a);
+            }
+            public function warn($a){
+                var_dump($a);
+            }
+            public function error($a){
+                var_dump($a);
+            }
+        });
         if(isset($_GET['act'])){
             if($_GET['act'] == 'save-singles'){
                 $API -> update_singles($_POST);

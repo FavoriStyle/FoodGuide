@@ -8,24 +8,12 @@
                 if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
                 return $matches[1] . ' `' . $matches[2] . '`';
             };
-            $sql = preg_replace_callback('/FROM\s+`(.+?)`/ms', function($matches){
-                global $wpdb;
-                if(!(mb_strpos($matches[1], $wpdb -> prefix) === 0)) $matches[1] = $wpdb -> prefix . $matches[1];
-                return 'FROM `' . $matches[1] . '`';
-            }, preg_replace_callback('/JOIN\s+`(.+?)`/ms', function($matches){
-                global $wpdb;
-                if(!(mb_strpos($matches[1], $wpdb -> prefix) === 0)) $matches[1] = $wpdb -> prefix . $matches[1];
-                return 'JOIN `' . $matches[1] . '`';
-            }, preg_replace_callback('/INTO\s+`(.+?)`/ms', function($matches){
-                global $wpdb;
-                if(!(mb_strpos($matches[1], $wpdb -> prefix) === 0)) $matches[1] = $wpdb -> prefix . $matches[1];
-                return 'JOIN `' . $matches[1] . '`';
-            }, $sql)));
-            $this -> debugConsole -> log($sql);
+            $query = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', $callback);
+            $this -> debugConsole -> log($query);
             $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
             if (!$mysqli -> connect_errno){
                 $res = [];
-                $result = $mysqli -> query($sql);
+                $result = $mysqli -> query($query);
                 if($result){
                     while($res[] = $result -> fetch_assoc()){/*like a null loop*/}
                     array_pop($res);

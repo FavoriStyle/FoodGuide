@@ -32,6 +32,10 @@
         return false;
     });
 
+    $utf8 = function($str){
+        return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
+    };
+
     $FontAwesome = new class{
         private $stack = [];
         public function __get($name){
@@ -73,11 +77,11 @@
         }
     };
 
-    add_action('admin_menu', function() use (&$FontAwesome, &$templates, $mysql_result){
-        add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$templates, $mysql_result){
+    add_action('admin_menu', function() use (&$FontAwesome, &$templates, $mysql_result, $utf8){
+        add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$templates, $mysql_result, $utf8){
             $templates -> multiple_to_single_matching -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));
             $templates -> multiple_to_single_matching -> set('mtsm_tip', 'Tip will be here');
-            $templates -> multiple_to_single_matching -> set('main_matching', json_encode($mysql_result('SELECT * FROM `categories_singles`', new class{
+            $temp = $mysql_result('SELECT * FROM `categories_singles`', new class{
                 public function log($a){
                     var_dump($a);
                 }
@@ -87,7 +91,13 @@
                 public function error($a){
                     var_dump($a);
                 }
-            })));
+            });
+            foreach ($temp as $i => $row) {
+                $temp[$utf8($row['category'])] = $utf8($row['single']);
+                unset($temp[$i]);
+            }
+            var_dump($temp);
+            $templates -> multiple_to_single_matching -> set('main_matching', json_encode());
             echo $templates -> multiple_to_single_matching;
         }, $FontAwesome -> f145);
     });

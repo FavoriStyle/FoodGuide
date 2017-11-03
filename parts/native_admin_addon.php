@@ -82,7 +82,7 @@
     };
 
     add_action('admin_menu', function() use (&$FontAwesome, &$templates, $mysql_result, $utf8){
-        add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$templates, $mysql_result, $utf8){
+        add_menu_page('Multiple -> Single title', 'Multiple -> Single', 'loco_admin', 'multiple-single-custom-matcher', function() use (&$FontAwesome, &$templates, $mysql_result, $utf8){
             $templates -> multiple_to_single_matching -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));
             $templates -> multiple_to_single_matching -> set('mtsm_tip', 'Tip will be here');
             $temp = $mysql_result('SELECT * FROM `categories_singles`', new class{
@@ -105,6 +105,7 @@
                 if(!isset($temp[$row['name']])) $temp[$row['name']] = '';
             }
             $templates -> multiple_to_single_matching -> set('main_matching', json_encode($temp));
+            $templates -> multiple_to_single_matching -> set('fa-save', $FontAwesome -> f0c7);
             //var_dump($temp);
             echo $templates -> multiple_to_single_matching;
         }, $FontAwesome -> f145);

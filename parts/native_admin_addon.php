@@ -16,7 +16,11 @@
             global $wpdb;
             if(!(mb_strpos($matches[1], $wpdb -> prefix) === 0)) $matches[1] = $wpdb -> prefix . $matches[1];
             return 'FROM `' . $matches[1] . '`';
-        }, $sql);
+        }, preg_replace_callback('/JOIN\s+`(.+?)`/ms', function($matches){
+            global $wpdb;
+            if(!(mb_strpos($matches[1], $wpdb -> prefix) === 0)) $matches[1] = $wpdb -> prefix . $matches[1];
+            return 'JOIN `' . $matches[1] . '`';
+        }, $sql));
         $debugConsole -> log($sql);
         $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
         if (!$mysqli -> connect_errno){
@@ -92,12 +96,16 @@
                     //var_dump($a);
                 }
             });
-            foreach ($temp as $i => $row) {
+            foreach ($temp as $i => $row){
                 $temp[$utf8($row['category'])] = $utf8($row['single']);
                 unset($temp[$i]);
             }
-            //var_dump($temp);
+            foreach($mysql_result('SELECT terms.name FROM `terms` as terms JOIN `term_taxonomy` as tax WHERE tax.taxonomy = \'ait-items\' AND terms.term_id = tax.term_id') as $row){
+                $row['name'] = $utf8($row['name']);
+                if(!isset($temp[$row['name']])) $temp[$row['name']] = '';
+            }
             $templates -> multiple_to_single_matching -> set('main_matching', json_encode($temp));
+            //var_dump($temp);
             echo $templates -> multiple_to_single_matching;
         }, $FontAwesome -> f145);
     });

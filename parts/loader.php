@@ -21,16 +21,16 @@ License: MIT
         'disable-emojis/disable-emojis',
         'user_debug',
         'final_buffer',
+        'native_admin_addon',
 
     ];
     $debug_parts = [
         //parts to be loaded only with --debug or --devel key
-        'native_admin_addon',
         'api',
     ];
 
     if(_USER_DEBUG_MODE){
-        foreach ($debug_parts as $part) {
+        foreach ($debug_parts as $part){
             $parts[] = $part;
         }
     }

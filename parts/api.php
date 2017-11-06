@@ -55,7 +55,13 @@
         });
         if(isset($_GET['act'])){
             if($_GET['act'] == 'save-singles'){
-                $API -> update_singles($_POST);
+                $API -> update_singles((function($a){
+                    $tmp = [];
+                    foreach($a as $key => $value){
+                        $a[str_replace('_', ' ', $key)] = $value;
+                    }
+                    return $tmp;
+                })($_POST));
             }
         }
     }

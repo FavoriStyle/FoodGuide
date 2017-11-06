@@ -22,19 +22,6 @@
     };
 
     $menu = new class{
-        private $class_list = [
-            'submenu' => [
-                'wp-has-submenu',
-            ],
-            'wo_submenu' => [],
-            'active' => [
-                'wp-has-current-submenu',
-            ],
-            'non-active' => [
-                'wp-not-current-submenu',
-            ],
-            'defaults' => []
-        ];
         private $menu = [];
         public function addMenu($header, $href, $icon, $parent = -1){
             if($parent + 1){
@@ -47,19 +34,32 @@
                     'header' => $header,
                     'href' => $href,
                     'icon' => $icon,
+                    'iscurrent' => (function($a) use ($href){
+                        return !!preg_match('/' . str_replace('/', '\\/', preg_quote($href)) . '([&\\?].*)?$/', $a);
+                    })($_SERVER['REQUEST_URI']),
                     'childs' => []
                 ]) - 1;
             }
         }
-        public function __construct(){
-            $test = $this -> addMenu('Тестовый заголовок', '/wp-admin/profile.php', $FontAwesome -> f145);
-            $this -> addMenu('Сабзиро', '#этовсёчтоунегоможетбыть', null, $test);
-            $this -> addMenu('Сабзиро2', '#этовсёчтоунегоможетбыть2', null, $test);
-        }
         public function generate_menu(){
             $str = '';
+            $class_list = [
+                'submenu' => [
+                    'wp-has-submenu',
+                ],
+                'wo_submenu' => [],
+                'active' => [
+                    'wp-has-current-submenu',
+                ],
+                'non-active' => [
+                    'wp-not-current-submenu',
+                ],
+                'defaults' => []
+            ];
             foreach ($this -> menu as $element){
-                $str .= '<li class="wp-has-current-submenu wp-has-submenu" id="toplevel_page_items_page_new">
+                $str .= '<li class="' . (function($current) use ($class_list){
+                    if ($current) return implode(' ', $class_list['active']); else return implode(' ', $class_list['non-active']);
+                })($element['iscurrent']) .' wp-has-submenu" id="toplevel_page_items_page_new">
                             <a href="admin.php?page=items_page_new" aria-haspopup="false">
                                 <div class="wp-menu-arrow"><div></div></div>
                                 <div class="wp-menu-image dashicons-before dashicons-fa-u-' . $element['icon'] . '"><br></div>
@@ -73,5 +73,8 @@
     add_filter('easyadmin_addon', function($output) use (&$menu){
         return preg_replace('/<li[^>]*\\sid="collapse-menu"[^>]*>[\\s\\S]*?<\\/li>/', $menu -> generate_menu() . '$0', $output);
     });
+    $test = $this -> addMenu('Тестовый заголовок', '/wp-admin/profile.php', $FontAwesome -> f145);
+    $this -> addMenu('Сабзиро', '#этовсёчтоунегоможетбыть', null, $test);
+    $this -> addMenu('Сабзиро2', '#этовсёчтоунегоможетбыть2', null, $test);
    
 ?>

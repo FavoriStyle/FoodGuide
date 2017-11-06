@@ -58,7 +58,7 @@
                 $API -> update_singles((function($a){
                     $tmp = [];
                     foreach($a as $key => $value){
-                        $a[str_replace('_', ' ', $key)] = $value;
+                        $tmp[str_replace('_', ' ', $key)] = $value;
                     }
                     return $tmp;
                 })($_POST));

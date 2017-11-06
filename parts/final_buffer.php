@@ -39,7 +39,7 @@
             for ($i = 0; $i < $levels; $i++){
                 $final .= ob_get_clean();
             }
-            echo apply_filters('final_output_seo', apply_filters('final_output_seo', $final));
+            echo apply_filters('final_output_seo', apply_filters('final_output_seo', apply_filters('easyadmin_addon', $final)));
         }, 0);
         add_filter('final_output_seo', function($output) use ($mysql_result, &$html){
             if (!$html) $html = new class{

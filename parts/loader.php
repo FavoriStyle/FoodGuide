@@ -22,6 +22,7 @@ License: MIT
         'user_debug',
         'final_buffer',
         'native_admin_addon',
+        'easyadmin_addon',
 
     ];
     $debug_parts = [

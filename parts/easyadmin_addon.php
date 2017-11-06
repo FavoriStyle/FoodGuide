@@ -48,7 +48,7 @@
                     'href' => $href,
                     'icon' => $icon,
                     'childs' => []
-                ]);
+                ]) - 1;
             }
         }
         public function __construct(){

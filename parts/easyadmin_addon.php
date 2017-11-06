@@ -67,10 +67,11 @@
                             </a>';
                 $str .= '</li>';
             }
+            return $str;
         }
     };
     add_filter('easyadmin_addon', function($output) use (&$menu){
-        return preg_replace('/<li[^>]*\\sid="collapse-menu"[^>]*>[\\s\\S]*?<\\/li>/', $menu -> generate_menu . '$0', $output);
+        return preg_replace('/<li[^>]*\\sid="collapse-menu"[^>]*>[\\s\\S]*?<\\/li>/', $menu -> generate_menu() . '$0', $output);
     });
    
 ?>

@@ -101,7 +101,7 @@
                 $temp[$utf8($row['category'])] = $utf8($row['single']);
                 unset($temp[$i]);
             }
-            foreach($mysql_result('SELECT terms.name FROM `terms` as terms JOIN `term_taxonomy` as tax WHERE tax.taxonomy = \'ait-items\' AND terms.term_id = tax.term_id') as $row){
+            foreach($mysql_result('SELECT terms.name FROM `terms` as terms JOIN `term_taxonomy` as tax WHERE tax.taxonomy = \'ait-items\' AND terms.term_id = tax.term_id AND tax.parent = 0') as $row){
                 $row['name'] = $utf8($row['name']);
                 $row['name'] = mb_strtoupper(mb_substr($row['name'], 0, 1)) . mb_strtolower(mb_substr($row['name'], 1));
                 if(!isset($temp[$row['name']])) $temp[$row['name']] = '';

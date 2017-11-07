@@ -7,9 +7,9 @@
             'blue' => '#0035ff',
         ];
         public function __get($name){
-            if(!in_array($name, $this -> stack) && !in_array($name, $this -> colors)) $this -> stack[] = $name; elseif(in_array($name, $this -> colors)){
-                $this -> colors_stack[] = $name;
-                return "dashicons-fa-color-$name";
+            if(!in_array($name, $this -> stack) && !isset($this -> colors[$name])) $this -> stack[] = $name; elseif(isset($this -> colors[$name])){
+                if (!in_array($name, $this -> colors_stack)) $this -> colors_stack[] = $name;
+                return " dashicons-fa-color-$name";
             }
             return "dashicons-fa-u-$name";
         }
@@ -22,6 +22,9 @@
                 $css = mb_substr($css, 1) . '{font-family:FontAwesome !important}';
                 foreach($this -> stack as $symbol){
                     $css .= ".dashicons-fa-u-$symbol:before{content:\"\\$symbol\"}";
+                }
+                foreach($this -> colors_stack as $color){
+                    $css .= ".dashicons-fa-color-$color:before{color:" . $this -> colors[$color] . " !important}";
                 }
                 echo "<style>$css</style>";
             });
@@ -91,7 +94,7 @@
     add_filter('easyadmin_addon', function($output) use (&$menu){
         return preg_replace('/<li[^>]*\\sid="collapse-menu"[^>]*>[\\s\\S]*?<\\/li>/', $menu -> generate_menu() . '$0', $output);
     });
-    $parent = $menu -> addMenu('Items new', '/wp-admin/profile.php', $FontAwesome -> f00b . $FontAwesome -> blue);
+    $parent = $menu -> addMenu('Items new', '/wp-admin/profile.php', implode(' ', [$FontAwesome -> f00b, $FontAwesome -> blue]));
     $menu -> addMenu('Сабзиро', '#этовсёчтоунегоможетбыть', null, $parent);
     $menu -> addMenu('Сабзиро2', '#этовсёчтоунегоможетбыть2', null, $parent);
    

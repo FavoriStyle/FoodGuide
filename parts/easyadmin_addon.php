@@ -57,14 +57,25 @@
                 'defaults' => []
             ];
             foreach ($this -> menu as $element){
+                $element['childs_count'] = count($element['childs']);
                 $str .= '<li class="' . (function($current) use ($class_list){
                     if ($current) return implode(' ', $class_list['active']); else return implode(' ', $class_list['non-active']);
                 })($element['iscurrent']) .' wp-has-submenu" id="toplevel_page_items_page_new">
                             <a href="admin.php?page=items_page_new" aria-haspopup="false">
                                 <div class="wp-menu-arrow"><div></div></div>
-                                <div class="wp-menu-image dashicons-before dashicons-fa-u-' . $element['icon'] . '"><br></div>
-                                <div class="wp-menu-name">' . $element['header'] . '</div>
-                            </a>';
+                                <div class="wp-menu-image dashicons-before ' . $element['icon'] . '"><br></div>
+                                <div class="wp-menu-name">' . $element['header'] . '</div></a>' . (function() use ($element){
+                                    $str = '';
+                                    if($element['childs_count']){
+                                        $str = '<ul class="wp-submenu wp-submenu-wrap"><li class="wp-submenu-head" aria-hidden="true">' . $element['header'] . '</li>';
+                                        foreach ($element['childs'] as $i => $child){
+                                            $first = (!$i ? ' class="wp-first-item"' : '');
+                                            $str .= '<li' . $first . '><a href="' . $child['href'] . '"' . $first . '>' . $child['header'] . '</a></li>';
+                                        }
+                                        $str .= '</ul>';
+                                    }
+                                    return $str;
+                                })($element['childs'], $element['iscurrent']);
                 $str .= '</li>';
             }
             return $str;

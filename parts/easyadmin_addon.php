@@ -2,8 +2,15 @@
 
     $FontAwesome = new class{
         private $stack = [];
+        private $colors_stack = [];
+        private $colors = [
+            'blue' => '#0035ff',
+        ];
         public function __get($name){
-            if(!in_array($name, $this -> stack)) $this -> stack[] = $name;
+            if(!in_array($name, $this -> stack) && !in_array($name, $this -> colors)) $this -> stack[] = $name; elseif(in_array($name, $this -> colors)){
+                $this -> colors_stack[] = $name;
+                return "dashicons-fa-color-$name";
+            }
             return "dashicons-fa-u-$name";
         }
         public function __construct(){
@@ -84,8 +91,8 @@
     add_filter('easyadmin_addon', function($output) use (&$menu){
         return preg_replace('/<li[^>]*\\sid="collapse-menu"[^>]*>[\\s\\S]*?<\\/li>/', $menu -> generate_menu() . '$0', $output);
     });
-    $test = $menu -> addMenu('Тестовый заголовок', '/wp-admin/profile.php', $FontAwesome -> f145);
-    $menu -> addMenu('Сабзиро', '#этовсёчтоунегоможетбыть', null, $test);
-    $menu -> addMenu('Сабзиро2', '#этовсёчтоунегоможетбыть2', null, $test);
+    $parent = $menu -> addMenu('Items new', '/wp-admin/profile.php', $FontAwesome -> f00b . $FontAwesome -> blue);
+    $menu -> addMenu('Сабзиро', '#этовсёчтоунегоможетбыть', null, $parent);
+    $menu -> addMenu('Сабзиро2', '#этовсёчтоунегоможетбыть2', null, $parent);
    
 ?>

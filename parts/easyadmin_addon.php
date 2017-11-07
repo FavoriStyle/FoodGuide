@@ -73,8 +73,8 @@
     add_filter('easyadmin_addon', function($output) use (&$menu){
         return preg_replace('/<li[^>]*\\sid="collapse-menu"[^>]*>[\\s\\S]*?<\\/li>/', $menu -> generate_menu() . '$0', $output);
     });
-    $test = $this -> addMenu('Тестовый заголовок', '/wp-admin/profile.php', $FontAwesome -> f145);
-    $this -> addMenu('Сабзиро', '#этовсёчтоунегоможетбыть', null, $test);
-    $this -> addMenu('Сабзиро2', '#этовсёчтоунегоможетбыть2', null, $test);
+    $test = $menu -> addMenu('Тестовый заголовок', '/wp-admin/profile.php', $FontAwesome -> f145);
+    $menu -> addMenu('Сабзиро', '#этовсёчтоунегоможетбыть', null, $test);
+    $menu -> addMenu('Сабзиро2', '#этовсёчтоунегоможетбыть2', null, $test);
    
 ?>

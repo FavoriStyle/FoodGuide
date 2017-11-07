@@ -61,7 +61,7 @@
                 $str .= '<li class="' . (function($current) use ($class_list){
                     if ($current) return implode(' ', $class_list['active']); else return implode(' ', $class_list['non-active']);
                 })($element['iscurrent']) .' wp-has-submenu" id="toplevel_page_items_page_new">
-                            <a href="admin.php?page=items_page_new" aria-haspopup="false">
+                            <a href="' . $element['href'] . '" aria-haspopup="false">
                                 <div class="wp-menu-arrow"><div></div></div>
                                 <div class="wp-menu-image dashicons-before ' . $element['icon'] . '"><br></div>
                                 <div class="wp-menu-name">' . $element['header'] . '</div></a>' . (function() use ($element){

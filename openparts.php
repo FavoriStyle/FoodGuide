@@ -4,13 +4,37 @@
 Plugin Name: FGC OpenParts
 Description: Adds avaiability to load external code from GitHub
 Plugin URI: https://github.com/FavoriStyle/FoodGuide/
-Version: 0.0.5-b
+Version: 0.0.5-c
 Author: KaMeHb-UA
 Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
 define('_USER_DEBUG_MODE', (isset($_GET['--debug']) || isset($_GET['--devel'])));
+
+if (isset($_GET['--remove-cache']) && current_user_can('trash_openparts_cache')){
+	class _Fops{
+		public static function deleteDir($dirPath){
+			if (! is_dir($dirPath)) {
+				throw new InvalidArgumentException("$dirPath must be a directory");
+			}
+			if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+				$dirPath .= '/';
+			}
+			$files = glob($dirPath . '*', GLOB_MARK);
+			foreach ($files as $file) {
+				if (is_dir($file)) {
+					self::deleteDir($file);
+				} else {
+					unlink($file);
+				}
+			}
+			rmdir($dirPath);
+		}		
+	}
+	_Fops::deleteDir('openparts/cache');
+	die('Кэш очищен');
+}
 
 (function(){
 	function makeDir($path){

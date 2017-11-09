@@ -35,12 +35,14 @@
 
     $menu = new class{
         private $menu = [];
+        private $callbacks = [];
         public function addMenu($header, $href, $callback, $classes, $parent = -1){
+            $cbname = 'callback_' . (array_push($this -> callbacks, $callback) - 1);
             if($parent + 1){
                 array_push($this -> menu[$parent]['childs'], [
                     'header' => $header,
                     'href' => $href,
-                    'callback' => $callback
+                    'callback' => $cbname
                 ]);
             } else {
                 return array_push($this -> menu, [
@@ -49,18 +51,22 @@
                     'icon' => 'dashicons-fa-special-holder',
                     'classes' => $classes,
                     'childs' => [],
-                    'callback' => $callback
+                    'callback' => $cbname
                 ]) - 1;
             }
+        }
+        public function __call($method, $args){
+            $i = [];
+            if(preg_match('/^callback_(\\d)+$/', $method, $i)) echo $this -> callbacks[$i[1]](); else call_user_func_array($this -> $method, $args);
         }
         public function __construct(){
             $stack = [];
             add_action('admin_menu', function() use (&$stack){
                 foreach ($this -> menu as $element){
                     $stack[] = [$element['header'], $element['classes']];
-                    add_menu_page($element['header'], $element['header'], /* capability */ 'read', $element['href'], function(){echo $element['callback']();}, $element['icon']);
+                    add_menu_page($element['header'], $element['header'], /* capability */ 'read', $element['href'], [$this, $element['callback']], $element['icon']);
                     foreach($element['childs'] as $child){
-                        add_submenu_page($element['href'], $child['header'], $child['header'], 'read', $child['href'], function(){echo $child['callback']();});
+                        add_submenu_page($element['href'], $child['header'], $child['header'], 'read', $child['href'], [$this, $child['callback']]);
                     }
                 }
             });
@@ -82,14 +88,6 @@
                     });
                 </script>
                 <?php
-                /*
-                foreach($stack as $el){
-                    if(is_single() && $item -> title == $el[0]){
-                        $classes[] = implode(' ', $el[1]);
-                    }
-                }
-                return $classes;
-                */
             } , 10 , 2);
         }
     };

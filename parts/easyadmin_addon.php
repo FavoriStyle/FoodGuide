@@ -1,4 +1,25 @@
 <?php
+    
+    class eaPage{
+        private $text = '';
+        public function __construct($tpl){
+            $this -> text = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/wp-content/themes/FGC/templates/' . $tpl . '.tpl');
+            return $this;
+        }
+        public function match($key, $target){
+            $this -> text = implode($target, explode('{'.$key.'}', $this -> text));
+            return $this;
+        }
+        public function matches($matches){
+            foreach ($matches as $key => $value){
+                $this -> text = implode($value, explode('{'.$key.'}', $this -> text));
+            }
+            return $this;
+        }
+        public function __toString(){
+            return $this -> text;
+        }
+    }
 
     $FontAwesome = new class{
         private $stack = [];
@@ -74,26 +95,101 @@
                 ?>
                 <script>
                     document.addEventListener('DOMContentLoaded', function(){
-                        var a = document.getElementsByTagName('body')[0].classList, b = <?php echo json_encode($stack); ?>;
-                        for(var i = 0; i < a.length; i++){
-                            if (a[i] == 'ait-easy-admin-enabled'){
-                                let i, a = document.querySelectorAll('#easyadmin-main-menu > li > a > .dashicons-fa-special-holder');
-                                for(i = 0; i < a.length; i++){
-                                    b.forEach(function(e){
-                                        if(a[i].parentNode.lastChild.innerHTML == e[0]) e[1].forEach(function(cls){a[i].classList.add(cls)});
-                                    });
+                        setTimeout(function(){
+                            console.log('DOMLoaded + 10');
+                            var a = document.getElementsByTagName('body')[0].classList, b = <?php echo json_encode($stack); ?>, c, d;
+                            for(var i = 0; i < a.length; i++){
+                                if (a[i] == 'ait-easy-admin-enabled'){
+                                    c = true;
                                 }
                             }
-                        }
+                            a = document.querySelectorAll('.dashicons-fa-special-holder');
+                            if (c) d = function(a,i,e){
+                                if(a[i].parentNode.lastChild.innerHTML == e[0]) e[1].forEach(function(cls){a[i].classList.add(cls)});
+                            }; else d = function(a,i,e){
+                                if(a[i].parentNode.lastChild.innerHTML == e[0]){
+                                    a[i].parentNode.parentNode.remove();
+                                }
+                            };
+                            for(i = 0; i < a.length; i++){
+                                b.forEach(function(e){
+                                    d(a,i,e);
+                                });
+                            }
+                        }, 10);
                     });
                 </script>
                 <?php
-            } , 10 , 2);
+            }, 10, 2);
         }
     };
 
     $parent = $menu -> addMenu('Items new', 'new_page.ea_addon', function(){
-        return 'Тупо кастомная страница';
+        return (new eaPage('ea_item_add')) -> matches([
+            'heading'                           => __('Add New Item', 'ait-toolkit'),
+            'Enter_item_name'                   => _x('Item name', 'ea_items_list_page_new', 'ait-admin'),
+            'By_russian'                        => _x('By russian', 'ea_pages_new', 'ait-admin'),
+            'By_ukrainian'                      => _x('By ukrainian', 'ea_pages_new', 'ait-admin'),
+            'By_english'                        => _x('By english', 'ea_pages_new', 'ait-admin'),
+            'Enter_russian_item_desc'           => _x('Enter russian item description', 'ea_pages_new', 'ait-admin'),
+            'Enter_ukrainian_item_desc'         => _x('Enter ukrainian item description', 'ea_pages_new', 'ait-admin'),
+            'Enter_english_item_desc'           => _x('Enter english item description', 'ea_pages_new', 'ait-admin'),
+            'Select_or_upload_image'            => _x('Select or upload image', 'ea_pages_new', 'ait-admin'),
+            'Set_image'                         => _x('Set image', 'ea_pages_new', 'ait-admin'),
+            'Upload_item_image'                 => _x('Select image', 'ea_pages_new', 'ait-admin'),
+            'Item_image'                        => _x('Item image', 'ea_pages_new', 'ait-admin'),
+            'Select_or_upload_images'           => _x('Select or upload images', 'ea_pages_new', 'ait-admin'),
+            'Set_images'                        => _x('Set images', 'ea_pages_new', 'ait-admin'),
+            'Upload_item_gallery_images'        => _x('Select images', 'ea_pages_new', 'ait-admin'),
+            'Item_gallery'                      => _x('Item gallery', 'ea_pages_new', 'ait-admin'),
+            'single_upload_image_notice'        => _x('* to change your choose just select image once more time', 'ea_pages_new', 'ait-admin'),
+            'multiple_upload_images_notice'     => _x('* to change your choose just select images once more time', 'ea_pages_new', 'ait-admin'),
+            'Item'                              => _x('Item', 'post type singular name', 'ait-toolkit'),
+            'Map_header'                        => _x('Item\'s location', 'ea_pages_new', 'ait-admin'),
+            'Work_time'                         => _x('Work time', 'ea_pages_new', 'ait-admin'),
+            'time-start_placeholder'            => _x('Start', 'ea_pages_new [work time]', 'ait-admin'),
+            'time-end_placeholder'              => _x('End', 'ea_pages_new [work time]', 'ait-admin'),
+            'pause-start_placeholder'           => _x('Start', 'ea_pages_new [work time]', 'ait-admin'),
+            'pause-end_placeholder'             => _x('End', 'ea_pages_new [work time]', 'ait-admin'),
+            'Day_of_week'                       => _x('Day of week', 'ea_pages_new', 'ait-admin'),
+            'Work_time_figurale'                => _x('Work time', 'ea_pages_new [figurale]', 'ait-admin'),
+            'Rest_time_figurale'                => _x('Rest time', 'ea_pages_new [figurale]', 'ait-admin'),
+            'checkbox_text_No'                  => _x('No', 'ea_pages_new', 'ait-admin'),
+            'checkbox_text_Yes'                 => _x('Yes', 'ea_pages_new', 'ait-admin'),
+            'Rest_day'                          => _x('Rest day', 'ea_pages_new', 'ait-admin'),
+            'All_day'                           => _x('All day', 'ea_pages_new [work time]', 'ait-admin'),
+            //'additional_filters_option_list'    => FGC::doAdvFiltersJSON(),
+            //'item_categories_option_list'       => FGC::doItemCategoriesJSON(),
+            'Additional_services'               => _x('Additional services', 'ea_pages_new', 'ait-admin'),
+            'Additional_services_tip'           => _x('Set your item\'s services', 'ea_pages_new', 'ait-admin'),
+            'Item_categories'                   => _x('Item categories', 'ea_pages_new', 'ait-admin'),
+            'Item_categories_tip'               => _x('Set your item\'s categories', 'ea_pages_new', 'ait-admin'),
+            'Publish'                           => _x('Publish', 'ea_pages_new', 'ait-admin'),
+            'Publish_button_text'               => _x('Save', 'ea_pages_new [publish button text]', 'ait-admin'),
+            'monday_json'                       => json_encode(_x('monday', 'ea_pages_new [days of week]', 'ait-admin')),
+            'tuesday_json'                      => json_encode(_x('tuesday', 'ea_pages_new [days of week]', 'ait-admin')),
+            'wednesday_json'                    => json_encode(_x('wednesday', 'ea_pages_new [days of week]', 'ait-admin')),
+            'thursday_json'                     => json_encode(_x('thursday', 'ea_pages_new [days of week]', 'ait-admin')),
+            'friday_json'                       => json_encode(_x('friday', 'ea_pages_new [days of week]', 'ait-admin')),
+            'saturday_json'                     => json_encode(_x('saturday', 'ea_pages_new [days of week]', 'ait-admin')),
+            'sunday_json'                       => json_encode(_x('sunday', 'ea_pages_new [days of week]', 'ait-admin')),
+            'Check_your_item_address'           => str_replace('{what_to_check}', _x('adress', 'ea_pages_new [responces]', 'ait-admin'), _x('Check your item\'s {what_to_check}', 'ea_pages_new [responces]', 'ait-admin')),
+            //'location_list'                     => json_encode(FGC::construct_locations()),
+            'english_item_desc_tip'             => _x('Describe your item in english', 'ea_pages_new', 'ait-admin'),
+            'russian_item_desc_tip'             => _x('Describe your item in russian', 'ea_pages_new', 'ait-admin'),
+            'ukrainian_item_desc_tip'           => _x('Describe your item in ukrainian', 'ea_pages_new', 'ait-admin'),
+            'Item_email'                        => _x('Item email', 'ea_pages_new', 'ait-admin'),
+            'Item_email_tip'                    => _x('Item email tip', 'ea_pages_new', 'ait-admin'),
+            'Item_phones'                       => _x('Item phones', 'ea_pages_new', 'ait-admin'),
+            'Item_phones_tip'                   => _x('Item phones tip', 'ea_pages_new', 'ait-admin'),
+            'Add_new_phone'                     => _x('Add new phone', 'ea_pages_new', 'ait-admin'),
+            'Item_check'                        => _x('Average check', 'ea_pages_new', 'ait-admin'),
+            'Item_check_tip'                    => _x('Average check tip', 'ea_pages_new', 'ait-admin'),
+            'UAH'                               => _x('UAH', 'ea_pages_new', 'ait-admin'),
+            'Item_location'                     => _x('Item location', 'ea_pages_new', 'ait-admin'),
+            'Item_location_tip'                 => _x('Item location tip', 'ea_pages_new', 'ait-admin'),
+            'Item_categories_main_cat_tip'      => _x('Main category tip', 'ea_pages_new', 'ait-admin'),
+        ]);
     }, [$FontAwesome -> f00b, $FontAwesome -> blue]);
     $menu -> addMenu('List', 'new_page2.ea_addon', function(){
         return 'Тупо кастомная страница';

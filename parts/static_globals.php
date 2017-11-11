@@ -11,15 +11,11 @@
         }
         public static function mysql_result($sql, $debugConsole = false){
             if (!$debugConsole) $debugConsole = self::$debugConsole;
-            $sql = preg_replace_callback('/FROM\s+`(.+?)`/ms', function($matches){
+            $sql = preg_replace_callback('/(FROM|JOIN|WHERE)\s+`(.+?)`/ms', function($matches){
                 global $wpdb;
-                if(!(mb_strpos($matches[1], $wpdb -> prefix) === 0)) $matches[1] = $wpdb -> prefix . $matches[1];
-                return 'FROM `' . $matches[1] . '`';
-            }, preg_replace_callback('/JOIN\s+`(.+?)`/ms', function($matches){
-                global $wpdb;
-                if(!(mb_strpos($matches[1], $wpdb -> prefix) === 0)) $matches[1] = $wpdb -> prefix . $matches[1];
-                return 'JOIN `' . $matches[1] . '`';
-            }, $sql));
+                if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
+                return $matches[1] . ' `' . $matches[2] . '`';
+            }, $sql);
             $debugConsole -> log($sql);
             $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
             if (!$mysqli -> connect_errno){

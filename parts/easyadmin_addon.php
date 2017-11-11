@@ -26,17 +26,14 @@
             $tax = 'ait-items_filters';
             $terms = get_terms(['taxonomy' => $tax, 'hide_empty' => false]);
             foreach ($terms as $i => $value){
-                $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                if (!$mysqli -> connect_errno){
-                    $query_result = $mysqli -> query('SELECT `description` FROM `' . WP_LOCAL_TABLE_PREFIX . 'term_taxonomy` WHERE `taxonomy` = \'term_translations\' AND `description` LIKE \'%";i:' . $value -> term_id . ';%\'');
-                    if ($query_result){
-                        $a = unserialize($query_result -> fetch_row()[0]);
-                        $terms[$i] = [
-                            ($value -> term_id == $a['en']) ? $value : get_term_by('id', $a['en'], $tax),
-                            ($value -> term_id == $a['ru']) ? $value : get_term_by('id', $a['ru'], $tax),
-                            ($value -> term_id == $a['uk']) ? $value : get_term_by('id', $a['uk'], $tax),
-                        ];
-                    } else unset($terms[$i]);
+                $query_result = staticGlobals::mysql_result('SELECT `description` FROM `term_taxonomy` WHERE `taxonomy` = \'term_translations\' AND `description` LIKE \'%";i:' . $value -> term_id . ';%\'');
+                if ($query_result){
+                    $a = unserialize($query_result[0]['description']);
+                    $terms[$i] = [
+                        ($value -> term_id == $a['en']) ? $value : get_term_by('id', $a['en'], $tax),
+                        ($value -> term_id == $a['ru']) ? $value : get_term_by('id', $a['ru'], $tax),
+                        ($value -> term_id == $a['uk']) ? $value : get_term_by('id', $a['uk'], $tax),
+                    ];
                 } else unset($terms[$i]);
             }
             foreach ($terms as $i => $value){
@@ -54,17 +51,14 @@
                 return $terms -> get_error_message();
             }
             foreach ($terms as $i => $value){
-                $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                if (!$mysqli -> connect_errno){
-                    $query_result = $mysqli -> query('SELECT `description` FROM `' . WP_LOCAL_TABLE_PREFIX . 'term_taxonomy` WHERE `taxonomy` = \'term_translations\' AND `description` LIKE \'%";i:' . $value -> term_id . ';%\'');
-                    if ($query_result){
-                        $a = unserialize($query_result -> fetch_row()[0]);
-                        $terms[$i] = [
-                            ($value -> term_id == $a['en']) ? $value : get_term_by('id', $a['en'], $tax),
-                            ($value -> term_id == $a['ru']) ? $value : get_term_by('id', $a['ru'], $tax),
-                            ($value -> term_id == $a['uk']) ? $value : get_term_by('id', $a['uk'], $tax),
-                        ];
-                    } else unset($terms[$i]);
+                $query_result = staticGlobals::mysql_result('SELECT `description` FROM `term_taxonomy` WHERE `taxonomy` = \'term_translations\' AND `description` LIKE \'%";i:' . $value -> term_id . ';%\'');
+                if ($query_result){
+                    $a = unserialize($query_result[0]['description']);
+                    $terms[$i] = [
+                        ($value -> term_id == $a['en']) ? $value : get_term_by('id', $a['en'], $tax),
+                        ($value -> term_id == $a['ru']) ? $value : get_term_by('id', $a['ru'], $tax),
+                        ($value -> term_id == $a['uk']) ? $value : get_term_by('id', $a['uk'], $tax),
+                    ];
                 } else unset($terms[$i]);
             }
             return $terms;

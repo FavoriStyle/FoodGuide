@@ -18,6 +18,7 @@ License: MIT
     $parts = [
         //parts to be loaded
         //'reformat_css',
+        'static_globals',
         'disable-emojis/disable-emojis',
         'user_debug',
         'final_buffer',

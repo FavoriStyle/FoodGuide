@@ -21,6 +21,101 @@
         }
     }
 
+    class eaDB{
+        private static function prepareFilters(){
+            $tax = 'ait-items_filters';
+            $terms = get_terms(['taxonomy' => $tax, 'hide_empty' => false]);
+            foreach ($terms as $i => $value){
+                $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                if (!$mysqli -> connect_errno){
+                    $query_result = $mysqli -> query('SELECT `description` FROM `' . WP_LOCAL_TABLE_PREFIX . 'term_taxonomy` WHERE `taxonomy` = \'term_translations\' AND `description` LIKE \'%";i:' . $value -> term_id . ';%\'');
+                    if ($query_result){
+                        $a = unserialize($query_result -> fetch_row()[0]);
+                        $terms[$i] = [
+                            ($value -> term_id == $a['en']) ? $value : get_term_by('id', $a['en'], $tax),
+                            ($value -> term_id == $a['ru']) ? $value : get_term_by('id', $a['ru'], $tax),
+                            ($value -> term_id == $a['uk']) ? $value : get_term_by('id', $a['uk'], $tax),
+                        ];
+                    } else unset($terms[$i]);
+                } else unset($terms[$i]);
+            }
+            foreach ($terms as $i => $value){
+                foreach ($value as $i1 => $value1){
+                    $terms[$i][$i1] -> icon = get_option($tax . '_category_' . $value1 -> term_id)["icon"];
+                    if ($terms[$i][$i1] -> icon == '') $terms[$i][$i1] -> icon = '/wp-content/themes/foodguide/design/img/check.png';
+                }
+            }
+            return $terms;
+        }
+        private static function prepareCategories(){
+            $tax = 'ait-items';
+            $terms = get_terms(['taxonomy' => $tax, 'hide_empty' => false]);
+            if(is_wp_error($terms)){
+                return $terms -> get_error_message();
+            }
+            foreach ($terms as $i => $value){
+                $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                if (!$mysqli -> connect_errno){
+                    $query_result = $mysqli -> query('SELECT `description` FROM `' . WP_LOCAL_TABLE_PREFIX . 'term_taxonomy` WHERE `taxonomy` = \'term_translations\' AND `description` LIKE \'%";i:' . $value -> term_id . ';%\'');
+                    if ($query_result){
+                        $a = unserialize($query_result -> fetch_row()[0]);
+                        $terms[$i] = [
+                            ($value -> term_id == $a['en']) ? $value : get_term_by('id', $a['en'], $tax),
+                            ($value -> term_id == $a['ru']) ? $value : get_term_by('id', $a['ru'], $tax),
+                            ($value -> term_id == $a['uk']) ? $value : get_term_by('id', $a['uk'], $tax),
+                        ];
+                    } else unset($terms[$i]);
+                } else unset($terms[$i]);
+            }
+            return $terms;
+        }
+        private static function categoriesOrganizer($obj, $parent_id = 0){
+            $tmp_obj = new stdClass();
+            foreach ($obj as $name => $category){
+                if($category -> parent === $parent_id){
+                    $tmp_obj -> $name = $category;
+                }
+            }
+            foreach ($obj as $name => $category){
+                foreach ($tmp_obj as $tmp_obj_name => $tmp_obj_category){
+                    if ($tmp_obj_category -> id == $category -> parent){
+                        $tmp_obj -> $tmp_obj_name -> childs = self::categoriesOrganizer($obj, $category -> parent);
+                    }
+                }
+            }
+            return $tmp_obj;
+        }
+        public static function getFilters(){
+            $filter_list = self::prepareFilters();
+            $obj = new stdClass();
+            $lang_index = _x('0', 'ea_pages_new [lang index]', 'ait-admin') * 1;
+            foreach ($filter_list as $filter){
+                $obj2 = new stdClass();
+                $obj2 -> id = $filter[0] -> term_id;
+                $obj2 -> icon = $filter[$lang_index] -> icon;
+                $name = $filter[$lang_index] -> name;
+                $obj -> $name = $obj2;
+            }
+            return json_encode($obj);
+        }
+        public static function getCategories(){
+            $cat_list = self::prepareCategories();
+            $obj = new stdClass();
+            $lang_index = _x('0', 'ea_pages_new [lang index]', 'ait-admin') * 1;
+            foreach ($cat_list as $category){
+                $obj2 = new stdClass();
+                $obj2 -> id = $category[0] -> term_id;
+                $obj2 -> parent = $category[0] -> parent;
+                $name = $category[$lang_index] -> name;
+                $obj -> $name = $obj2;
+            }
+            foreach ($obj as $name => $category){
+                $obj -> $name -> childs = new stdClass();
+            }
+            return json_encode(self::categoriesOrganizer($obj));
+        }
+    }
+
     $FontAwesome = new class{
         private $stack = [];
         private $colors_stack = [];
@@ -96,7 +191,6 @@
                 <script>
                     document.addEventListener('DOMContentLoaded', function(){
                         setTimeout(function(){
-                            console.log('DOMLoaded + 10');
                             var a = document.getElementsByTagName('body')[0].classList, b = <?php echo json_encode($stack); ?>, c, d;
                             for(var i = 0; i < a.length; i++){
                                 if (a[i] == 'ait-easy-admin-enabled'){
@@ -158,8 +252,8 @@
             'checkbox_text_Yes'                 => _x('Yes', 'ea_pages_new', 'ait-admin'),
             'Rest_day'                          => _x('Rest day', 'ea_pages_new', 'ait-admin'),
             'All_day'                           => _x('All day', 'ea_pages_new [work time]', 'ait-admin'),
-            //'additional_filters_option_list'    => FGC::doAdvFiltersJSON(),
-            //'item_categories_option_list'       => FGC::doItemCategoriesJSON(),
+            //'additional_filters_option_list'    => FGC::getFilters(),
+            //'item_categories_option_list'       => FGC::getCategories(),
             'Additional_services'               => _x('Additional services', 'ea_pages_new', 'ait-admin'),
             'Additional_services_tip'           => _x('Set your item\'s services', 'ea_pages_new', 'ait-admin'),
             'Item_categories'                   => _x('Item categories', 'ea_pages_new', 'ait-admin'),

@@ -22,30 +22,7 @@
     }
 
     class eaDB{
-        private static function prepareFilters(){
-            $tax = 'ait-items_filters';
-            $terms = get_terms(['taxonomy' => $tax, 'hide_empty' => false]);
-            foreach ($terms as $i => $value){
-                $query_result = staticGlobals::mysql_result('SELECT `description` FROM `term_taxonomy` WHERE `taxonomy` = \'term_translations\' AND `description` LIKE \'%";i:' . $value -> term_id . ';%\'');
-                if ($query_result){
-                    $a = unserialize($query_result[0]['description']);
-                    $terms[$i] = [
-                        ($value -> term_id == $a['en']) ? $value : get_term_by('id', $a['en'], $tax),
-                        ($value -> term_id == $a['ru']) ? $value : get_term_by('id', $a['ru'], $tax),
-                        ($value -> term_id == $a['uk']) ? $value : get_term_by('id', $a['uk'], $tax),
-                    ];
-                } else unset($terms[$i]);
-            }
-            foreach ($terms as $i => $value){
-                foreach ($value as $i1 => $value1){
-                    $terms[$i][$i1] -> icon = get_option($tax . '_category_' . $value1 -> term_id)["icon"];
-                    if ($terms[$i][$i1] -> icon == '') $terms[$i][$i1] -> icon = '/wp-content/themes/foodguide/design/img/check.png';
-                }
-            }
-            return $terms;
-        }
-        private static function prepareCategories(){
-            $tax = 'ait-items';
+        private static function getTaxsLangs($tax, $filter = false){
             $terms = get_terms(['taxonomy' => $tax, 'hide_empty' => false]);
             if(is_wp_error($terms)){
                 return $terms -> get_error_message();
@@ -61,6 +38,7 @@
                     ];
                 } else unset($terms[$i]);
             }
+            if ($filter) return $filter($terms);
             return $terms;
         }
         private static function categoriesOrganizer($obj, $parent_id = 0){
@@ -80,7 +58,15 @@
             return $tmp_obj;
         }
         public static function getFilters(){
-            $filter_list = self::prepareFilters();
+            $filter_list = self::getTaxsLangs('ait-items_filters', function($terms){
+                foreach ($terms as $i => $value){
+                    foreach ($value as $i1 => $value1){
+                        $terms[$i][$i1] -> icon = get_option($tax . '_category_' . $value1 -> term_id)["icon"];
+                        if ($terms[$i][$i1] -> icon == '') $terms[$i][$i1] -> icon = '/wp-content/themes/foodguide/design/img/check.png';
+                    }
+                }
+                return $terms;
+            });
             $obj = new stdClass();
             $lang_index = _x('0', 'ea_pages_new [lang index]', 'ait-admin') * 1;
             foreach ($filter_list as $filter){
@@ -93,7 +79,7 @@
             return json_encode($obj);
         }
         public static function getCategories(){
-            $cat_list = self::prepareCategories();
+            $cat_list = self::getTaxsLangs('ait-items');
             $obj = new stdClass();
             $lang_index = _x('0', 'ea_pages_new [lang index]', 'ait-admin') * 1;
             foreach ($cat_list as $category){

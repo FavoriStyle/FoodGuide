@@ -1,5 +1,5 @@
 <?php
-    
+
     class eaPage{
         private $text = '';
         public function __construct($tpl){
@@ -22,7 +22,7 @@
     }
 
     class eaDB{
-        private static function getTaxsLangs($tax, $filter = false){
+        private static function getTaxsLangsIds($tax, $filter = false){
             $terms = get_terms(['taxonomy' => $tax, 'hide_empty' => false]);
             if(is_wp_error($terms)){
                 return $terms -> get_error_message();
@@ -58,7 +58,7 @@
             return $tmp_obj;
         }
         public static function getFilters(){
-            $filter_list = self::getTaxsLangs('ait-items_filters', function($terms){
+            $filter_list = self::getTaxsLangsIds('ait-items_filters', function($terms){
                 foreach ($terms as $i => $value){
                     foreach ($value as $i1 => $value1){
                         $terms[$i][$i1] -> icon = get_option($tax . '_category_' . $value1 -> term_id)["icon"];
@@ -79,7 +79,7 @@
             return json_encode($obj);
         }
         public static function getCategories(){
-            $cat_list = self::getTaxsLangs('ait-items');
+            $cat_list = self::getTaxsLangsIds('ait-items');
             $obj = new stdClass();
             $lang_index = _x('0', 'ea_pages_new [lang index]', 'ait-admin') * 1;
             foreach ($cat_list as $category){
@@ -232,8 +232,8 @@
             'checkbox_text_Yes'                 => _x('Yes', 'ea_pages_new', 'ait-admin'),
             'Rest_day'                          => _x('Rest day', 'ea_pages_new', 'ait-admin'),
             'All_day'                           => _x('All day', 'ea_pages_new [work time]', 'ait-admin'),
-            //'additional_filters_option_list'    => FGC::getFilters(),
-            //'item_categories_option_list'       => FGC::getCategories(),
+            'additional_filters_option_list'    => eaDB::getFilters(),
+            'item_categories_option_list'       => eaDB::getCategories(),
             'Additional_services'               => _x('Additional services', 'ea_pages_new', 'ait-admin'),
             'Additional_services_tip'           => _x('Set your item\'s services', 'ea_pages_new', 'ait-admin'),
             'Item_categories'                   => _x('Item categories', 'ea_pages_new', 'ait-admin'),
@@ -248,7 +248,7 @@
             'saturday_json'                     => json_encode(_x('saturday', 'ea_pages_new [days of week]', 'ait-admin')),
             'sunday_json'                       => json_encode(_x('sunday', 'ea_pages_new [days of week]', 'ait-admin')),
             'Check_your_item_address'           => str_replace('{what_to_check}', _x('adress', 'ea_pages_new [responces]', 'ait-admin'), _x('Check your item\'s {what_to_check}', 'ea_pages_new [responces]', 'ait-admin')),
-            //'location_list'                     => json_encode(FGC::construct_locations()),
+            //'location_list'                     => json_encode(eaDB::construct_locations()),
             'english_item_desc_tip'             => _x('Describe your item in english', 'ea_pages_new', 'ait-admin'),
             'russian_item_desc_tip'             => _x('Describe your item in russian', 'ea_pages_new', 'ait-admin'),
             'ukrainian_item_desc_tip'           => _x('Describe your item in ukrainian', 'ea_pages_new', 'ait-admin'),

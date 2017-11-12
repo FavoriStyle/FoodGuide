@@ -61,7 +61,7 @@
             $filter_list = self::getTaxsLangsIds('ait-items_filters', function($terms){
                 foreach ($terms as $i => $value){
                     foreach ($value as $i1 => $value1){
-                        $terms[$i][$i1] -> icon = get_option($tax . '_category_' . $value1 -> term_id)["icon"];
+                        $terms[$i][$i1] -> icon = get_option('ait-items_filters_category_' . $value1 -> term_id)["icon"];
                         if ($terms[$i][$i1] -> icon == '') $terms[$i][$i1] -> icon = '/wp-content/themes/foodguide/design/img/check.png';
                     }
                 }

@@ -219,6 +219,7 @@
                     $res = '<ul data-action="up-me delete-container">';
                     $categories = [];
                     $unparse = function($catname, $props, $self) use (&$categories){
+                        var_dump($catname);
                         $categories[$catname] = $props['id'];
                         foreach($props['childs'] as $c => $p){
                             $self($c, $p);

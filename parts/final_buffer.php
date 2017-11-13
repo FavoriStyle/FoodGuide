@@ -219,22 +219,34 @@
                     $res = '<ul data-action="up-me delete-container">';
                     $categories = [];
                     $unparse = function($catname, $props, $self) use (&$categories){
-                        var_dump($catname);
                         $categories[$catname] = $props['id'];
                         foreach($props['childs'] as $c => $p){
-                            $self($c, $p);
+                            $self($c, $p, $self);
                         }
                     };
-                    foreach(eaDB::getCategories([
+                    $cur_lang_index = [
                         'uk' => 2,
                         'ru-RU' => 1,
                         'en-US' => 0
-                    ][$html -> attr('lang')]) as $catname => $props){
+                    ][$html -> attr('lang')];
+                    foreach(json_decode(eaDB::getCategories($cur_lang_index, $cur_lang_index), true) as $catname => $props){
                         $unparse($catname, $props, $unparse);
                     }
-                    $res .= json_encode($categories);
+                    $categories_rev = [];
+                    foreach($categories as $cat_name => $id){
+                        $categories_rev[$id] = $cat_name;
+                    }
+                    foreach(staticGlobals::mysql_result('SELECT term_id AS id, slug FROM `terms` WHERE term_id IN (' . implode(', ', $categories) . ') ORDER BY name ASC') as $category){
+                        $res .= '<li><a href="/cat/' . $category['slug'] . '/">' . $categories_rev[$category['id']] . '</a></li>';
+                        //$categories[$categories_rev[$category['id']]] = $category['slug'];
+                    }
+                    //$res .= json_encode($categories);
                     //<li><a href="/cat/anti-cafe2/">АНТИКАФЕ У МІСТІ</a></li>
                     ///
+
+                    // 
+
+
                     return $res . '</ul>';
                 },
                 '(save case) => address' => function() use($addr_callback, $do_case){

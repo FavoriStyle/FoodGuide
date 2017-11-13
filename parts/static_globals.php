@@ -56,14 +56,14 @@
             }
             return json_encode($obj);
         }
-        public static function getCategories($lang_index = false){
+        public static function getCategories($lang_index = false, $default_lang_index = 0){
             $cat_list = self::getTaxsLangsIds('ait-items');
             $obj = new stdClass();
             if ($lang_index === false) $lang_index = _x('0', 'ea_pages_new [lang index]', 'ait-admin') * 1;
             foreach ($cat_list as $category){
                 $obj2 = new stdClass();
-                $obj2 -> id = $category[0] -> term_id;
-                $obj2 -> parent = $category[0] -> parent;
+                $obj2 -> id = $category[$default_lang_index] -> term_id;
+                $obj2 -> parent = $category[$default_lang_index] -> parent;
                 $name = $category[$lang_index] -> name;
                 $obj -> $name = $obj2;
             }

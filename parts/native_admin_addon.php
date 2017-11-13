@@ -31,7 +31,7 @@
             'title' => 'Remove OpenParts cache',
             'href'  => '/wp-content/mu-plugins/openparts.php?--remove-cache',
             'meta'  => [
-                'onclick' => 'var xhr = new XMLHttpRequest(); xhr.open("GET", this.getAttribute("href"), true); var innerHTML = this.innerHTML; xhr.send(); this.innerHTML = "Clearing..."; xhr.onreadystatechange = function(){ if (xhr.readyState != 4) return; setTimeout(function(){this.innerHTML = innerHTML}, 3000); if (xhr.status == 200){this.innerHTML = "Cleared"}}; return false;'
+                'onclick' => 'var xhr = new XMLHttpRequest(); xhr.open("GET", this.getAttribute("href"), true); var innerHTML = this.innerHTML, _this = this; xhr.send(); this.innerHTML = "Clearing..."; xhr.onreadystatechange = function(){ if (xhr.readyState != 4) return; if (xhr.status == 200){_this.innerHTML = "Cleared"; setTimeout(function(){_this.innerHTML = innerHTML}, 3000)}}; return false;'
             ]
         ];
         $wp_admin_bar->add_node($args);

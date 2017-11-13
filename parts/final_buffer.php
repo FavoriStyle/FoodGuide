@@ -217,7 +217,7 @@
                 'categories_list' => function($case_mode) use ($do_case, $is_admin_page){
                     if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
                     $res = '<ul data-action="up-me delete-container">';
-                    json_encode(eaDB::getCategories());
+                    $res .= json_encode(eaDB::getCategories());
                     //<li><a href="/cat/anti-cafe2/">АНТИКАФЕ У МІСТІ</a></li>
                     ///
                     return $res . '</ul>';

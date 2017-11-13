@@ -56,10 +56,10 @@
             }
             return json_encode($obj);
         }
-        public static function getCategories(){
+        public static function getCategories($lang_index = false){
             $cat_list = self::getTaxsLangsIds('ait-items');
             $obj = new stdClass();
-            $lang_index = _x('0', 'ea_pages_new [lang index]', 'ait-admin') * 1;
+            if ($lang_index === false) $lang_index = _x('0', 'ea_pages_new [lang index]', 'ait-admin') * 1;
             foreach ($cat_list as $category){
                 $obj2 = new stdClass();
                 $obj2 -> id = $category[0] -> term_id;

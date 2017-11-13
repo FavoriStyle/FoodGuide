@@ -214,10 +214,14 @@
                     if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
                     return $do_case(mb_substr(__('Page %s', 'ait'), 0, -3), $case_mode);
                 },
-                'categories_list' => function($case_mode) use ($do_case, $is_admin_page){
+                'categories_list' => function($case_mode) use ($do_case, $is_admin_page, &$html){
                     if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
                     $res = '<ul data-action="up-me delete-container">';
-                    $res .= json_encode(eaDB::getCategories());
+                    $res .= json_encode(eaDB::getCategories([
+                        'uk' => 2,
+                        'ru-RU' => 1,
+                        'en-US' => 0
+                    ][$html -> attr('lang')]));
                     //<li><a href="/cat/anti-cafe2/">АНТИКАФЕ У МІСТІ</a></li>
                     ///
                     return $res . '</ul>';

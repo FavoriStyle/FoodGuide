@@ -25,6 +25,14 @@
         }
     };
 
+    (function() /* добавляем новое топбар-меню */ {
+        global $wp_admin_bar;
+        $wp_admin_bar -> add_menu([
+            'id' => 'remove-openparts-cache',
+            'title' => 'Remove OpenParts cache'
+        ]);
+    })();
+
     $templates = new class{
         private $cache = [];
         public function __get($name){

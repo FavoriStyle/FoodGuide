@@ -1,5 +1,8 @@
 <?php
     (function(){
+        $utf8 = function($str){
+            return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
+        };
         $html = false;
         $mysql_result = (function($func){
             return function($sql, $debugConsole = false) use ($func){
@@ -41,7 +44,7 @@
             }
             echo apply_filters('final_output_seo', apply_filters('final_output_seo', $final));
         }, 0);
-        add_filter('final_output_seo', function($output) use ($mysql_result, &$html){
+        add_filter('final_output_seo', function($output) use ($mysql_result, &$html, $utf8){
             if (!$html) $html = new class{
                 private $attrs = [];
                 public function attr($name, $value = null){
@@ -165,7 +168,7 @@
                 if ($is_admin_page) return '[{' . $do_case('address', $case_mode) . '}]';
                 if ($ait_post_data) return $ait_post_data['map']['address']; else return '';
             };
-            $get_cat = function($case_mode) use($do_case, $mysql_result){
+            $get_cat = function($case_mode) use($do_case, $mysql_result, $utf8){
                 global $post;
                 $a = $mysql_result('SELECT * FROM `posts_main_categories` WHERE `post_id` = ' . $post -> ID);
                 if ($a && count($a) > 0) $a = $a[0]['category_id']; else {
@@ -174,7 +177,7 @@
                     if (!$a || $a == '') $a = 0;
                 }
                 $a = $mysql_result('SELECT `name` FROM `terms` WHERE `term_id` = ' . $a);
-                if ($a && count($a) > 0) return $do_case(iconv(mb_detect_encoding($a[0]['name'], mb_detect_order(), true), "UTF-8", $a[0]['name']), $case_mode); else return '';
+                if ($a && count($a) > 0) return $do_case($utf8($a[0]['name']), $case_mode); else return '';
             };
             $variables = [
 
@@ -186,7 +189,7 @@
                     if ($is_admin_page) return '[{' . $do_case('category', $case_mode) . '}]';
                     return $get_cat($case_mode);
                 },
-                'single_category' => function($case_mode) use ($is_admin_page, $get_cat, $mysql_result, $do_case){
+                'single_category' => function($case_mode) use ($is_admin_page, $get_cat, $mysql_result, $do_case, $utf8){
                     if ($is_admin_page) return '[{' . $do_case('single_category', $case_mode) . '}]';
                     $cat = $get_cat($case_mode);
                     $a = $mysql_result('SELECT `single` FROM `categories_singles` WHERE `category` = FROM_BASE64(\'' . base64_encode($cat) . '\')', (function(){
@@ -198,7 +201,7 @@
                             public function error($a){}
                         };
                     })());
-                    if ($a) return $do_case(iconv(mb_detect_encoding($a[0]['single'], mb_detect_order(), true), "UTF-8", $a[0]['single']), $case_mode); else return $cat;
+                    if ($a) return $do_case($utf8($a[0]['single']), $case_mode); else return $cat;
                 },
                 'name' => function($case_mode) use ($do_case, $is_admin_page){
                     if ($is_admin_page) return '[{' . $do_case('name', $case_mode) . '}]';
@@ -214,7 +217,7 @@
                     if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
                     return $do_case(mb_substr(__('Page %s', 'ait'), 0, -3), $case_mode);
                 },
-                'categories_list' => function($case_mode) use ($do_case, $is_admin_page, &$html){
+                'categories_list' => function($case_mode) use ($do_case, $is_admin_page, &$html, $utf8){
                     if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
                     $res = '<ul data-action="up-me delete-container">';
                     $categories = [];
@@ -225,7 +228,7 @@
                         }
                     };
                     $cur_lang_index = [
-                        'uk' => 2,
+                        'uk'    => 2,
                         'ru-RU' => 1,
                         'en-US' => 0
                     ][$html -> attr('lang')];
@@ -233,20 +236,29 @@
                         $unparse($catname, $props, $unparse);
                     }
                     $categories_rev = [];
+                    $cats_base64_normal_case = [];
+                    $cats_base64_normal_case_rev = [];
                     foreach($categories as $cat_name => $id){
                         $categories_rev[$id] = $cat_name;
+                        $cats_base64_normal_case[$cat_name] = base64_encode($do_case($cat_name, 1));
+                        $cats_base64_normal_case_rev[$cats_base64_normal_case[$cat_name]] = $cat_name;
                     }
                     foreach(staticGlobals::mysql_result('SELECT term_id AS id, slug FROM `terms` WHERE term_id IN (' . implode(', ', $categories) . ') ORDER BY name ASC') as $category){
-                        $res .= '<li><a href="/cat/' . $category['slug'] . '/">' . $categories_rev[$category['id']] . '</a></li>';
-                        //$categories[$categories_rev[$category['id']]] = $category['slug'];
+                        $categories[$categories_rev[$category['id']]] = $category['slug'];
                     }
-                    //$res .= json_encode($categories);
-                    //<li><a href="/cat/anti-cafe2/">АНТИКАФЕ У МІСТІ</a></li>
-                    ///
-
-                    // 
-
-
+                    foreach(staticGlobals::mysql_result('SELECT * FROM `categories_singles` WHERE category IN (FROM_BASE64("' . implode('"), FROM_BASE64("', $cats_base64_normal_case) . '")) ORDER BY single ASC') as $names){
+                        $names['category'] = $utf8($names['category']);
+                        $names['single'] = $utf8($names['single']);
+                        $original_cat = $cats_base64_normal_case_rev[base64_encode($names['category'])];
+                        if ($categories[$original_cat]){
+                            $tmp = $categories[$original_cat];
+                            unset($categories[$original_cat]);
+                            $categories[$do_case($names['single'], 2)] = $tmp;
+                        }
+                    }
+                    foreach($categories as $cat_name => $slug){
+                        $res .= "<li><a href=\"/cat/$slug/\">$cat_name</a></li>";
+                    }
                     return $res . '</ul>';
                 },
                 '(save case) => address' => function() use($addr_callback, $do_case){

@@ -217,11 +217,21 @@
                 'categories_list' => function($case_mode) use ($do_case, $is_admin_page, &$html){
                     if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
                     $res = '<ul data-action="up-me delete-container">';
-                    $res .= json_encode(eaDB::getCategories([
+                    $categories = [];
+                    $unparse = function($catname, $props, $self) use (&$categories){
+                        $categories[$catname] = $props['id'];
+                        foreach($props['childs'] as $c => $p){
+                            $self($c, $p);
+                        }
+                    };
+                    foreach(eaDB::getCategories([
                         'uk' => 2,
                         'ru-RU' => 1,
                         'en-US' => 0
-                    ][$html -> attr('lang')]));
+                    ][$html -> attr('lang')]) as $catname => $props){
+                        $unparse($catname, $props, $unparse);
+                    }
+                    $res .= json_encode($categories);
                     //<li><a href="/cat/anti-cafe2/">АНТИКАФЕ У МІСТІ</a></li>
                     ///
                     return $res . '</ul>';

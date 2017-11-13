@@ -177,6 +177,11 @@
                 if ($a && count($a) > 0) return $do_case(iconv(mb_detect_encoding($a[0]['name'], mb_detect_order(), true), "UTF-8", $a[0]['name']), $case_mode); else return '';
             };
             $variables = [
+
+
+                // Начало тех самых шаблонов
+
+
                 'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($is_admin_page, $get_cat){
                     if ($is_admin_page) return '[{' . $do_case('category', $case_mode) . '}]';
                     return $get_cat($case_mode);
@@ -209,6 +214,14 @@
                     if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
                     return $do_case(mb_substr(__('Page %s', 'ait'), 0, -3), $case_mode);
                 },
+                'categories_list' => function($case_mode) use ($do_case, $is_admin_page){
+                    if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
+                    $res = '<ul data-action="up-me delete-container">';
+                    json_encode(eaDB::getCategories());
+                    //<li><a href="/cat/anti-cafe2/">АНТИКАФЕ У МІСТІ</a></li>
+                    ///
+                    return $res . '</ul>';
+                },
                 '(save case) => address' => function() use($addr_callback, $do_case){
                     return $do_case($addr_callback(0), 0);
                 },
@@ -230,6 +243,11 @@
                     if ($is_admin_page) return '[{' . $matches[0] . '}]';
                     return ($page_num == 1 ? $matches[1] : $matches[2]);
                 },
+
+
+                // Конец самих шаблонов
+
+                
             ];
             $vars_table = [];
             $perform_regexp_from_str = function($str){

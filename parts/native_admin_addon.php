@@ -30,7 +30,9 @@
             'id'    => 'remove-openparts-cache',
             'title' => 'Remove OpenParts cache',
             'href'  => '/wp-content/mu-plugins/openparts.php?--remove-cache',
-            'meta'  => array( 'class' => 'my-toolbar-page' )
+            'meta'  => [
+                'onclick' => 'console.log(this); return false;'
+            ]
         ];
         $wp_admin_bar->add_node($args);
     }, 999);

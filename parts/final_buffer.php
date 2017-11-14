@@ -257,7 +257,7 @@
                         }
                     }
                     foreach($categories as $cat_name => $slug){
-                        $res .= "<li><a href=\"/cat/$slug/\">$cat_name</a></li>";
+                        $res .= "<li><a href=\"/cat/$slug/\">$cat_name " . eaDB::translate('IN THE CITY', str_replace('-', '_', $html -> attr('lang'))) . "</a></li>";
                     }
                     return $res . '</ul>';
                 },

@@ -1,5 +1,6 @@
 <?php
     class eaDB{
+        private static $translates_cache = [];
         private static function getTaxsLangsIds($tax, $filter = false){
             $terms = get_terms(['taxonomy' => $tax, 'hide_empty' => false]);
             if(is_wp_error($terms)){
@@ -73,10 +74,12 @@
             return json_encode(self::categoriesOrganizer($obj));
         }
         public static function translate($phrase, $lang){
-            $res = staticGlobals::mysql_result('SELECT ' . $lang . ' FROM `custom_translates` WHERE string = FROM_BASE64("' . base64_encode($phrase) . '")');
-            var_dump($res);
-            if ($res && $res[0] && $res[0][$lang]) return $res[0][$lang];
-            return $phrase;
+            if (!isset(self::$translates_cache[$phrase]) || !isset(self::$translates_cache[$phrase][$lang])){
+                $res = staticGlobals::mysql_result('SELECT ' . $lang . ' FROM `custom_translates` WHERE string = FROM_BASE64("' . base64_encode($phrase) . '")');
+                var_dump($res);
+                if ($res && $res[0] && $res[0][$lang]) self::$translates_cache[$phrase][$lang] = $res[0][$lang]; else self::$translates_cache[$phrase][$lang] = $phrase;
+            }
+            return self::$translates_cache[$phrase][$lang];
         }
     }
 

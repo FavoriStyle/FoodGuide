@@ -73,7 +73,7 @@
             return json_encode(self::categoriesOrganizer($obj));
         }
         public static function translate($phrase, $lang){
-            $res = staticGlobals::mysql_result('SELECT FROM_BASE64("' . base64_encode($lang) . '") FROM `custom_translates` WHERE string = FROM_BASE64("' . base64_encode($phrase) . '")');
+            $res = staticGlobals::mysql_result('SELECT ' . $lang . ' FROM `custom_translates` WHERE string = FROM_BASE64("' . base64_encode($phrase) . '")');
             var_dump($res);
             if ($res && $res[0] && $res[0][$lang]) return $res[0][$lang];
             return $phrase;

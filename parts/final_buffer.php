@@ -189,6 +189,9 @@
                     if ($is_admin_page) return '[{' . $do_case('category', $case_mode) . '}]';
                     return $get_cat($case_mode);
                 },
+
+
+
                 'single_category' => function($case_mode) use ($is_admin_page, $get_cat, $mysql_result, $do_case, $utf8){
                     if ($is_admin_page) return '[{' . $do_case('single_category', $case_mode) . '}]';
                     $cat = $get_cat($case_mode);
@@ -203,20 +206,32 @@
                     })());
                     if ($a) return $do_case($utf8($a[0]['single']), $case_mode); else return $cat;
                 },
+
+
+
                 'name' => function($case_mode) use ($do_case, $is_admin_page){
                     if ($is_admin_page) return '[{' . $do_case('name', $case_mode) . '}]';
                     global $post;
                     return /*$do_case(*/$post -> post_title/*, $case_mode)*/;
                 },
+
+
+
                 'city' => function($case_mode) use ($do_case, $is_admin_page, &$ait_post_data){
                     if ($is_admin_page) return '[{' . $do_case('city', $case_mode) . '}]';
                     global $post;
                     if ($ait_post_data) return $do_case(explode(',', $ait_post_data['map']['address'])[0], $case_mode); else return '';
                 },
+
+
+
                 'page_x' => function($case_mode) use ($do_case, $is_admin_page){
                     if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
                     return $do_case(mb_substr(__('Page %s', 'ait'), 0, -3), $case_mode);
                 },
+
+
+
                 'categories_list' => function($case_mode) use ($do_case, $is_admin_page, &$html, $utf8){
                     if ($is_admin_page) return '[{' . $do_case('categories_list', $case_mode) . '}]';
                     $res = '<ul data-action="up-me delete-container">';
@@ -261,27 +276,56 @@
                     }
                     return $res . '</ul>';
                 },
+
+
+
                 '(save case) => address' => function() use($addr_callback, $do_case){
                     return $do_case($addr_callback(0), 0);
                 },
+
+
+
                 '(save case) => Address' => function() use($addr_callback){
                     return $addr_callback(1);
                 },
+
+
+
                 '(save case) => ADDRESS' => function() use($addr_callback, $do_case){
                     return $do_case($addr_callback(2), 2);
                 },
+
+
+
                 '(save case) => N' => function() use ($page_num, $is_admin_page){
                     if ($is_admin_page) return '[{N}]';
                     return $page_num;
                 },
+
+
+                
                 '(save case) => h1' => function() use ($get_first_header, $is_admin_page, $do_case){
                     if ($is_admin_page) return '[{h1}]';
                     return (function($a){if($a)return$a;else return '';})($do_case(trim(strip_tags($get_first_header())), 1));
                 },
+
+
+                
                 '(regexp) => setDefault\\(([^\\)]+?)\\);\\s*setNumbered\\(([^\\)]+?)\\)' => function($matches) use ($page_num, $is_admin_page){
                     if ($is_admin_page) return '[{' . $matches[0] . '}]';
                     return ($page_num == 1 ? $matches[1] : $matches[2]);
                 },
+
+
+
+                '(regexp) => grabCuisines\\(([^\\)]+?)\\)' => function($matches) use ($page_num, $is_admin_page){
+                    if ($is_admin_page) return '[{' . $matches[0] . '}]';
+                    // $matches[1] is a slug to import from
+                    // '/<option[^>]+value="(#elm-toggles-[^"]+)"[^>]*>/' is a regexp to find links
+                    // file_get_contents();
+                    return $_SERVER['SERVER_NAME'] . '/' . $matches[1];
+                },
+
 
 
                 // Конец самих шаблонов

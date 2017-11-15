@@ -318,12 +318,13 @@
 
 
 
-                '(regexp) => grabCuisines\\(([^\\)]+?)\\)' => function($matches) use ($page_num, $is_admin_page){
+                '(regexp) => grabCuisines\\(([^\\)]+?)\\)' => function($matches) use ($is_admin_page){
                     if ($is_admin_page) return '[{' . $matches[0] . '}]';
                     // $matches[1] is a slug to import from
                     // '/<option[^>]+value="(#elm-toggles-[^"]+)"[^>]*>/' is a regexp to find links
                     // file_get_contents();
-                    return $_SERVER['SERVER_NAME'] . '/' . $matches[1];
+                    var_dump($matches);
+                    return 'https://' . $_SERVER['SERVER_NAME'] . '/' . $matches[1];
                 },
 
 

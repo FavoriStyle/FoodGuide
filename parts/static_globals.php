@@ -88,7 +88,7 @@
         }
         public static function categoryToSingle($cat, $case_mode = 1){
             $cat = self::do_case($cat, 1);
-            $a = $mysql_result('SELECT `single` FROM `categories_singles` WHERE `category` = FROM_BASE64(\'' . base64_encode($cat) . '\')');
+            $a = staticGlobals::mysql_result('SELECT `single` FROM `categories_singles` WHERE `category` = FROM_BASE64(\'' . base64_encode($cat) . '\')');
             if ($a) return self::do_case(self::utf8($a[0]['single']), $case_mode); else return self::do_case($cat, $case_mode);
         }
     }

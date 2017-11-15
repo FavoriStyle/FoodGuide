@@ -1,6 +1,12 @@
 <?php
     class eaDB{
         private static $translates_cache = [];
+        private static function do_case($res, $case_mode){
+            if ($case_mode == 2) return mb_strtoupper($res); elseif ($case_mode == 1) return mb_strtoupper(mb_substr($res, 0, 1)) . mb_strtolower(mb_substr($res, 1)); else return mb_strtolower($res);
+        }
+        private static function utf8($str){
+            return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
+        }
         private static function getTaxsLangsIds($tax, $filter = false){
             $terms = get_terms(['taxonomy' => $tax, 'hide_empty' => false]);
             if(is_wp_error($terms)){
@@ -79,6 +85,11 @@
                 if ($res && $res[0] && $res[0][$lang]) self::$translates_cache[$phrase][$lang] = $res[0][$lang]; else self::$translates_cache[$phrase][$lang] = $phrase;
             }
             return self::$translates_cache[$phrase][$lang];
+        }
+        public static function categoryToSingle($cat, $case_mode = 1){
+            $cat = self::do_case($cat, 1);
+            $a = $mysql_result('SELECT `single` FROM `categories_singles` WHERE `category` = FROM_BASE64(\'' . base64_encode($cat) . '\')');
+            if ($a) return self::do_case(self::utf8($a[0]['single']), $case_mode); else return self::do_case($cat, $case_mode);
         }
     }
 

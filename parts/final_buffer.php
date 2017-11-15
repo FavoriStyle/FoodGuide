@@ -42,7 +42,7 @@
             for ($i = 0; $i < $levels; $i++){
                 $final .= ob_get_clean();
             }
-            echo apply_filters('final_output_seo', apply_filters('final_output_seo', $final));
+            echo apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', $final)));
         }, 0);
         add_filter('final_output_seo', function($output) use ($mysql_result, &$html, $utf8){
             if (!$html) $html = new class{
@@ -325,7 +325,7 @@
                     $tmp = file_get_contents($target);
                     if ($tmp){
                         $tmp2 = [];
-                        preg_match_all('/<option[^>]+value="(#elm-toggles-[^"]+)"[^>]*>([^<]*?)<\/option>/', $tmp, $tmp2);
+                        preg_match_all('/<option[^>]+value="(#elm\\-toggles\\-[^"]+)"[^>]*>([^<]*?)<\\/option>/', $tmp, $tmp2);
                         for($i = 0; $i < count($tmp2[1]); $i++){
                             $res .= '<li><a href="' . $target . $tmp2[1][$i] . '">' . $tmp2[2][$i] . '</a></li>';
                         }
@@ -387,6 +387,14 @@
                 }, $output);
             })();
             return preg_replace_callback($regexp, $callback, $output);
+        });
+        add_filter('categories_bar', function($output) use ($mysql_result, &$html, $utf8){
+            return preg_replace_callback('/<div[^>]+class="categories\\-bar"[^>]*>[\\s\\S]*<div class="item-categories">([\\s\\S]*)<div[^>]+class="entry\\-content\\-wrap"[^>]*>/', function($matches){
+                var_dump($matches);
+                return preg_replace_callback('/<span>([\\s\\S]*?)<\\/span>/', function($matches){
+                    return '<span>' . eaDB::categoryToSingle($matches[1], 2) . '</span>';
+                }, $matches[0]);
+            }, $output);
         });
     })();
 ?>

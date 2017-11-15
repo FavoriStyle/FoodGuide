@@ -320,11 +320,17 @@
 
                 '(regexp) => grabCuisines\\(([^\\)]+?)\\)' => function($matches) use ($is_admin_page){
                     if ($is_admin_page) return '[{' . $matches[0] . '}]';
-                    // $matches[1] is a slug to import from
-                    // '/<option[^>]+value="(#elm-toggles-[^"]+)"[^>]*>/' is a regexp to find links
-                    // file_get_contents();
-                    var_dump($matches);
-                    return 'https://' . $_SERVER['SERVER_NAME'] . '/' . $matches[1];
+                    $res = '<ul>';
+                    $target = 'https://' . $_SERVER['SERVER_NAME'] . '/' . $matches[3];
+                    $tmp = file_get_contents($target);
+                    if ($tmp){
+                        $tmp2 = [];
+                        preg_match_all('/<option[^>]+value="(#elm-toggles-[^"]+)"[^>]*>([^<]*?)<\/option>/', $tmp, $tmp2);
+                        for($i = 0; $i < count($tmp2[1]); $i++){
+                            $res .= '<li><a href="' . $target . $tmp2[1][$i] . '">' . $tmp2[2][$i] . '</a></li>';
+                        }
+                    }
+                    return $res . '</ul>';
                 },
 
 

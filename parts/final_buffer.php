@@ -1,8 +1,5 @@
 <?php
     (function(){
-        $utf8 = function($str){
-            return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
-        };
         $html = false;
         $mysql_result = (function($func){
             return function($sql, $debugConsole = false) use ($func){
@@ -44,7 +41,7 @@
             }
             echo apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', $final)));
         }, 0);
-        add_filter('final_output_seo', function($output) use ($mysql_result, &$html, $utf8){
+        add_filter('final_output_seo', function($output) use ($mysql_result, &$html){
             if (!$html) $html = new class{
                 private $attrs = [];
                 public function attr($name, $value = null){
@@ -150,9 +147,6 @@
                 $reg_res = [];
                 if(preg_match('/<h1[^>]*>(.+?)<\\/h1>/mis', $output, $reg_res)) return $reg_res[1]; else return false;
             };
-            $do_case = function($res, $case_mode){
-                if ($case_mode == 2) return mb_strtoupper($res); elseif ($case_mode == 1) return mb_strtoupper(mb_substr($res, 0, 1)) . mb_strtolower(mb_substr($res, 1)); else return mb_strtolower($res);
-            };
             $post_meta = (function(){
                 global $post;
                 if(!$post) return false;
@@ -164,11 +158,11 @@
                 if(!$res) $res = $post_meta['_ait-item_item-data'];
                 return $res;
             })();
-            $addr_callback = function($case_mode) use ($do_case, $is_admin_page, &$ait_post_data){
-                if ($is_admin_page) return '[{' . $do_case('address', $case_mode) . '}]';
+            $addr_callback = function($case_mode) use ($is_admin_page, &$ait_post_data){
+                if ($is_admin_page) return '[{' . staticGlobals::do_case('address', $case_mode) . '}]';
                 if ($ait_post_data) return $ait_post_data['map']['address']; else return '';
             };
-            $get_cat = function($case_mode) use($do_case, $mysql_result, $utf8){
+            $get_cat = function($case_mode) use($mysql_result){
                 global $post;
                 $a = $mysql_result('SELECT * FROM `posts_main_categories` WHERE `post_id` = ' . $post -> ID);
                 if ($a && count($a) > 0) $a = $a[0]['category_id']; else {
@@ -177,7 +171,7 @@
                     if (!$a || $a == '') $a = 0;
                 }
                 $a = $mysql_result('SELECT `name` FROM `terms` WHERE `term_id` = ' . $a);
-                if ($a && count($a) > 0) return $do_case($utf8($a[0]['name']), $case_mode); else return '';
+                if ($a && count($a) > 0) return staticGlobals::do_case(staticGlobals::utf8($a[0]['name']), $case_mode); else return '';
             };
             $variables = [
 
@@ -186,54 +180,44 @@
 
 
                 'category' => function($case_mode /* 0 - first lower; 1 - first upper; 2 - all upper */) use ($is_admin_page, $get_cat){
-                    if ($is_admin_page) return '[{' . $do_case('category', $case_mode) . '}]';
+                    if ($is_admin_page) return '[{' . staticGlobals::do_case('category', $case_mode) . '}]';
                     return $get_cat($case_mode);
                 },
 
 
 
-                'single_category' => function($case_mode) use ($is_admin_page, $get_cat, $mysql_result, $do_case, $utf8){
-                    if ($is_admin_page) return '[{' . $do_case('single_category', $case_mode) . '}]';
-                    $cat = $get_cat($case_mode);
-                    $a = $mysql_result('SELECT `single` FROM `categories_singles` WHERE `category` = FROM_BASE64(\'' . base64_encode($cat) . '\')', (function(){
-                        return new class {
-                            public function log($a){
-                                //var_dump($a);
-                            }
-                            public function warn($a){}
-                            public function error($a){}
-                        };
-                    })());
-                    if ($a) return $do_case($utf8($a[0]['single']), $case_mode); else return $cat;
+                'single_category' => function($case_mode) use ($is_admin_page, $get_cat, $mysql_result){
+                    if ($is_admin_page) return '[{' . staticGlobals::do_case('single_category', $case_mode) . '}]';
+                    return eaDB::categoryToSingle($get_cat($case_mode), $case_mode);
                 },
 
 
 
-                'name' => function($case_mode) use ($do_case, $is_admin_page){
-                    if ($is_admin_page) return '[{' . $do_case('name', $case_mode) . '}]';
+                'name' => function($case_mode) use ($is_admin_page){
+                    if ($is_admin_page) return '[{' . staticGlobals::do_case('name', $case_mode) . '}]';
                     global $post;
-                    return /*$do_case(*/$post -> post_title/*, $case_mode)*/;
+                    return /*staticGlobals::do_case(*/$post -> post_title/*, $case_mode)*/;
                 },
 
 
 
-                'city' => function($case_mode) use ($do_case, $is_admin_page, &$ait_post_data){
-                    if ($is_admin_page) return '[{' . $do_case('city', $case_mode) . '}]';
+                'city' => function($case_mode) use ($is_admin_page, &$ait_post_data){
+                    if ($is_admin_page) return '[{' . staticGlobals::do_case('city', $case_mode) . '}]';
                     global $post;
-                    if ($ait_post_data) return $do_case(explode(',', $ait_post_data['map']['address'])[0], $case_mode); else return '';
+                    if ($ait_post_data) return staticGlobals::do_case(explode(',', $ait_post_data['map']['address'])[0], $case_mode); else return '';
                 },
 
 
 
-                'page_x' => function($case_mode) use ($do_case, $is_admin_page){
-                    if ($is_admin_page) return '[{' . $do_case('page_x', $case_mode) . '}]';
-                    return $do_case(mb_substr(__('Page %s', 'ait'), 0, -3), $case_mode);
+                'page_x' => function($case_mode) use ($is_admin_page){
+                    if ($is_admin_page) return '[{' . staticGlobals::do_case('page_x', $case_mode) . '}]';
+                    return staticGlobals::do_case(mb_substr(__('Page %s', 'ait'), 0, -3), $case_mode);
                 },
 
 
 
-                'categories_list' => function($case_mode) use ($do_case, $is_admin_page, &$html, $utf8){
-                    if ($is_admin_page) return '[{' . $do_case('categories_list', $case_mode) . '}]';
+                'categories_list' => function($case_mode) use ($is_admin_page, &$html){
+                    if ($is_admin_page) return '[{' . staticGlobals::do_case('categories_list', $case_mode) . '}]';
                     $res = '<ul data-action="up-me delete-container">';
                     $categories = [];
                     $unparse = function($catname, $props, $self) use (&$categories){
@@ -255,20 +239,20 @@
                     $cats_base64_normal_case_rev = [];
                     foreach($categories as $cat_name => $id){
                         $categories_rev[$id] = $cat_name;
-                        $cats_base64_normal_case[$cat_name] = base64_encode($do_case($cat_name, 1));
+                        $cats_base64_normal_case[$cat_name] = base64_encode(staticGlobals::do_case($cat_name, 1));
                         $cats_base64_normal_case_rev[$cats_base64_normal_case[$cat_name]] = $cat_name;
                     }
                     foreach(staticGlobals::mysql_result('SELECT term_id AS id, slug FROM `terms` WHERE term_id IN (' . implode(', ', $categories) . ') ORDER BY name ASC') as $category){
                         $categories[$categories_rev[$category['id']]] = $category['slug'];
                     }
                     foreach(staticGlobals::mysql_result('SELECT * FROM `categories_singles` WHERE category IN (FROM_BASE64("' . implode('"), FROM_BASE64("', $cats_base64_normal_case) . '")) ORDER BY single ASC') as $names){
-                        $names['category'] = $utf8($names['category']);
-                        $names['single'] = $utf8($names['single']);
+                        $names['category'] = staticGlobals::utf8($names['category']);
+                        $names['single'] = staticGlobals::utf8($names['single']);
                         $original_cat = $cats_base64_normal_case_rev[base64_encode($names['category'])];
                         if ($categories[$original_cat]){
                             $tmp = $categories[$original_cat];
                             unset($categories[$original_cat]);
-                            $categories[$do_case($names['single'], 2)] = $tmp;
+                            $categories[staticGlobals::do_case($names['single'], 2)] = $tmp;
                         }
                     }
                     foreach($categories as $cat_name => $slug){
@@ -279,8 +263,8 @@
 
 
 
-                '(save case) => address' => function() use($addr_callback, $do_case){
-                    return $do_case($addr_callback(0), 0);
+                '(save case) => address' => function() use($addr_callback){
+                    return staticGlobals::do_case($addr_callback(0), 0);
                 },
 
 
@@ -291,8 +275,8 @@
 
 
 
-                '(save case) => ADDRESS' => function() use($addr_callback, $do_case){
-                    return $do_case($addr_callback(2), 2);
+                '(save case) => ADDRESS' => function() use($addr_callback){
+                    return staticGlobals::do_case($addr_callback(2), 2);
                 },
 
 
@@ -304,9 +288,9 @@
 
 
                 
-                '(save case) => h1' => function() use ($get_first_header, $is_admin_page, $do_case){
+                '(save case) => h1' => function() use ($get_first_header, $is_admin_page){
                     if ($is_admin_page) return '[{h1}]';
-                    return (function($a){if($a)return$a;else return '';})($do_case(trim(strip_tags($get_first_header())), 1));
+                    return (function($a){if($a)return$a;else return '';})(staticGlobals::do_case(trim(strip_tags($get_first_header())), 1));
                 },
 
 
@@ -388,7 +372,7 @@
             })();
             return preg_replace_callback($regexp, $callback, $output);
         });
-        add_filter('categories_bar', function($output) use ($mysql_result, &$html, $utf8){
+        add_filter('categories_bar', function($output) use ($mysql_result, &$html){
             return preg_replace_callback('/<div[^>]+class="categories\\-bar"[^>]*>[\\s\\S]*<div class="item-categories">([\\s\\S]*)<div[^>]+class="entry\\-content\\-wrap"[^>]*>/', function($matches){
                 return preg_replace_callback('/<span>([\\s\\S]*?)<\\/span>/', function($matches){
                     return '<span>' . eaDB::categoryToSingle($matches[1], 2) . '</span>';

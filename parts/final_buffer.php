@@ -390,7 +390,6 @@
         });
         add_filter('categories_bar', function($output) use ($mysql_result, &$html, $utf8){
             return preg_replace_callback('/<div[^>]+class="categories\\-bar"[^>]*>[\\s\\S]*<div class="item-categories">([\\s\\S]*)<div[^>]+class="entry\\-content\\-wrap"[^>]*>/', function($matches){
-                var_dump($matches);
                 return preg_replace_callback('/<span>([\\s\\S]*?)<\\/span>/', function($matches){
                     return '<span>' . eaDB::categoryToSingle($matches[1], 2) . '</span>';
                 }, $matches[0]);

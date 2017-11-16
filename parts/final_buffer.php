@@ -381,7 +381,7 @@
         });
         add_filter('logo_text', function($output) use (&$html){
             if ($html -> hasClass('main-page')){
-                return preg_replace_callback('/(<div[^>]+class="site\\-logo"[^>]*>[\\s\\S]*)(<div[^>]+class="menu\\-tools"[^>]*>)/', function($matches){
+                return preg_replace_callback('/(<div[^>]+class="site\\-logo"[^>]*>[\\s\\S]*)(<div[^>]+class="menu\\-tools"[^>]*>)/', function($matches) use (&$html){
                     return $matches[1] . '<span class="logo-text">' . eaDB::translate('Logo text', str_replace('-', '_', $html -> attr('lang'))) . '</span>' . $matches[2];
                 }, $output);
             }

@@ -386,9 +386,13 @@
                         return preg_replace_callback('/([\\s\\S]*)<\\/div>/', function($matches){
                             return $matches[1];
                         }, $str);
-                    })($matches[1]) . '<span class="logo-text">' . eaDB::translate('Logo text', str_replace('-', '_', $html -> attr('lang'))) . '</span></div>' . $matches[2];
+                    })($matches[1]) . '<h1 class="logo-text">' . eaDB::translate('Logo text', str_replace('-', '_', $html -> attr('lang'))) . '</h1></div>' . $matches[2];
                 }, $output);
             }
         });
     })();
 ?>
+position: absolute;
+bottom: 2px;
+right: -14px;
+color: white;

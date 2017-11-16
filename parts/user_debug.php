@@ -29,7 +29,7 @@
                         });
                         document.addEventListener('DOMContentLoaded', function(){
                             var a = document.getElementsByTagName('a');
-                            for (var i in a){
+                            for (var i = 0; i < a.length; i++){
                                 var b = a[i].getAttribute('href');
                                 a[i].setAttribute('href', (b.indexOf('?') + 1) ? b + '&--debug' : b + '?--debug');
                             }

@@ -28,10 +28,10 @@
                             if(!window.jQuery) setTimeout(waitForJQuery, 10); else document.dispatchEvent(new Event('jQuery loaded', {}));
                         });
                         document.addEventListener('DOMContentLoaded', function(){
-                            var a = document.getElementsByTagName('a');
-                            for (var i = 0; i < a.length; i++){
-                                var b = a[i].getAttribute('href');
-                                a[i].setAttribute('href', (b.indexOf('?') + 1) ? b + '&--debug' : b + '?--debug');
+                            var a = document.getElementsByTagName('a'), b, i;
+                            for (i = 0; i < a.length; i++){
+                                b = a[i].getAttribute('href');
+                                if (b) a[i].setAttribute('href', (b.indexOf('?') + 1) ? b + '&--debug' : b + '?--debug');
                             }
                         });
                     </script>

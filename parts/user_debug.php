@@ -31,7 +31,7 @@
                             var a = document.getElementsByTagName('a'), b, i;
                             for (i = 0; i < a.length; i++){
                                 b = a[i].getAttribute('href');
-                                if (b) a[i].setAttribute('href', (b.indexOf('?') + 1) ? b + '&--debug' : b + '?--debug');
+                                if (b && !(b.indexOf('#') + 1)) a[i].setAttribute('href', (b.indexOf('?') + 1) ? b + '&--debug' : b + '?--debug');
                             }
                         });
                     </script>

@@ -340,8 +340,8 @@ function stack_prepare(){
                         if(it.text() == it2.text()){
                             var section = $($('section.elm-main.elm-contact-form-main')[i]);
                             section.find('div.elm-mainheader > h2').css('display','none');
-                            $('div.toggle-content.entry-content[aria-labelledby="' + it2.attr('id') +'"]').append(section);
-                            console.log([section, $('div.toggle-content.entry-content[aria-labelledby="' + it2.attr('id') +'"]')]);
+                            $('#' + it2.attr('href').slice(1)).append(section);
+                            console.log([section, $('#' + it2.attr('href').slice(1))]);
                         }
                     });
                 });

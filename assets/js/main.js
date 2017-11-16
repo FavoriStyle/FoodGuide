@@ -330,20 +330,23 @@ function stack_prepare(){
         console.log('checking is feedback-page...');
         if(is('feedback-page')){
             console.log('checking complete');
-            console.log([$('section.elm-contact-form-main > div > div.elm-mainheader > h2'), $('section.elm-toggles-main ul[role="tablist"] > li > a')]);
-            $('section.elm-contact-form-main > div > div.elm-mainheader > h2').each(function(i,item){
-                $('section.elm-toggles-main ul[role="tablist"] > li > a').each(function(i2,item2){
-                    var it = $(item),
-                        it2 = $(item2);
-                    console.log([item, item2]);
-                    if(it.text() == it2.text()){
-                        var section = $($('section.elm-main.elm-contact-form-main')[i]);
-                        section.find('div.elm-mainheader > h2').css('display','none');
-                        $('div.toggle-content.entry-content[aria-labelledby="' + it2.attr('id') +'"]').append(section);
-                        console.log([section, $('div.toggle-content.entry-content[aria-labelledby="' + it2.attr('id') +'"]')]);
-                    }
+            function main(){
+                console.log([$('section.elm-contact-form-main > div > div.elm-mainheader > h2'), $('section.elm-toggles-main ul[role="tablist"] > li > a')]);
+                $('section.elm-contact-form-main > div > div.elm-mainheader > h2').each(function(i,item){
+                    $('section.elm-toggles-main ul[role="tablist"] > li > a').each(function(i2,item2){
+                        var it = $(item),
+                            it2 = $(item2);
+                        console.log([item, item2]);
+                        if(it.text() == it2.text()){
+                            var section = $($('section.elm-main.elm-contact-form-main')[i]);
+                            section.find('div.elm-mainheader > h2').css('display','none');
+                            $('div.toggle-content.entry-content[aria-labelledby="' + it2.attr('id') +'"]').append(section);
+                            console.log([section, $('div.toggle-content.entry-content[aria-labelledby="' + it2.attr('id') +'"]')]);
+                        }
+                    });
                 });
-            });
+            }
+            if($('section.elm-contact-form-main > div > div.elm-mainheader > h2').length != 0 && $('section.elm-toggles-main ul[role="tablist"] > li > a').length != 0) main(); else document.addEventListener('DOMContentLoaded', main);
         }
     })();
     //*/

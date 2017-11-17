@@ -392,7 +392,3 @@
         });
     })();
 ?>
-position: absolute;
-bottom: 2px;
-right: -14px;
-color: white;

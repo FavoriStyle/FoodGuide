@@ -31,7 +31,7 @@ class OpenpartsCache{
             return self::$list[$args[0]];
         } elseif($count){
             self::$list[$args[0]] = $args[1];
-            file_put_contents(self::$cache_file, self::$list, LOCK_EX);
+            file_put_contents(self::$cache_file, json_encode(self::$list), LOCK_EX);
         }
     }
 }

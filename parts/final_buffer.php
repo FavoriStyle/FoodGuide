@@ -1,6 +1,53 @@
-<?php
+<?php   
     (function(){
-        $html = false;
+        $html = new class{
+            private $attrs = [];
+            public function attr($name, $value = null){
+                if ($value != null) $this -> attrs[$name] = $value; else return $this -> attrs[$name];
+            }
+            public function addClass($name){
+                $this -> attrs['class'] .= ' ' . $name;
+            }
+            public function hasClass($name){
+                try{
+                    foreach(explode(' ', $this -> attrs['class']) as $class){
+                        if($class == $name) return true;
+                    }
+                } catch(Exception $e){}
+                return false;
+            }
+            public function removeClass($name){
+                $list = explode(' ', $this -> attrs['class']);
+                foreach($list as $i => $class){
+                    if($class == $name) unset($list[$i]);
+                }
+                $this -> attrs['class'] = implode(' ', $list);
+            }
+            public function generate(){
+                $str = '<html';
+                foreach($this -> attrs as $attr => $val){
+                    if ($attr != 'class' || $val != ''){
+                        if ($val == '') $str .= " $attr"; else $str .= " $attr=\"$val\"";
+                    }
+                }
+                return $str . '>';
+            }
+            public function parseTag($str){
+                preg_replace_callback('/<html([^>]*)>/', function($matches){
+                    $matches[1] = preg_replace_callback('/"([^"]*)"/', function($matches2){
+                        return '"' . base64_encode($matches2[1]) . '"';
+                    }, $matches[1]);
+                    $matches[1] = preg_split('/\s+/', $matches[1]);
+                    array_shift($matches[1]);
+                    $this -> attrs = ['class'=>''];
+                    foreach($matches[1] as $i => $attr){
+                        $attr = explode('="', $attr, 2);
+                        $attr[1] = ($attr[1] ? base64_decode(substr($attr[1], 0, -1)) : null);
+                        $this -> attrs[$attr[0]] = $attr[1];
+                    }
+                }, $str);
+            }
+        };
         $mysql_result = (function($func){
             return function($sql, $debugConsole = false) use ($func){
                 if (!$debugConsole){
@@ -33,66 +80,20 @@
             return false;
         });
         ob_start();
-        add_action('shutdown', function(){
+        add_action('shutdown', function() use (&$html){
             $final = '';
             $levels = ob_get_level();
             for ($i = 0; $i < $levels; $i++){
                 $final .= ob_get_clean();
             }
+            (function/* init $html */() use ($final, &$html){
+                preg_replace_callback('/<html[^>]*>/', function($matches) use (&$html){
+                    $html -> parseTag($matches[0]);
+                }, $final);
+            })();
             echo apply_filters('logo_text', apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', $final))));
         }, 0);
         add_filter('final_output_seo', function($output) use ($mysql_result, &$html){
-            if (!$html) $html = new class{
-                private $attrs = [];
-                public function attr($name, $value = null){
-                    if ($value != null) $this -> $attrs[$name] = $value; else return $this -> $attrs[$name];
-                }
-                public function addClass($name){
-                    $this -> $attrs['class'] .= ' ' . $name;
-                }
-                public function hasClass($name){
-                    foreach(explode(' ', $this -> $attrs['class']) as $class){
-                        if($class == $name) return true;
-                    }
-                    return false;
-                }
-                public function removeClass($name){
-                    $list = explode(' ', $this -> $attrs['class']);
-                    foreach($list as $i => $class){
-                        if($class == $name) unset($list[$i]);
-                    }
-                    $this -> $attrs['class'] = implode(' ', $list);
-                }
-                public function generate(){
-                    $str = '<html';
-                    foreach($this -> $attrs as $attr => $val){
-                        if ($attr != 'class' || $val != ''){
-                            if ($val == '') $str .= " $attr"; else $str .= " $attr=\"$val\"";
-                        }
-                    }
-                    return $str . '>';
-                }
-                public function parseTag($str){
-                    preg_replace_callback('/<html([^>]*)>/', function($matches){
-                        $matches[1] = preg_replace_callback('/"([^"]*)"/', function($matches2){
-                            return '"' . base64_encode($matches2[1]) . '"';
-                        }, $matches[1]);
-                        $matches[1] = preg_split('/\s+/', $matches[1]);
-                        array_shift($matches[1]);
-                        $this -> $attrs = ['class'=>''];
-                        foreach($matches[1] as $i => $attr){
-                            $attr = explode('="', $attr, 2);
-                            $attr[1] = ($attr[1] ? base64_decode(substr($attr[1], 0, -1)) : null);
-                            $this -> $attrs[$attr[0]] = $attr[1];
-                        }
-                    }, $str);
-                }
-            };
-            (function/* init $html */() use (&$output, &$html){
-                preg_replace_callback('/<html[^>]*>/', function($matches) use (&$html){
-                    $html -> parseTag($matches[0]);
-                }, $output);
-            })();
             $is = function($class) use (&$output){// <---- ВАЖНО использовать указатель
                 return !!preg_match('/<(html|body)[^>]*class="[^>"]*( |\\b)' . $class . '[^>"]*"[^>]*>/', $output);
             };
@@ -162,7 +163,7 @@
                 if ($is_admin_page) return '[{' . staticGlobals::do_case('address', $case_mode) . '}]';
                 if ($ait_post_data) return $ait_post_data['map']['address']; else return '';
             };
-            $get_cat = function($case_mode) use ($mysql_result){
+            $get_cat = function($case_mode) use($mysql_result){
                 global $post;
                 $a = $mysql_result('SELECT * FROM `posts_main_categories` WHERE `post_id` = ' . $post -> ID);
                 if ($a && count($a) > 0) $a = $a[0]['category_id']; else {
@@ -399,7 +400,7 @@
                         }, $str);
                     })($matches[1]) . '<h1 class="logo-text">' . eaDB::translate('Logo text', str_replace('-', '_', $html -> attr('lang'))) . '</h1></div>' . $matches[2];
                 }, $output);
-            }
+            } else return $output;
         });
     })();
 ?>

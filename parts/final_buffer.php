@@ -162,7 +162,7 @@
                 if ($is_admin_page) return '[{' . staticGlobals::do_case('address', $case_mode) . '}]';
                 if ($ait_post_data) return $ait_post_data['map']['address']; else return '';
             };
-            $get_cat = function($case_mode) use($mysql_result){
+            $get_cat = function($case_mode) use ($mysql_result){
                 global $post;
                 $a = $mysql_result('SELECT * FROM `posts_main_categories` WHERE `post_id` = ' . $post -> ID);
                 if ($a && count($a) > 0) $a = $a[0]['category_id']; else {
@@ -172,6 +172,18 @@
                 }
                 $a = $mysql_result('SELECT `name` FROM `terms` WHERE `term_id` = ' . $a);
                 if ($a && count($a) > 0) return staticGlobals::do_case(staticGlobals::utf8($a[0]['name']), $case_mode); else return '';
+            };
+            $get_place_details = function($place){
+                $google_api_key = 'AIzaSyDPztMO4bnx2o5GSZv0GTF16eLvBPKhSIk';
+                $latest_res = file_get_contents("https://maps.googleapis.com/maps/api/place/textsearch/json?key=$google_api_key&query=" . urlencode($place));
+                if($latest_res){
+                    $latest_res = json_decode($latest_res, true);
+                    ob_start();
+                    var_dump($latest_res);
+                    return ob_get_clean();
+                }
+                return false;
+                //https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyDPztMO4bnx2o5GSZv0GTF16eLvBPKhSIk&query=%D0%A1%D1%83%D0%BC%D0%B8,%20%D0%B2%D1%83%D0%BB.%D0%97%D0%B0%D0%BB%D0%B8%D0%B2%D0%BD%D0%B0,%207/1
             };
             $variables = [
 
@@ -201,10 +213,9 @@
 
 
 
-                'city' => function($case_mode) use ($is_admin_page, &$ait_post_data){
+                'city' => function($case_mode) use ($is_admin_page, &$ait_post_data, $get_place_details){
                     if ($is_admin_page) return '[{' . staticGlobals::do_case('city', $case_mode) . '}]';
-                    global $post;
-                    if ($ait_post_data) return staticGlobals::do_case(explode(',', $ait_post_data['map']['address'])[0], $case_mode); else return '';
+                    if ($ait_post_data) return staticGlobals::do_case($get_place_details($ait_post_data['map']['address']), $case_mode); else return '';
                 },
 
 

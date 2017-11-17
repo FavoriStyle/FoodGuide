@@ -19,6 +19,7 @@ License: MIT
         //parts to be loaded
         //'reformat_css',
         'static_globals',
+        'cacher',
         'disable-emojis/disable-emojis',
         'user_debug',
         'final_buffer',

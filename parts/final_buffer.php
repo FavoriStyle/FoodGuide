@@ -175,7 +175,7 @@
                 $a = $mysql_result('SELECT `name` FROM `terms` WHERE `term_id` = ' . $a);
                 if ($a && count($a) > 0) return staticGlobals::do_case(staticGlobals::utf8($a[0]['name']), $case_mode); else return '';
             };
-            $get_place_details = function($place) use (&$html){
+            $get_place_city = function($place) use (&$html){
                 $google_api_key = Secrets::$google_places_api_key;
                 $yandex_api_key = Secrets::$yandex_translate_api_key;
                 $latest_res = file_get_contents("https://maps.googleapis.com/maps/api/place/textsearch/json?key=$google_api_key&query=" . urlencode($place));
@@ -235,9 +235,9 @@
 
 
 
-                'city' => function($case_mode) use ($is_admin_page, &$ait_post_data, $get_place_details){
+                'city' => function($case_mode) use ($is_admin_page, &$ait_post_data, $get_place_city){
                     if ($is_admin_page) return '[{' . staticGlobals::do_case('city', $case_mode) . '}]';
-                    if ($ait_post_data) return staticGlobals::do_case($get_place_details($ait_post_data['map']['address']), $case_mode); else return '';
+                    if ($ait_post_data) return staticGlobals::do_case($get_place_city($ait_post_data['map']['address']), $case_mode); else return '';
                 },
 
 

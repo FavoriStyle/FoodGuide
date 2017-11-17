@@ -14,9 +14,9 @@ class OpenpartsCache{
     private static $cache_file = WPMU_PLUGIN_DIR . '/openparts/cache/static.db';
     private static $list = [];
     private static $inited = false;
-    public static function init(){
+    private static function init(){
         if(!self::$inited){
-            $tmp = file_get_contents(self::$cache_file);
+            $tmp = @file_get_contents(self::$cache_file);
             if($tmp){
                 $tmp = json_decode($tmp, true);
                 if ($tmp) self::$list = $tmp;
@@ -25,17 +25,19 @@ class OpenpartsCache{
         }
     }
     public static function cache(){
+        self::init();
         $count = func_num_args();
         $args = func_get_args();
+        var_dump($args);
+        var_dump(self::$list);
         if ($count && $count == 1){
             return self::$list[$args[0]];
         } elseif($count){
             self::$list[$args[0]] = $args[1];
             file_put_contents(self::$cache_file, json_encode(self::$list), LOCK_EX);
+            var_dump(self::$list);
         }
     }
 }
-
-OpenpartsCache::init();
 
 ?>

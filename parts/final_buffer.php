@@ -198,7 +198,7 @@
                     }
                     return false;
                 };
-                $yandex_part = function($str) use (&$html){
+                $yandex_part = function($str) use (&$html, $yandex_api_key){
                     $str_orig = $str;
                     if ($html -> attr('lang') == 'ru-RU'){
                         $str = file_get_contents("https://translate.yandex.net/api/v1.5/tr.json/translate?key=$yandex_api_key&text=" . urlencode($addr_component['long_name']) . '&lang=uk-ru');
@@ -218,12 +218,15 @@
                     if(!$addr) return false;
                     OpenpartsCache::cache($place, $addr);
                 } else $addr = OpenpartsCache::cache($place);
+                echo '$addr = ';
+                var_dump($addr);
                 //yandex
                 if (!OpenpartsCache::cache($addr)){
                     OpenpartsCache::cache($addr, $yandex_part($addr));
                 }
                 return OpenpartsCache::cache($addr);
-
+                echo '(after yandex) $addr = ';
+                var_dump($addr);
             };
             $variables = [
 

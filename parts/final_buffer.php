@@ -178,34 +178,52 @@
             $get_place_city = function($place) use (&$html){
                 $google_api_key = Secrets::$google_places_api_key;
                 $yandex_api_key = Secrets::$yandex_translate_api_key;
-                $latest_res = file_get_contents("https://maps.googleapis.com/maps/api/place/textsearch/json?key=$google_api_key&query=" . urlencode($place));
-                if($latest_res){
-                    $latest_res = json_decode($latest_res, true);
-                    if ($latest_res && $latest_res['status'] && $latest_res['status'] == 'OK' && $latest_res['results'] && $latest_res['results'][0] && $latest_res['results'][0]['place_id']){
-                        $latest_res = file_get_contents("https://maps.googleapis.com/maps/api/place/details/json?key=$google_api_key&language=" . $html -> attr('lang') . '&placeid=' . urlencode($latest_res['results'][0]['place_id']));
-                        if($latest_res){
-                            $latest_res = json_decode($latest_res, true);
-                            if ($latest_res && $latest_res['status'] && $latest_res['status'] == 'OK' && $latest_res['result']){
-                                foreach($latest_res['result']['address_components'] as $addr_component){
-                                    if(in_array('locality', $addr_component['types'])){
-                                        $str = false;
-                                        if ($html -> attr('lang') == 'ru-RU'){
-                                            $str = file_get_contents("https://translate.yandex.net/api/v1.5/tr.json/translate?key=$yandex_api_key&text=" . urlencode($addr_component['long_name']) . '&lang=uk-ru');
-                                            if($str){
-                                                $str = json_decode($str, true);
-                                                if($str && $str['code'] == 200 && $str['text'] && $str['text'][0]){
-                                                    $str = $str['text'][0];
-                                                }
-                                            }
+                $google_part = function() use ($place, $google_api_key, &$html){
+                    $latest_res = file_get_contents("https://maps.googleapis.com/maps/api/place/textsearch/json?key=$google_api_key&query=" . urlencode($place));
+                    if($latest_res){
+                        $latest_res = json_decode($latest_res, true);
+                        if ($latest_res && $latest_res['status'] && $latest_res['status'] == 'OK' && $latest_res['results'] && $latest_res['results'][0] && $latest_res['results'][0]['place_id']){
+                            $latest_res = file_get_contents("https://maps.googleapis.com/maps/api/place/details/json?key=$google_api_key&language=" . $html -> attr('lang') . '&placeid=' . urlencode($latest_res['results'][0]['place_id']));
+                            if($latest_res){
+                                $latest_res = json_decode($latest_res, true);
+                                if ($latest_res && $latest_res['status'] && $latest_res['status'] == 'OK' && $latest_res['result']){
+                                    foreach($latest_res['result']['address_components'] as $addr_component){
+                                        if(in_array('locality', $addr_component['types'])){
+                                            $str = $addr_component['long_name'];
                                         }
-                                        return $str ? $str : $addr_component['long_name'];
                                     }
                                 }
                             }
                         }
                     }
+                    return false;
+                };
+                $yandex_part = function($str) use (&$html){
+                    $str_orig = $str;
+                    if ($html -> attr('lang') == 'ru-RU'){
+                        $str = file_get_contents("https://translate.yandex.net/api/v1.5/tr.json/translate?key=$yandex_api_key&text=" . urlencode($addr_component['long_name']) . '&lang=uk-ru');
+                        if($str){
+                            $str = json_decode($str, true);
+                            if($str && $str['code'] == 200 && $str['text'] && $str['text'][0]){
+                                return $str['text'][0];
+                            }
+                        }
+                    }
+                    return $str_orig;
+                };
+                $addr = false;
+                //google
+                if (!OpenpartsCache::cache($place)){
+                    $addr = $google_part();
+                    if(!$addr) return false;
+                    OpenpartsCache::cache($place, $addr);
+                } else $addr = OpenpartsCache::cache($place);
+                //yandex
+                if (!OpenpartsCache::cache($addr)){
+                    OpenpartsCache::cache($addr, $yandex_part($addr));
                 }
-                return false;
+                return OpenpartsCache::cache($addr);
+
             };
             $variables = [
 

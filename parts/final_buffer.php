@@ -201,7 +201,7 @@
                 $yandex_part = function($str) use (&$html, $yandex_api_key){
                     $str_orig = $str;
                     if ($html -> attr('lang') == 'ru-RU'){
-                        $str = file_get_contents("https://translate.yandex.net/api/v1.5/tr.json/translate?key=$yandex_api_key&text=" . urlencode($addr_component['long_name']) . '&lang=uk-ru');
+                        $str = file_get_contents("https://translate.yandex.net/api/v1.5/tr.json/translate?key=$yandex_api_key&text=" . urlencode($str) . '&lang=uk-ru');
                         if($str){
                             $str = json_decode($str, true);
                             if($str && $str['code'] == 200 && $str['text'] && $str['text'][0]){
@@ -213,14 +213,14 @@
                 };
                 $addr = false;
                 //google
-                $prefix = '{[' . $html -> attr('lang') . '] full address} ';
+                $prefix = '{[' . $html -> attr('lang') . '] google} ';
                 if (!OpenpartsCache::cache($prefix . $place)){
                     $addr = $google_part();
                     if(!$addr) return false;
                     OpenpartsCache::cache($prefix . $place, $addr);
                 } else $addr = OpenpartsCache::cache($prefix . $place);
                 //yandex
-                $prefix = '{[' . $html -> attr('lang') . '] city} ';
+                $prefix = '{[' . $html -> attr('lang') . '] yandex} ';
                 if (!OpenpartsCache::cache($prefix . $addr)){
                     OpenpartsCache::cache($prefix . $addr, $yandex_part($addr));
                 }

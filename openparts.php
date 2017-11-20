@@ -14,33 +14,36 @@ require($_SERVER['DOCUMENT_ROOT'] . '/openparts_secrets.php');
 
 define('_USER_DEBUG_MODE', (isset($_GET['--debug']) || isset($_GET['--devel'])));
 
-if (isset($_GET['--remove-cache']) && isset($_GET['secret']) && $_GET['secret'] == Secrets::$delete_cache_secret){
-	class _Fops{
-		public static function deleteDir($dirPath){
-			if (! is_dir($dirPath)) {
-				throw new InvalidArgumentException("$dirPath must be a directory");
-			}
-			if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
-				$dirPath .= '/';
-			}
-			$files = glob($dirPath . '*', GLOB_MARK);
-			foreach ($files as $file) {
-				if (is_dir($file)) {
-					self::deleteDir($file);
-				} else {
-					unlink($file);
+if (isset($_GET['--remove-cache'])){
+	if (isset($_GET['secret']) && $_GET['secret'] == Secrets::$delete_cache_secret){
+		class _Fops{
+			public static function deleteDir($dirPath){
+				if (! is_dir($dirPath)){
+					throw new InvalidArgumentException("$dirPath must be a directory");
 				}
-			}
-			rmdir($dirPath);
-		}		
+				if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+					$dirPath .= '/';
+				}
+				$files = glob($dirPath . '*', GLOB_MARK);
+				foreach ($files as $file){
+					if (is_dir($file)){
+						self::deleteDir($file);
+					} else {
+						unlink($file);
+					}
+				}
+				rmdir($dirPath);
+			}		
+		}
+		_Fops::deleteDir('openparts/cache');
+		die('Кэш очищен');
 	}
-	_Fops::deleteDir('openparts/cache');
-	die('Кэш очищен');
+	die('Кэш НЕ БЫЛ очищен');
 }
 
 (function(){
 	function makeDir($path){
-		 return file_exists($path) || mkdir($path, 0755, true);
+		return file_exists($path) || mkdir($path, 0755, true);
 	}
 	function do_cache($file_url, $unsafe){
 		makeDir(WPMU_PLUGIN_DIR . '/openparts');

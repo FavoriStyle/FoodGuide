@@ -29,7 +29,7 @@
         $args = [
             'id'    => 'remove-openparts-cache',
             'title' => 'Remove OpenParts cache',
-            'href'  => '/wp-content/mu-plugins/openparts.php?--remove-cache',
+            'href'  => '/wp-content/mu-plugins/openparts.php?--remove-cache&secret=' . urlencode(Secrets::$delete_cache_secret),
             'meta'  => [
                 'onclick' => 'var xhr = new XMLHttpRequest(); xhr.open("GET", this.getAttribute("href"), true); var innerHTML = this.innerHTML, _this = this; xhr.send(); this.innerHTML = "Clearing..."; xhr.onreadystatechange = function(){ if (xhr.readyState != 4) return; if (xhr.status == 200){if(confirm("OpenParts cache cleared. Reload the page?")) location.href = location.href; else {_this.innerHTML = "Cleared"; _this.setAttribute("href", "#"); _this.onclick = null}}}; return false;'
             ]

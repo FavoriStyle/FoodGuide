@@ -81,10 +81,10 @@ if (isset($_GET['--remove-cache']) && current_user_can('trash_openparts_cache'))
 		}
 	}
     function url_require($src){
-        return require(do_cache($src, $unsafe));
+        return require(do_cache($src, _USER_DEBUG_MODE));
 	}
     function url_require_once($src){
-        return require_once(do_cache($src, $unsafe));
+        return require_once(do_cache($src, _USER_DEBUG_MODE));
 	}
 	url_require_once((function($settings){
 		return "https://raw.githubusercontent.com/$settings[user]/$settings[repo]/master/$settings[file]";

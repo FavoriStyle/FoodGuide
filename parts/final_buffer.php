@@ -189,7 +189,7 @@
                                 if ($latest_res && $latest_res['status'] && $latest_res['status'] == 'OK' && $latest_res['result']){
                                     foreach($latest_res['result']['address_components'] as $addr_component){
                                         if(in_array('locality', $addr_component['types'])){
-                                            $str = $addr_component['long_name'];
+                                            return $addr_component['long_name'];
                                         }
                                     }
                                 }
@@ -213,20 +213,18 @@
                 };
                 $addr = false;
                 //google
-                if (!OpenpartsCache::cache($place)){
+                $prefix = '{[' . $html -> attr('lang') . '] full address} ';
+                if (!OpenpartsCache::cache($prefix . $place)){
                     $addr = $google_part();
                     if(!$addr) return false;
-                    OpenpartsCache::cache($place, $addr);
-                } else $addr = OpenpartsCache::cache($place);
-                echo '$addr = ';
-                var_dump($addr);
+                    OpenpartsCache::cache($prefix . $place, $addr);
+                } else $addr = OpenpartsCache::cache($prefix . $place);
                 //yandex
-                if (!OpenpartsCache::cache($addr)){
-                    OpenpartsCache::cache($addr, $yandex_part($addr));
+                $prefix = '{[' . $html -> attr('lang') . '] city} ';
+                if (!OpenpartsCache::cache($prefix . $addr)){
+                    OpenpartsCache::cache($prefix . $addr, $yandex_part($addr));
                 }
-                return OpenpartsCache::cache($addr);
-                echo '(after yandex) $addr = ';
-                var_dump($addr);
+                return OpenpartsCache::cache($prefix . $addr);
             };
             $variables = [
 

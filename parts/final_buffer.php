@@ -216,7 +216,7 @@
                 $prefix = '{[' . $html -> attr('lang') . '] google} ';
                 if (!OpenpartsCache::cache($prefix . $place)){
                     $addr = $google_part();
-                    if(!$addr) return false;
+                    if(!$addr) $addr = explode(',', $place)[0];
                     OpenpartsCache::cache($prefix . $place, $addr);
                 } else $addr = OpenpartsCache::cache($prefix . $place);
                 //yandex

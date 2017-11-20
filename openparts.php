@@ -10,9 +10,11 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
+require($_SERVER['DOCUMENT_ROOT'] . '/openparts_secrets.php');
+
 define('_USER_DEBUG_MODE', (isset($_GET['--debug']) || isset($_GET['--devel'])));
 
-if (isset($_GET['--remove-cache']) && current_user_can('trash_openparts_cache')){
+if (isset($_GET['--remove-cache']) && isset($_GET['secret']) && $_GET['secret'] == Secrets::$delete_cache_secret){
 	class _Fops{
 		public static function deleteDir($dirPath){
 			if (! is_dir($dirPath)) {

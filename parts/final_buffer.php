@@ -1,5 +1,4 @@
 <?php
-    require($_SERVER['DOCUMENT_ROOT'] . '/openparts_secrets.php');
     (function(){
         $html = new class{
             private $attrs = [];

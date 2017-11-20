@@ -347,14 +347,14 @@
 
 
                 
-                '(regexp) => setDefault\\(([^\\)]+?)\\);\\s*setNumbered\\(([^\\)]+?)\\)' => function($matches) use ($page_num, $is_admin_page){
+                '(regexp) => setDefault\\(((\\\\\\)|[^\\)])+?)\\);\\s*setNumbered\\(((\\\\\\)|[^\\)])+?)\\)' => function($matches) use ($page_num, $is_admin_page){
                     if ($is_admin_page) return '[{' . $matches[0] . '}]';
                     return ($page_num == 1 ? $matches[1] : $matches[2]);
                 },
 
 
 
-                '(regexp) => grabCuisines\\(([^\\)]+?)\\)' => function($matches) use ($is_admin_page){
+                '(regexp) => grabCuisines\\(((\\\\\\)|[^\\)])+?)\\)' => function($matches) use ($is_admin_page){
                     if ($is_admin_page) return '[{' . $matches[0] . '}]';
                     $res = '<ul>';
                     $target = 'https://' . $_SERVER['SERVER_NAME'] . '/' . $matches[3];

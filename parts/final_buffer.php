@@ -91,8 +91,11 @@
                     $html -> parseTag($matches[0]);
                 }, $final);
             })();
-            echo apply_filters('logo_text', apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', $final))));
+            echo apply_filters('logo_text', apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', apply_filters('prepare_regexp_search', $final)))));
         }, 0);
+        add_filter('prepare_regexp_search', function($output){
+            return preg_replace('/(<p[^>]*>)\\[\\{setDefault\\(([^)<]*<\\/p>)/', '$1$2', $output);
+        });
         add_filter('final_output_seo', function($output) use ($mysql_result, &$html){
             $is = function($class) use (&$output){// <---- ВАЖНО использовать указатель
                 return !!preg_match('/<(html|body)[^>]*class="[^>"]*( |\\b)' . $class . '[^>"]*"[^>]*>/', $output);

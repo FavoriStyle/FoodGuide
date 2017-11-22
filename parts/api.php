@@ -24,7 +24,7 @@
             die('{"state":"done"}');
         }
         public function translate($from, $to, $subject){
-            $str = file_get_contents('https://translate.yandex.net/api/v1.5/tr.json/translate?key=' . Secrets::$yandex_translate_api_key . '&text=' . urlencode($str) . "&lang=$from-$to");
+            $str = file_get_contents('https://translate.yandex.net/api/v1.5/tr.json/translate?key=' . Secrets::$yandex_translate_api_key . '&text=' . urlencode($subject) . "&lang=$from-$to");
             if($str){
                 $str = json_decode($str, true);
                 if($str && $str['code'] == 200 && $str['text'] && $str['text'][0]){
@@ -86,7 +86,7 @@
                     'en-UK' => 'en',
                 ];
                 if ($_GET['from'] && $_GET['to'] && $_GET['subject'] && isset($avail_langs[$_GET['from']]) && isset($avail_langs[$_GET['to']])){
-                    echo '{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_GET['subject'])) . '}';
+                    die('{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_GET['subject'])) . '}');
                 }
             }
         }

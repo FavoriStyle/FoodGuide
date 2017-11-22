@@ -3,23 +3,7 @@
     class API{
         private $debugConsole = false;
         private function mysql_result($query){
-            $query = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', function($matches){
-                global $wpdb;
-                if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
-                return $matches[1] . ' `' . $matches[2] . '`';
-            }, $query);
-            $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-            if (!$mysqli -> connect_errno){
-                $res = [];
-                $result = $mysqli -> query($query);
-                if($result && $result !== true){
-                    while($res[] = $result -> fetch_assoc()){/*like a null loop*/}
-                    array_pop($res);
-                    $this -> debugConsole -> log($res);
-                    return $res;
-                } else $this -> debugConsole -> warn('Cannot get result. It is normal for UPDATE-like queries');
-            } else $this -> debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno);
-            return false;
+            return staticGlobals::mysql_result($query, $this -> debugConsole);
         }
         private function utf8($str){
             return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);

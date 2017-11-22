@@ -104,7 +104,7 @@
         }
         public static function mysql_result($sql, $debugConsole = false){
             if (!$debugConsole) $debugConsole = self::$debugConsole;
-            $sql = preg_replace_callback('/(FROM|JOIN)\s+`(.+?)`/ms', function($matches){
+            $sql = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', function($matches){
                 global $wpdb;
                 if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
                 return $matches[1] . ' `' . $matches[2] . '`';

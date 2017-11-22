@@ -23,6 +23,17 @@
             }
             die('{"state":"done"}');
         }
+        public function translate($from, $to, $subject){
+            //Secrets::$yandex_translate_api_key;
+            $str = file_get_contents('https://translate.yandex.net/api/v1.5/tr.json/translate?key=' . Secrets::$yandex_translate_api_key . '&text=' . urlencode($str) . "&lang=$from-$to");
+            if($str){
+                $str = json_decode($str, true);
+                if($str && $str['code'] == 200 && $str['text'] && $str['text'][0]){
+                    return $str['text'][0];
+                }
+            }
+            return $subject;
+        }
     }
 
     if (preg_match('/addons\/apiv4pjs\/?\?.+/', $_SERVER['REQUEST_URI'])){

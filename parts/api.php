@@ -24,7 +24,6 @@
             die('{"state":"done"}');
         }
         public function translate($from, $to, $subject){
-            //Secrets::$yandex_translate_api_key;
             $str = file_get_contents('https://translate.yandex.net/api/v1.5/tr.json/translate?key=' . Secrets::$yandex_translate_api_key . '&text=' . urlencode($str) . "&lang=$from-$to");
             if($str){
                 $str = json_decode($str, true);
@@ -57,6 +56,38 @@
                     }
                     return $tmp;
                 })($_POST));
+            } elseif($_GET['act'] == 'translate'){
+                $avail_langs = [
+                    'ru'    => 'ru',
+                    'rus'   => 'ru',
+                    'RUS'   => 'ru',
+                    'RU'    => 'ru',
+                    'ru-RU' => 'ru',
+                    'ru_RU' => 'ru',
+                    'uk'    => 'uk',
+                    'ukr'   => 'uk',
+                    'ua'    => 'uk',
+                    'UKR'   => 'uk',
+                    'UK'    => 'uk',
+                    'UA'    => 'uk',
+                    'ua-RU' => 'uk',
+                    'ua_RU' => 'uk',
+                    'uk-RU' => 'uk',
+                    'uk_RU' => 'uk',
+                    'ua-UA' => 'uk',
+                    'uk-UA' => 'uk',
+                    'en'    => 'en',
+                    'eng'   => 'en',
+                    'EN'    => 'en',
+                    'ENG'   => 'en',
+                    'en_US' => 'en',
+                    'en-US' => 'en',
+                    'en_UK' => 'en',
+                    'en-UK' => 'en',
+                ];
+                if ($_GET['from'] && $_GET['to'] && $_GET['subject'] && isset($avail_langs[$_GET['from']]) && isset($avail_langs[$_GET['to']])){
+                    echo '{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_GET['subject'])) . '}';
+                }
             }
         }
     }

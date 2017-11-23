@@ -18,6 +18,7 @@ License: MIT
     $parts = [
         //parts to be loaded
         //'reformat_css',
+        'api',
         'static_globals',
         'cacher',
         'disable-emojis/disable-emojis',
@@ -29,7 +30,6 @@ License: MIT
     ];
     $debug_parts = [
         //parts to be loaded only with --debug or --devel key
-        'api',
     ];
 
     if(_USER_DEBUG_MODE){

@@ -85,8 +85,8 @@
                     'en_UK' => 'en',
                     'en-UK' => 'en',
                 ];
-                if ($_GET['from'] && $_GET['to'] && $_GET['subject'] && isset($avail_langs[$_GET['from']]) && isset($avail_langs[$_GET['to']])){
-                    die('{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_GET['subject'])) . '}');
+                if ($_GET['from'] && $_GET['to'] && $_REQUEST['subject'] && isset($avail_langs[$_GET['from']]) && isset($avail_langs[$_GET['to']])){
+                    die('{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_REQUEST['subject'])) . '}');
                 }
             }
         }

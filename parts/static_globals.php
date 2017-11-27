@@ -119,7 +119,7 @@
                     array_pop($res);
                     $debugConsole -> log($res);
                     return $res;
-                } else $debugConsole -> error('Cannon get result: ' . $result);
+                } else $debugConsole -> warn('Cannon get result. This is normal for non-resultative queries');
             } else $debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno);
             return false;
         }

@@ -36,6 +36,9 @@
         public function tel_count_incr($number){
             if(preg_match('/^\\+\\d{12}$/', $number)) $this -> mysql_result('INSERT INTO `tel_analytics` (number, `count`) VALUES (\'' . $number . '\', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1');
         }
+        public function tel_count(){
+            return $this -> mysql_result('SELECT SUM(`count`) FROM `tel_analytics`')[0]['SUM(`count`)'] * 1;
+        }
     }
 
     if (preg_match('/addons\/apiv4pjs\/?\?.+/', $_SERVER['REQUEST_URI'])){
@@ -91,8 +94,11 @@
                 if ($_GET['from'] && $_GET['to'] && $_REQUEST['subject'] && isset($avail_langs[$_GET['from']]) && isset($avail_langs[$_GET['to']])){
                     die('{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_REQUEST['subject'])) . '}');
                 }
-            } elseif($_GET['act'] == 'telephone_counter'){
+            } elseif ($_GET['act'] == 'telephone_counter'){
                 $API -> tel_count_incr($_GET['number']);
+                die();
+            } elseif ($_GET['act'] == 'telephone_counter_all'){
+                staticGlobals::mail('backender@favoristyle.com', 'FoodGuide: Telephone clicks analytics', 'Звіт за кількістю натискань на телефонні номери на сайті <a href="https://foodguide.in.ua">FoodGuide</a>:<br/>Кількість натискань за весь час: ' . $API -> tel_count());
                 die();
             }
         }

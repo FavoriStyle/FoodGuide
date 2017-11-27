@@ -714,9 +714,7 @@ function stack_prepare(){
     (){
         $('[href^="tel:"]').each((i, e)=>{
             e = $(e);
-            e.css('display', 'none');
-            e.after('<div class="telephone-emulation">' + e.text() + '</div>');
-            e.next().click(()=>{
+            e.click(()=>{
                 $.get({
                     url: '/addons/apiv4pjs',
                     data: {
@@ -724,7 +722,7 @@ function stack_prepare(){
                         number: e.text()
                     }
                 });
-                e.click();
+                return true;
             });
         });
     })();

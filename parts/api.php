@@ -33,6 +33,9 @@
             }
             return $subject;
         }
+        public function tel_count_incr($number){
+            if(preg_match('/^\\+\\d{12}$/', $number)) $this -> mysql_result('INSERT INTO `tel_analytics` (number, `count`) VALUES (\'' . $number . '\', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1');
+        }
     }
 
     if (preg_match('/addons\/apiv4pjs\/?\?.+/', $_SERVER['REQUEST_URI'])){
@@ -89,7 +92,7 @@
                     die('{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_REQUEST['subject'])) . '}');
                 }
             } elseif($_GET['act'] == 'telephone_counter'){
-                if(preg_match('/^\\+\\d{12}$/', $_GET['number'])) $API -> mysql_result('INSERT INTO `tel_analytics` (number, `count`) VALUES (\'' . $_GET['number'] . '\', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1');
+                $API -> tel_count_incr($_GET['number']);
                 die();
             }
         }

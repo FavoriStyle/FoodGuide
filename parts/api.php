@@ -88,6 +88,9 @@
                 if ($_GET['from'] && $_GET['to'] && $_REQUEST['subject'] && isset($avail_langs[$_GET['from']]) && isset($avail_langs[$_GET['to']])){
                     die('{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_REQUEST['subject'])) . '}');
                 }
+            } elseif($_GET['act'] == 'telephone_counter'){
+                if(preg_match('/^\\+\\d{12}$/', $_GET['number'])) $API -> mysql_result('INSERT INTO `tel_analytics` (number, `count`) VALUES (\'' . $_GET['number'] . '\', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1');
+                die();
             }
         }
     }

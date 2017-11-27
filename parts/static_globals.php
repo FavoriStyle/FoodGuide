@@ -128,17 +128,19 @@
                 $mail,
                 $subject,
                 '<div style="margin: 0; font-family: Open Sans; font-weight: bold; font-style: normal; padding: 0; border: 0; font-size: 14px; vertical-align: baseline;">
-                <div style="height: 82px; background-color: #825bae; background-image: url(\'https://foodguide.in.ua/wp-content/themes/foodguide/design/img/logo.png\'); background-repeat: no-repeat; background-position: top left;"> </div>
-                <div style="padding-left: 20px;">' . $html . '</div>
+                <div style="height: 82px; background-color: #825bae; background-image: url(\'https://foodguide.in.ua/wp-content/themes/foodguide/design/img/logo.png\'); background-repeat: no-repeat; background-position: top left;">&nbsp;</div>
+                <div style="padding: 20px;">' . $html . '</div>
                 <div style="line-height: 4px; background-color: #38343f; color: #fff; padding-left: 20px; position: fixed; bottom: 0; left: 0; width: 100%;">
-                <p> </p>
+                <p>&nbsp;</p>
                 <p><br/>FoodGuide &#8211; &#1085;&#1072;&#1081;&#1087;&#1086;&#1074;&#1085;&#1110;&#1096;&#1072;</p>
                 <p>&#1077;&#1085;&#1094;&#1080;&#1082;&#1083;&#1086;&#1087;&#1077;&#1076;&#1110;&#1103; &#1082;&#1072;&#1092;&#1077; &#1110; &#1088;&#1077;&#1089;&#1090;&#1086;&#1088;&#1072;&#1085;&#1110;&#1074;</p>
                 <p>&#1059;&#1082;&#1088;&#1072;&#1111;&#1085;&#1080;.</p>
                 <p style="text-align: center;"><strong>&#169; 2017. &#1059;&#1057;&#1030; &#1055;&#1056;&#1040;&#1042;&#1040; &#1047;&#1040;&#1061;&#1048;&#1065;&#1045;&#1053;&#1054;.</strong></p>
-                <p> </p>
+                <p>&nbsp;</p>
                 </div>
-                </div>'
+                </div>',
+                    "MIME-Version: 1.0\r\n" .
+                    "Content-type: text/html; charset=UTF-8\r\n"
             );
         }
     }

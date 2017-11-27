@@ -98,7 +98,7 @@
                 $API -> tel_count_incr($_GET['number']);
                 die();
             } elseif ($_GET['act'] == 'telephone_counter_all'){
-                staticGlobals::mail('backender@favoristyle.com', 'FoodGuide: Telephone clicks analytics', 'Звіт за кількістю натискань на телефонні номери на сайті <a href="https://foodguide.in.ua">FoodGuide</a>:<br/>Кількість натискань за весь час: ' . $API -> tel_count());
+                staticGlobals::mail('it.styles88@gmail.com', 'FoodGuide: Telephone clicks analytics', 'Звіт за кількістю натискань на телефонні номери на сайті <a href="https://foodguide.in.ua">FoodGuide</a>:<br/>Кількість натискань за весь час: ' . $API -> tel_count());
                 die();
             }
         }

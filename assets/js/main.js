@@ -709,6 +709,26 @@ function stack_prepare(){
         }
     });
     //*/
+    //*
+    (function // делаем псевдоклики для ссылок вида tel:
+    (){
+        $('[href^="tel:"]').each((i, e)=>{
+            e = $(e);
+            e.css('display', 'none');
+            e.after('<div class="telephone-emulation">' + e.text() + '</div>');
+            e.next().click(()=>{
+                $.get({
+                    url: '/addons/apiv4pjs',
+                    data: {
+                        act: 'telephone_counter',
+                        number: e.text()
+                    }
+                });
+                e.click();
+            });
+        });
+    })();
+    //*/
     
     /* Локальные функции (для исполнения по вызовам) */
 

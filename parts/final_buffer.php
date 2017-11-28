@@ -91,7 +91,7 @@
                     $html -> parseTag($matches[0]);
                 }, $final);
             })();
-            echo apply_filters('logo_text', apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', apply_filters('prepare_regexp_search', $final)))));
+            echo apply_filters('sitemap_xml', apply_filters('logo_text', apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', apply_filters('prepare_regexp_search', $final))))));
         }, 0);
         add_filter('prepare_regexp_search', function($output){
             return preg_replace('/(<p[^>]*>)\\[\\{setDefault\\(([^)<]*<\\/p>)/', '$1$2', $output);
@@ -432,6 +432,9 @@
                     return '<span>' . eaDB::categoryToSingle($matches[1], 2) . '</span>';
                 }, $matches[0]);
             }, $output);
+        });
+        add_filter('sitemap_xml', function($output){
+            if (preg_match('/sitemap(-.*)?\\.xml/', $_SERVER['REQUEST_URI'])) return mb_substr($output, 0, -2); else return $output;
         });
         add_filter('logo_text', function($output) use (&$html){
             if ($html -> hasClass('main-page')){

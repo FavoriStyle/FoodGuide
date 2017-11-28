@@ -39,6 +39,29 @@
         public function tel_count(){
             return $this -> mysql_result('SELECT SUM(`count`) FROM `tel_analytics`')[0]['SUM(`count`)'] * 1;
         }
+        public function mail_tel_count($lang = 'uk', $address = 'it.styles88@gmail.com'){
+            $dic = (function($dic, $lang){
+                $res = [];
+                foreach ($dic as $phrase => $translates){
+                    if (isset($translates[$lang])) $res[$phrase] = $translates[$lang]; else $res[$phrase] = $phrase;
+                }
+            })([
+                'Number of clicks on phone numbers\'s report on the site {[sitename]}' => [
+                    'ru' => 'Отчёт по кол-ву нажатий на телефонные номера на сайте {[sitename]}',
+                    'uk' => 'Звіт за кількістю натискань на телефонні номери на сайті {[sitename]}',
+                ],
+                'Clicks count (by all the time)' => [
+                    'ru' => 'Кол-во нажатий за всё время',
+                    'uk' => 'Кількість натискань за весь час',
+                ],
+                'FoodGuide' => [], // имя сайта. Везде одинаковое, можно не переводить вовсе
+                'FoodGuide: Telephone clicks analytics' => [
+                    'ru' => 'FoodGuide: Аналитика кликов на телефонные номера',
+                    'uk' => 'FoodGuide: Аналітика кліків на телефонні номери',
+                ],
+            ], $lang);
+            staticGlobals::mail($address, $dic['FoodGuide: Telephone clicks analytics'], str_replace('{[sitename]}', '<a href="https://foodguide.in.ua/{[lang_suffix]}">' . $dic['FoodGuide'] . '</a>' , $dic['Number of clicks on phone numbers\'s report on the site {[sitename]}']) . ':<br/>' . $dic['Clicks count (by all the time)'] . ': ' . $API -> tel_count(), $lang);
+        }
     }
 
     if (preg_match('/addons\/apiv4pjs\/?\?.+/', $_SERVER['REQUEST_URI'])){

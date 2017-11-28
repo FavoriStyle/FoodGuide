@@ -129,6 +129,7 @@
                 foreach ($dic as $phrase => $translates){
                     if (isset($translates[$lang])) $res[$phrase] = $translates[$lang]; else $res[$phrase] = $phrase;
                 }
+                return $res;
             })([
                 'FoodGuide – the most complete</p><p>encyclopedia of cafes and restaurants</p><p>of Ukraine.' => [
                     'ru' => 'FoodGuide – самая полная</p><p>энциклопедия кафе и ресторанов</p><p>Украины.',

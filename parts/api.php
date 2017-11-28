@@ -45,6 +45,7 @@
                 foreach ($dic as $phrase => $translates){
                     if (isset($translates[$lang])) $res[$phrase] = $translates[$lang]; else $res[$phrase] = $phrase;
                 }
+                return $res;
             })([
                 'Number of clicks on phone numbers\'s report on the site {[sitename]}' => [
                     'ru' => 'Отчёт по кол-ву нажатий на телефонные номера на сайте {[sitename]}',
@@ -60,7 +61,7 @@
                     'uk' => 'FoodGuide: Аналітика кліків на телефонні номери',
                 ],
             ], $lang);
-            staticGlobals::mail($address, $dic['FoodGuide: Telephone clicks analytics'], str_replace('{[sitename]}', '<a href="https://foodguide.in.ua/{[lang_suffix]}">' . $dic['FoodGuide'] . '</a>' , $dic['Number of clicks on phone numbers\'s report on the site {[sitename]}']) . ':<br/>' . $dic['Clicks count (by all the time)'] . ': ' . $API -> tel_count(), $lang);
+            staticGlobals::mail($address, $dic['FoodGuide: Telephone clicks analytics'], str_replace('{[sitename]}', '<a href="https://foodguide.in.ua/{[lang_suffix]}">' . $dic['FoodGuide'] . '</a>' , $dic['Number of clicks on phone numbers\'s report on the site {[sitename]}']) . ':<br/>' . $dic['Clicks count (by all the time)'] . ': ' . $this -> tel_count(), $lang);
         }
     }
 
@@ -121,7 +122,7 @@
                 $API -> tel_count_incr($_GET['number']);
                 die();
             } elseif ($_GET['act'] == 'telephone_counter_all'){
-                staticGlobals::mail('it.styles88@gmail.com', 'FoodGuide: Telephone clicks analytics', 'Звіт за кількістю натискань на телефонні номери на сайті <a href="https://foodguide.in.ua">FoodGuide</a>:<br/>Кількість натискань за весь час: ' . $API -> tel_count());
+                $API -> mail_tel_count('ru', 'backender@favoristyle.com.ua');
                 die();
             }
         }

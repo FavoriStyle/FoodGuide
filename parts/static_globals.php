@@ -142,9 +142,9 @@
                 }
                 return $res;
             })([
-                'FoodGuide – the most complete</p><p>encyclopedia of cafes and restaurants</p><p>of Ukraine.' => [
-                    'ru' => 'FoodGuide – самая полная</p><p>энциклопедия кафе и ресторанов</p><p>Украины.',
-                    'uk' => 'FoodGuide – найповніша</p><p>енциклопедія кафе і ресторанів</p><p>України.',
+                'FoodGuide – the most complete</p><p>encyclopedia of cafes and restaurants</p><p>of Ukraine' => [
+                    'ru' => 'FoodGuide – самая полная</p><p>энциклопедия кафе и ресторанов</p><p>Украины',
+                    'uk' => 'FoodGuide – найповніша</p><p>енциклопедія кафе і ресторанів</p><p>України',
                 ],
                 '© [year]. ALL RIGHTS RESERVED.' => [
                     'en' => '© 2017. ALL RIGHTS RESERVED.',
@@ -165,7 +165,7 @@
                 <div style="padding: 20px;">' . str_replace('{[lang_suffix]}', $dic['lang_suffix'], $html) . '</div>
                 <div style="line-height: 4px; background-color: #38343f; color: #fff; padding-left: 20px; position: fixed; bottom: 0; left: 0; width: 100%;">
                 <p>&nbsp;</p>
-                <p><br/>' . $dic['FoodGuide – the most complete</p><p>encyclopedia of cafes and restaurants</p><p>of Ukraine.'] . '.</p>
+                <p><br/>' . $dic['FoodGuide – the most complete</p><p>encyclopedia of cafes and restaurants</p><p>of Ukraine.'] . '</p>
                 <p style="text-align: center;"><strong>' . $dic['© [year]. ALL RIGHTS RESERVED.'] . '</strong></p>
                 <p>&nbsp;</p>
                 </div>

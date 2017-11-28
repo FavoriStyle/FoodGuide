@@ -122,8 +122,10 @@
                 $API -> tel_count_incr($_GET['number']);
                 die();
             } elseif ($_GET['act'] == 'telephone_counter_all'){
-                $API -> mail_tel_count('ru', 'backender@favoristyle.com.ua');
+                $API -> mail_tel_count();
                 die();
+            } elseif ($_GET['act'] == 'non-unique-items'){
+                die(json_encode(eaDB::get_ids_not_unique_items()));
             }
         }
     }

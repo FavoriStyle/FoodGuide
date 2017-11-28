@@ -36,7 +36,7 @@
         public function tel_count_incr($number){
             if(preg_match('/^\\+\\d{12}$/', $number)) $this -> mysql_result('INSERT INTO `tel_analytics` (number, `count`) VALUES (\'' . $number . '\', 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1');
         }
-        public function tel_count(){
+        private function tel_count(){
             return $this -> mysql_result('SELECT SUM(`count`) FROM `tel_analytics`')[0]['SUM(`count`)'] * 1;
         }
         public function mail_tel_count($lang = 'uk', $address = 'it.styles88@gmail.com'){

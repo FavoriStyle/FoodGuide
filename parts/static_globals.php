@@ -113,6 +113,10 @@
         public static function utf8($str){
             return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
         }
+        public static function mysql_prefix(){
+            global $wpdb;
+            if ($wpdb) return $wpdb -> prefix;
+        }
         public static function mysql_result($sql, $debugConsole = false){
             if (!$debugConsole) $debugConsole = self::$debugConsole;
             $sql = preg_replace_callback('/(FROM|JOIN|INTO)\s+`(.+?)`/ms', function($matches){

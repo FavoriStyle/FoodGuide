@@ -63,6 +63,60 @@
             ], $lang);
             staticGlobals::mail($address, $dic['FoodGuide: Telephone clicks analytics'], str_replace('{[sitename]}', '<a href="https://foodguide.in.ua/{[lang_suffix]}">' . $dic['FoodGuide'] . '</a>' , $dic['Number of clicks on phone numbers\'s report on the site {[sitename]}']) . ':<br/>' . $dic['Clicks count (by all the time)'] . ': ' . $this -> tel_count(), $lang);
         }
+        public function get_items_and_tels(){
+            $a = [];
+            foreach ($this -> mysql_result('SELECT posts.post_title, meta_value FROM `posts` AS posts JOIN `postmeta` AS postmeta WHERE posts.post_type = "ait-item" AND postmeta.meta_key = "_ait-item_item-data" AND posts.ID = postmeta.post_id') as $row) {
+                (function($b, $title) use (&$a){
+                    if($b && 
+                        preg_match('/Суми/', $b['map']['address'])
+                    )
+                    $a[] = [
+                        'title' => $title,
+                        'telephones' => (function($main_tel, $arr){
+                            $main_tel = [$main_tel];
+                            if ($arr){
+                                foreach($arr as $tel){
+                                    array_push($main_tel, $tel['number']);
+                                }
+                            }
+                            return $main_tel;
+                        })($b['telephone'], $b['telephoneAdditional']),
+                        'address' => $b['map']['address']
+                    ];
+                })(unserialize(staticGlobals::utf8($row['meta_value'])), staticGlobals::utf8($row['post_title']));
+            }
+            return $a;
+        }
+        public function get_simp_lang_code($lang){
+            return [
+                'ru'    => 'ru',
+                'rus'   => 'ru',
+                'RUS'   => 'ru',
+                'RU'    => 'ru',
+                'ru-RU' => 'ru',
+                'ru_RU' => 'ru',
+                'uk'    => 'uk',
+                'ukr'   => 'uk',
+                'ua'    => 'uk',
+                'UKR'   => 'uk',
+                'UK'    => 'uk',
+                'UA'    => 'uk',
+                'ua-RU' => 'uk',
+                'ua_RU' => 'uk',
+                'uk-RU' => 'uk',
+                'uk_RU' => 'uk',
+                'ua-UA' => 'uk',
+                'uk-UA' => 'uk',
+                'en'    => 'en',
+                'eng'   => 'en',
+                'EN'    => 'en',
+                'ENG'   => 'en',
+                'en_US' => 'en',
+                'en-US' => 'en',
+                'en_UK' => 'en',
+                'en-UK' => 'en',
+            ][$lang];
+        }
     }
 
     if (preg_match('/addons\/apiv4pjs\/?\?.+/', $_SERVER['REQUEST_URI'])){
@@ -78,54 +132,45 @@
             }
         });
         if(isset($_GET['act'])){
-            if($_GET['act'] == 'save-singles'){
-                $API -> update_singles((function($a){
-                    $tmp = [];
-                    foreach($a as $key => $value){
-                        $tmp[str_replace('_', ' ', $key)] = $value;
+            foreach ([
+
+                // Методы
+
+                'save-singles' => function () use ($API){
+                    $API -> update_singles((function($a){
+                        $tmp = [];
+                        foreach($a as $key => $value){
+                            $tmp[str_replace('_', ' ', $key)] = $value;
+                        }
+                        return $tmp;
+                    })($_POST));
+                },
+                'translate' => function () use ($API){
+                    if ($_GET['from'] && $_GET['to'] && $_REQUEST['subject'] && $API -> get_simp_lang_code($_GET['from']) && $API -> get_simp_lang_code($_GET['to'])){
+                        return '{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_REQUEST['subject'])) . '}';
                     }
-                    return $tmp;
-                })($_POST));
-            } elseif($_GET['act'] == 'translate'){
-                $avail_langs = [
-                    'ru'    => 'ru',
-                    'rus'   => 'ru',
-                    'RUS'   => 'ru',
-                    'RU'    => 'ru',
-                    'ru-RU' => 'ru',
-                    'ru_RU' => 'ru',
-                    'uk'    => 'uk',
-                    'ukr'   => 'uk',
-                    'ua'    => 'uk',
-                    'UKR'   => 'uk',
-                    'UK'    => 'uk',
-                    'UA'    => 'uk',
-                    'ua-RU' => 'uk',
-                    'ua_RU' => 'uk',
-                    'uk-RU' => 'uk',
-                    'uk_RU' => 'uk',
-                    'ua-UA' => 'uk',
-                    'uk-UA' => 'uk',
-                    'en'    => 'en',
-                    'eng'   => 'en',
-                    'EN'    => 'en',
-                    'ENG'   => 'en',
-                    'en_US' => 'en',
-                    'en-US' => 'en',
-                    'en_UK' => 'en',
-                    'en-UK' => 'en',
-                ];
-                if ($_GET['from'] && $_GET['to'] && $_REQUEST['subject'] && isset($avail_langs[$_GET['from']]) && isset($avail_langs[$_GET['to']])){
-                    die('{"translated": true, "result": ' . json_encode($API -> translate($avail_langs[$_GET['from']], $avail_langs[$_GET['to']], $_REQUEST['subject'])) . '}');
-                }
-            } elseif ($_GET['act'] == 'telephone_counter'){
-                $API -> tel_count_incr($_GET['number']);
-                die();
-            } elseif ($_GET['act'] == 'telephone_counter_all'){
-                $API -> mail_tel_count();
-                die();
-            } elseif ($_GET['act'] == 'non-unique-items'){
-                die(json_encode(eaDB::get_ids_not_unique_items()));
+                },
+                'telephone_counter' => function () use ($API){
+                    $API -> tel_count_incr($_GET['number']);
+                },
+                'telephone_counter_all' => function () use ($API){
+                    $API -> mail_tel_count();
+                },
+                'non-unique-items' => function () use ($API){
+                    return json_encode(eaDB::get_ids_not_unique_items());
+                },
+                'get_items_and_tels' => function () use ($API){
+                    $res = '<table><thead><tr><td>Назва</td><td>Телефони</td><td>Адреса</td></tr></thead><tbody>';
+                    foreach($API -> get_items_and_tels() as $item){
+                        $res .= "<tr><td>$item[title]</td><td>" . implode('<br/>', $item['telephones']) . "</td><td>$item[address]</td>";
+                    }
+                    return $res . '</tbody><table>';
+                },
+                
+                // Пока хватит
+                
+            ] as $act => $func){
+                if ($_GET['act'] == $act) die($func());
             }
         }
     }

@@ -295,7 +295,7 @@
                     , $settings['geo']);
                 if (!$settings['cat'] && $langs[$item['post_id']] != $settings['lang']){unset($items[$i]);}
             }
-            
+            $this -> debugConsole -> log($items, 'Перед превращением в плотный массив: $items = ');
             // превращаем в плотный нумерованный массив + сортируем по дистанции
             return (function() use ($items, $settings){ // внимательнее в этих местах   <<-----------
                 $res = [];                                                                         //
@@ -323,8 +323,9 @@
 
     if (preg_match('/addons\/apiv4pjs\/?\?.+/', $_SERVER['REQUEST_URI'])){
         $API = new API(new class{
-            public function log($a){
-                //var_dump($a);
+            public function log($a, $b = ''){
+                echo $b;
+                var_dump($a);
             }
             public function warn($a){
                 //var_dump($a);

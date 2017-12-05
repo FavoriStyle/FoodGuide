@@ -122,7 +122,7 @@
             }, 10, 2);
         }
     };
-
+    /*
     $parent = $menu -> addMenu('Items new', 'new_page.ea_addon', function(){
         return (new eaPage('ea_item_add')) -> matches([
             'heading'                           => __('Add New Item', 'ait-toolkit'),
@@ -196,5 +196,6 @@
     $menu -> addMenu('Add new', 'new_page3.ea_addon', function(){
         return 'Тупо кастомная страница';
     }, null, $parent);
+    */
    
 ?>

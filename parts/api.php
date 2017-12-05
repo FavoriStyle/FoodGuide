@@ -124,7 +124,7 @@
         private static $_cat_names_temp_db = []; // Временная БД для названий категорий. Дабы по сто раз не запрашивать и не конвертировать
         public function append_categories($item){
             $post_terms = (function() use ($item){
-                $sql = 'SELECT `term_taxonomy_id` FROM `' . WP_LOCAL_TABLE_PREFIX . 'term_relationships` WHERE';
+                $sql = 'SELECT `term_taxonomy_id` FROM `' . staticGlobals::mysql_prefix() . 'term_relationships` WHERE';
                 append_sql($sql, [$item['post_id']], 'object_id', false);
                 $res = [];
                 $term_list = get_mysql_result($sql);
@@ -134,7 +134,7 @@
                 return $res;
             })();
             $item['categories'] = (function () use ($post_terms){
-                $sql = 'SELECT `term_id` FROM `' . WP_LOCAL_TABLE_PREFIX . 'term_taxonomy` WHERE';
+                $sql = 'SELECT `term_id` FROM `' . staticGlobals::mysql_prefix() . 'term_taxonomy` WHERE';
                 append_sql($sql, ['ait-items'], 'taxonomy');
                 append_sql($sql, $post_terms, 'term_id', false);
                 $res = [];
@@ -147,7 +147,7 @@
             foreach ($item['categories'] as $i => $cat_id){
                 $item['categories'][$i] = (function() use ($cat_id){
                     if (!isset(self::$_cat_names_temp_db[$cat_id])){
-                        $sql = 'SELECT `name` FROM `' . WP_LOCAL_TABLE_PREFIX . "terms` WHERE `term_id` = $cat_id";
+                        $sql = 'SELECT `name` FROM `' . staticGlobals::mysql_prefix() . "terms` WHERE `term_id` = $cat_id";
                         self::$_cat_names_temp_db[$cat_id] = get_mysql_result($sql)[0]['name'];
                         self::$_cat_names_temp_db[$cat_id] = iconv(mb_detect_encoding(self::$_cat_names_temp_db[$cat_id], mb_detect_order(), true), "UTF-8", self::$_cat_names_temp_db[$cat_id]);
                     }

@@ -17,7 +17,6 @@ License: MIT
     ];
     $parts = [
         //parts to be loaded
-        //'reformat_css',
         'static_globals',
         'api',
         'cacher',
@@ -26,7 +25,7 @@ License: MIT
         'final_buffer',
         'native_admin_addon',
         'easyadmin_addon',
-
+        'js_loader',
     ];
     $debug_parts = [
         //parts to be loaded only with --debug or --devel key

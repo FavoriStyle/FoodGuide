@@ -1303,5 +1303,5 @@ body .half .advanced-filters-wrap > .header-like.h2 {
     display: none;
 }
 .advanced-filters-wrap{
-    margin: 0;
+    margin: 0 !important;
 }

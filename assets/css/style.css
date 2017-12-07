@@ -1288,20 +1288,20 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 .foodmenu-price-rating{
 	display: none !important;
 }
-.categories-page #content{
+.categories-page #content, .archive.tax-ait-locations #content{
     margin-top: -34px;
 }
-.categories-page #content > .filters-wrap{
+.categories-page #content > .filters-wrap, .archive.tax-ait-locations #content > .filters-wrap{
     top: -10px;
     z-index: 9;
 }
-.categories-page #content > .filters-wrap .filter-container:not(.filter-order){
+.categories-page #content > .filters-wrap .filter-container:not(.filter-order), .archive.tax-ait-locations #content > .filters-wrap .filter-container:not(.filter-order){
 	background: transparent;
 	color: white;
 }
-.advanced-filters-wrap .h2, .advanced-filters-wrap .advanced-filters-actions{
+.categories-page .advanced-filters-wrap .h2, .categories-page .advanced-filters-wrap .advanced-filters-actions, .archive.tax-ait-locations .advanced-filters-wrap .h2, .archive.tax-ait-locations .advanced-filters-wrap .advanced-filters-actions{
     display: none;
 }
-.advanced-filters-wrap{
+.categories-page .advanced-filters-wrap, .archive.tax-ait-locations .advanced-filters-wrap{
     margin: 0 !important;
 }

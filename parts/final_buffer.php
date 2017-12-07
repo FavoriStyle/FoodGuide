@@ -451,7 +451,7 @@
         add_action('wp_enqueue_scripts', function(){
             wp_dequeue_style('ait-theme-custom-style');
             wp_deregister_style('ait-theme-custom-style');
-            wp_register_style('ait-theme-custom-style', '//cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.1-s/assets/css/style.min.css' /* temporary setting the version */);
+            wp_register_style('ait-theme-custom-style', '//cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide/assets/css/style.min.css');
             wp_enqueue_style('ait-theme-custom-style');
         }, 100);
     })();

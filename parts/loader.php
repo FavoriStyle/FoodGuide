@@ -17,9 +17,9 @@ License: MIT
     ];
     $parts = [
         //parts to be loaded
+        'cacher',
         'static_globals',
         'api',
-        'cacher',
         'disable-emojis/disable-emojis',
         'user_debug',
         'final_buffer',

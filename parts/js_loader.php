@@ -33,27 +33,8 @@ License: MIT
             $parts[] = $part;
         }
     }
-    $latest_release = OpenpartsCache::cache('gh_latest_release');
-    if (!$latest_release){
-        $latest_release = (function() use ($settings){
-            $result = file_get_contents('https://api.github.com/graphql', false, stream_context_create([
-                'http' => [
-                    'header'  => "User-Agent: FoodGuide server-side API/0.1\r\nAuthorization: bearer " . Secrets::$github_graphql_token . "\r\n", // используем токен ограниченой функциональности. Ничего не умеет, ничего не знает... он просто есть, ибо требование
-                    'method'  => 'POST',
-                    'content' => json_encode([
-                        'query' => '{repository(owner:' . json_encode($settings['user']) . ',name:' . json_encode($settings['repo']) . '){releases(last:1){edges{node{tag{name}}}}}}'
-                    ])
-                ]
-            ]));
-            if ($result && ($result = json_decode($result, true)) && !isset($result['errors'])){
-                return $result['data']['repository']['releases']['edges'][0]['node']['tag']['name'];
-            }
-            return 'latest'; // emergency mode!!!
-        })();
-        OpenpartsCache::cache('gh_latest_release', $latest_release);
-    }
     foreach($parts as $i => $part){
-        $part['src'] = "https://cdn.jsdelivr.net/gh/$settings[user]/$settings[repo]@$latest_release/assets/js/$part[src].min.js";
+        $part['src'] = "https://cdn.jsdelivr.net/gh/$settings[user]/$settings[repo]@" . staticGlobals::getCurrentGitHubRelease() . "/assets/js/$part[src].min.js";
         $parts[$i] = $part;
     }
     add_action('wp_enqueue_scripts', function() use ($parts){

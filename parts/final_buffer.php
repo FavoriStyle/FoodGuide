@@ -91,7 +91,7 @@
                     $html -> parseTag($matches[0]);
                 }, $final);
             })();
-            echo apply_filters('custom_css_to_cdn', apply_filters('sitemap_xml', apply_filters('logo_text', apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', apply_filters('prepare_regexp_search', $final)))))));
+            echo apply_filters('sitemap_xml', apply_filters('logo_text', apply_filters('categories_bar', apply_filters('final_output_seo', apply_filters('final_output_seo', apply_filters('prepare_regexp_search', $final))))));
         }, 0);
         add_filter('prepare_regexp_search', function($output){
             return preg_replace('/(<p[^>]*>)\\[\\{setDefault\\(([^)<]*<\\/p>)/', '$1$2', $output);
@@ -447,14 +447,12 @@
                 }, $output);
             } else return $output;
         });
-        add_filter('custom_css_to_cdn', function($output){
-            return
-            //*
-                $output
-            /*/
-                preg_replace('/"[^"]*\\/custom.css/', 'https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide/assets/css/style.css', $output)
-            //*/
-            ;
-        });
+
+        add_action('wp_enqueue_scripts', function(){
+            wp_dequeue_style('ait-theme-custom-style');
+            wp_deregister_style('ait-theme-custom-style');
+            wp_register_style('ait-theme-custom-style', '//cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.1-s/assets/css/style.min.css' /* temporary setting the version */);
+            wp_enqueue_style('ait-theme-custom-style');
+        }, 100);
     })();
 ?>

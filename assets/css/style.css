@@ -1299,3 +1299,9 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 	background: transparent;
 	color: white;
 }
+.advanced-filters-wrap .h2, .advanced-filters-wrap .advanced-filters-actions{
+    display: none;
+}
+.advanced-filters-wrap{
+    margin: 0;
+}

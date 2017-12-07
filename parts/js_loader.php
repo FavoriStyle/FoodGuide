@@ -60,7 +60,7 @@ License: MIT
         ?>
         <script>
             (function(){
-                if (!window['app']) app = {};
+                let app = {};
                 app.waitForBody = function(func, args = []){
                     setTimeout(function(){
                         if(document.body) func.apply(document, args); else app.waitForBody(func, args);

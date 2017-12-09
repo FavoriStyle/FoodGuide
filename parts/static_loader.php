@@ -55,7 +55,7 @@ License: MIT
         $parts[$i] = $part;
     }
     foreach($css_list as $i => $part){
-        $part['src'] = $full_url($part['src'], 'css', _USER_DEBUG_MODE || JS_LOADER_CHANNEL == 'beta');
+        $part = $full_url($part, 'css', _USER_DEBUG_MODE || JS_LOADER_CHANNEL == 'beta');
         $css_list[$i] = $part;
     }
     add_action('wp_enqueue_scripts', function() use ($parts, $css_list){
@@ -105,8 +105,9 @@ License: MIT
                 xhr.send();
                 xhr.onreadystatechange = () => {
                     if (xhr.readyState != 4) return;
-                    if (xhr.status == 200){
+                    if (xhr.status == 200 || xhr.status == 304){
                         list[index] = xhr.responseText;
+                        if (xhr.status == 304) console.log(xhr.responseText);
                     } else {
                         list[index] != '';
                     }
@@ -160,9 +161,9 @@ License: MIT
                     <?php
                         if (_USER_DEBUG_MODE || JS_LOADER_CHANNEL == 'beta'){
                     ?>
-                            if(/^https:\/\/raw.githubusercontent.com\//.test(e)){
+                            if(/^https:\/\/raw.githubusercontent.com\//.test(e.src)){
                                 var xhr = new XMLHttpRequest();
-                                xhr.open('GET', e, true);
+                                xhr.open('GET', e.src, true);
                                 xhr.send();
                                 xhr.onreadystatechange = function(){
                                     if (xhr.readyState != 4) return;

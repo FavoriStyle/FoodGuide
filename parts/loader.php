@@ -25,7 +25,7 @@ License: MIT
         'final_buffer',
         'native_admin_addon',
         'easyadmin_addon',
-        'js_loader',
+        'static_loader',
     ];
     $debug_parts = [
         //parts to be loaded only with --debug or --devel key

@@ -447,12 +447,5 @@
                 }, $output);
             } else return $output;
         });
-
-        add_action('wp_enqueue_scripts', function(){
-            wp_dequeue_style('ait-theme-custom-style');
-            wp_deregister_style('ait-theme-custom-style');
-            wp_register_style('ait-theme-custom-style', '//cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@' . staticGlobals::getCurrentGitHubRelease() . '/assets/css/style.min.css');
-            wp_enqueue_style('ait-theme-custom-style');
-        }, 100);
     })();
 ?>

@@ -11,6 +11,9 @@ License: MIT
 */
 
 (function(){
+
+    define('JS_LOADER_CHANNEL', 'beta'); // beta or stable
+
     $settings = [
 		'user' => 'FavoriStyle',
 		'repo' => 'FoodGuide'
@@ -33,8 +36,8 @@ License: MIT
             $parts[] = $part;
         }
     }
-    foreach($parts as $i => $part){
-        $part['src'] = "https://cdn.jsdelivr.net/gh/$settings[user]/$settings[repo]@" . staticGlobals::getCurrentGitHubRelease() . "/assets/js/$part[src].min.js";
+    foreach($parts as $i => $part){ // https://raw.githubusercontent.com/FavoriStyle/FoodGuide/master/parts/api.php
+        if (_USER_DEBUG_MODE || JS_LOADER_CHANNEL == 'beta') $part['src'] = "https://raw.githubusercontent.com/$settings[user]/$settings[repo]/master/assets/js/$part[src].js"; else $part['src'] = "https://cdn.jsdelivr.net/gh/$settings[user]/$settings[repo]@" . staticGlobals::getCurrentGitHubRelease() . "/assets/js/$part[src].min.js";
         $parts[$i] = $part;
     }
     add_action('wp_enqueue_scripts', function() use ($parts){
@@ -98,7 +101,7 @@ License: MIT
                 };
                 <?php echo json_encode($parts); ?>.forEach(function(e){
                     <?php
-                        if (_USER_DEBUG_MODE){
+                        if (_USER_DEBUG_MODE || JS_LOADER_CHANNEL == 'beta'){
                     ?>
                             if(/^https:\/\/raw.githubusercontent.com\//.test(e)){
                                 var xhr = new XMLHttpRequest();

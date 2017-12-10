@@ -99,21 +99,17 @@ License: MIT
         <script id="static_loader_css">
             // CSS-файлы будут загружаться параллельно, но рендерится на страничке в СТРОГО ОПРЕДЕЛЁННОМ порядке ради обратной совместимости
             var list = [], expectedCount = 0, doneCount = 0;
-            <?php echo json_encode($css_list); ?>.forEach((file, index) => {
+            function require(file, index){
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', file, true);
                 xhr.send();
                 xhr.onreadystatechange = () => {
                     if (xhr.readyState != 4) return;
-                    if (xhr.status == 200 || xhr.status == 304){
-                        list[index] = xhr.responseText;
-                        if (xhr.status == 304) console.log(xhr.responseText);
-                    } else {
-                        list[index] != '';
-                    }
+                    if (xhr.status == 200) list[index] = xhr.responseText; else require(file, index);
                 }
                 expectedCount++;
-            });
+            }
+            <?php echo json_encode($css_list); ?>.forEach(require);
             setTimeout(function b(){
                 let a = false;
                 while(doneCount < expectedCount){

@@ -99,7 +99,6 @@ License: MIT
             cssList.forEach(function require(file, index){
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', file, true);
-                //xhr.setRequestHeader("If-Modified-Since", "Fri, 1 Jan 2000 0:0:0 GMT");
                 xhr.send();
                 xhr.onreadystatechange = () => {
                     if (xhr.readyState != 4) return;
@@ -109,10 +108,8 @@ License: MIT
                 }
             });
             setTimeout(function b(){
-                console.log('called b()');
                 if(doneCount < cssList.length){
                     if (list[doneCount]){
-                        console.log(`Found list[${doneCount}] = %o`, list[doneCount]);
                         __app.appendToBody(__app.createElement({
                             name: 'style',
                             html : list[doneCount],

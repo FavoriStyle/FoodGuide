@@ -11,10 +11,7 @@ License: MIT
 */
 
 (function(){
-
-    define('JS_LOADER_CHANNEL', 'beta'); // beta or stable
-    define('CSS_LOADER_CHANNEL', 'beta'); // beta or stable
-
+    
     $settings = [
 		'user' => 'FavoriStyle',
 		'repo' => 'FoodGuide'
@@ -98,23 +95,24 @@ License: MIT
         </script>
         <script id="static_loader_css">
             // CSS-файлы будут загружаться параллельно, но рендерится на страничке в СТРОГО ОПРЕДЕЛЁННОМ порядке ради обратной совместимости
-            var list = [], expectedCount = 0, doneCount = 0;
-            function require(file, index){
+            var list = [], doneCount = 0, cssList = <?php echo json_encode($css_list); ?>;
+            cssList.forEach(function require(file, index){
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', file, true);
-                xhr.setRequestHeader("If-Modified-Since", "Fri, 1 Jan 2000 0:0:0 GMT");
+                //xhr.setRequestHeader("If-Modified-Since", "Fri, 1 Jan 2000 0:0:0 GMT");
                 xhr.send();
                 xhr.onreadystatechange = () => {
                     if (xhr.readyState != 4) return;
-                    if (xhr.status == 200) list[index] = xhr.responseText; else require(file, index);
+                    if (xhr.status == 200){
+                        list[index] = xhr.responseText;
+                    } else require(file, index);
                 }
-                expectedCount++;
-            }
-            <?php echo json_encode($css_list); ?>.forEach(require);
+            });
             setTimeout(function b(){
-                let a = false;
-                while(doneCount < expectedCount){
+                console.log('called b()');
+                if(doneCount < cssList.length){
                     if (list[doneCount]){
+                        console.log(`Found list[${doneCount}] = %o`, list[doneCount]);
                         __app.appendToBody(__app.createElement({
                             name: 'style',
                             html : list[doneCount],
@@ -122,16 +120,13 @@ License: MIT
                                 '__data-needed-index' : `${doneCount - 1}`,
                             }
                         }));
+                        a = false;
                         doneCount++;
-                    } else {
-                        a = true;
-                        return;
-                    }
+                    } else setTimeout(b, 100);
                 }
-                if (a) setTimeout(b, 100);
             }, 100);
         </script>
-        <script>
+        <script id="static_loader_js">
             (function(){
                 function appendAsyncScript(code, src = false, dependsOn = []){
                     let dependsLoaded = true;

@@ -10,6 +10,9 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
+define('JS_LOADER_CHANNEL', 'beta'); // beta or stable
+define('CSS_LOADER_CHANNEL', 'beta'); // beta or stable
+
 (function(){
     $settings = [
 		'user' => 'FavoriStyle',

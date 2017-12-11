@@ -102,6 +102,7 @@ License: MIT
             function require(file, index){
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', file, true);
+                xhr.setRequestHeader("If-Modified-Since", "Fri, 1 Jan 2000 0:0:0 GMT");
                 xhr.send();
                 xhr.onreadystatechange = () => {
                     if (xhr.readyState != 4) return;

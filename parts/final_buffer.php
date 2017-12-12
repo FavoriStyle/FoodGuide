@@ -434,7 +434,9 @@
             }, $output);
         });
         add_filter('sitemap_xml', function($output){
-            if (preg_match('/sitemap(-.*)?\\.xml/', $_SERVER['REQUEST_URI'])) return mb_substr($output, 0, -2); else return $output;
+            if (preg_match('/sitemap(-.*)?\\.xml/', $_SERVER['REQUEST_URI'])) return preg_replace_callback('/^([\\s\\S]*?)[\\s\\r\\n]*$/', function($matches){
+                return $matches[1];
+            }, $output); else return $output;
         });
         add_filter('logo_text', function($output) use (&$html){
             if ($html -> hasClass('main-page')){

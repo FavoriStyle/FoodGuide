@@ -166,7 +166,7 @@ License: MIT
                 });
             })();
         </script>
-        <?
+        <?php
     });
 })();
 

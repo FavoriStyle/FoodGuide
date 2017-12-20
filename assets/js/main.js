@@ -733,7 +733,7 @@ function stack_prepare(){
         setTimeout(()=>{
             $('div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div').each((i, e)=>{
                 e = $(e);
-                e.children('img').attr('title', e.children('.title'));
+                e.children('img').attr('title', e.children('.title').text());
             });
         }, 1000);
     })();

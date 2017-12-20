@@ -440,12 +440,12 @@
         });
         add_filter('logo_text', function($output) use (&$html){
             if ($html -> hasClass('main-page')){
-                return preg_replace_callback('/(<div[^>]+class="site\\-logo"[^>]*>[\\s\\S]*)(<div[^>]+class="menu\\-tools"[^>]*>)/', function($matches) use (&$html){
+                return preg_replace_callback('/(<div[^>]+class="tools\\-bar"[^>]*>[\\s\\S]*)(<div[^>]+class="tools\\-bar\\-right"[^>]*>)/', function($matches) use (&$html){
                     return (function($str){
                         return preg_replace_callback('/([\\s\\S]*)<\\/div>/', function($matches){
                             return $matches[1];
                         }, $str);
-                    })($matches[1]) . '<h1 class="logo-text">' . eaDB::translate('Logo text', str_replace('-', '_', $html -> attr('lang'))) . '</h1></div>' . $matches[2];
+                    })($matches[1]) . '</div><div style="height:0;"><h1 class="logo-text" style="text-align:center;padding-top:9px;font-size:25px;">' . eaDB::translate('Logo text', str_replace('-', '_', $html -> attr('lang'))) . '</h1></div>' . $matches[2];
                 }, $output);
             } else return $output;
         });

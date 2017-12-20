@@ -445,7 +445,7 @@
                         return preg_replace_callback('/([\\s\\S]*)<\\/div>/', function($matches){
                             return $matches[1];
                         }, $str);
-                    })($matches[1]) . '</div><div style="height:0;"><h1 class="logo-text" style="text-align:center;padding-top:9px;font-size:25px;">' . eaDB::translate('Logo text', str_replace('-', '_', $html -> attr('lang'))) . '</h1></div>' . $matches[2];
+                    })($matches[1]) . '</div><div style="height:0;"><h1 class="logo-text" style="text-align:center;padding-top:9px;font-size:25px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' . eaDB::translate('Logo text', str_replace('-', '_', $html -> attr('lang'))) . '</h1></div>' . $matches[2];
                 }, $output);
             } else return $output;
         });

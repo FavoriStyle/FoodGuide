@@ -727,6 +727,17 @@ function stack_prepare(){
         });
     })();
     //*/
+    //*
+    (function // делаем подсказки для значков img в списке категорий на главной
+    (){
+        setTimeout(()=>{
+            $('div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div').each((i, e)=>{
+                e = $(e);
+                e.children('img').attr('title', e.children('.title'));
+            });
+        }, 1000);
+    })();
+    //*/
     
     /* Локальные функции (для исполнения по вызовам) */
 

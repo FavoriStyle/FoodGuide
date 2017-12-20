@@ -1316,3 +1316,6 @@ div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul 
     width:  42px;
     clear:  unset;
 }
+#masthead > .tools-bar > .tools-bar-right{
+	display: none;
+}

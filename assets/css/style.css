@@ -1305,3 +1305,14 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 .categories-page .advanced-filters-wrap, .archive.tax-ait-locations .advanced-filters-wrap{
     margin: 0 !important;
 }
+div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > div {
+    display:  none;
+}
+div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > img {
+    width:  35px;
+    height:  35px;
+}
+div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li {
+    width:  42px;
+    clear:  unset;
+}

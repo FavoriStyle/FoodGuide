@@ -1305,7 +1305,7 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 .categories-page .advanced-filters-wrap, .archive.tax-ait-locations .advanced-filters-wrap{
     margin: 0 !important;
 }
-@media all and (min-width: 640px){
+@media all and (min-width: 641px){
 	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > div {
 		display:  none;
 	}

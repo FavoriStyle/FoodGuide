@@ -1311,7 +1311,6 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 	}
 	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > .title{
 		text-overflow: ellipsis;
-		padding: 5px;
 		white-space: nowrap;
 		margin-left: auto;
 		margin-right: auto;

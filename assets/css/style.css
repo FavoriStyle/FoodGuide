@@ -1309,6 +1309,14 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > :not(.title){
 		display:  none;
 	}
+	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > .title{
+		text-overflow: ellipsis;
+		padding: 5px;
+		white-space: nowrap;
+		margin-left: auto;
+		margin-right: auto;
+		display: inline;
+	}
 	/*
 	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > img{
 		width:  35px;
@@ -1316,8 +1324,8 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 	}
 	*/
 	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
-		width:  unset;
-		clear:  unset;
+		width: calc(100% / 9);
+		clear: unset;
 	}
 }
 #masthead > .tools-bar > .tools-bar-right{

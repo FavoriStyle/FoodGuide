@@ -1318,7 +1318,7 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 		display: inline;
 		color: #fff;
 	}
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > .title{
+	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div{
 		text-align: center;
 	}
 	/*

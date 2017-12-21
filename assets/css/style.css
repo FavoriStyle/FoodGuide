@@ -1306,15 +1306,17 @@ body .half .advanced-filters-wrap > .header-like.h2 {
     margin: 0 !important;
 }
 @media all and (min-width: 641px){
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > div {
+	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > :not(.title){
 		display:  none;
 	}
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > img {
+	/*
+	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > img{
 		width:  35px;
 		height:  35px;
 	}
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li {
-		width:  42px;
+	*/
+	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
+		width:  unset;
 		clear:  unset;
 	}
 }

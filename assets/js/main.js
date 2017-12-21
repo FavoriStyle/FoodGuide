@@ -738,6 +738,29 @@ function stack_prepare(){
         }, 1000);
     })();
     //*/
+    //*
+    (function // нормализируем поведение верхнего меню
+    (){
+        var userPanel = document.querySelector('.menu-tools .user-panel'),
+            menuPanel = $(document.querySelector('.menu-tools .menu-container'));
+        $(window).resize(function onResize(){
+            var top = userPanel.getBoundingClientRect().top;
+            if (window.innerWidth > 1200 && top != 32 && top != 0){ // bad pos
+                menuPanel.find('li > a').each((i, e)=>{
+                    e = $(e);
+                    console.log(e.css('padding-left'));
+                    if (e.css('padding-left').slice(0, -2) * 1 > 0){
+                        e.css('padding-left', e.css('padding-left').slice(0, -2) - 1);
+                        e.css('padding-right', e.css('padding-right').slice(0, -2) - 1);
+                    } else {
+                        e.css('display', 'none');
+                    }
+                });
+                setTimeout(onResize, 100);
+            }
+        });
+    })();
+    //*/
     
     /* Локальные функции (для исполнения по вызовам) */
 

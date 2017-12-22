@@ -384,28 +384,6 @@ function stack_prepare(){
     })();
     //*/
     //*
-    (function //делаем кнопку "хочу здесь быть" кнопкой регистрации
-    (){
-        if(is('main-page')){
-            var a = $('.want-to-be-here a');
-            a.removeAttr('href');
-            a.css('cursor', 'pointer');
-            subscribe(a);
-        }
-    })();
-    //*/
-    //*
-    (function //делаем кнопку "зарегистрироваться сейчас" реальной кнопкой регистрации
-    (){
-        if(is('offert-page')){
-            var a = $('section.get-work-with-us a');
-            a.removeAttr('href');
-            a.css('cursor', 'pointer');
-            subscribe(a);
-        }
-    })();
-    //*/
-    //*
     (function minimizeFooterText //сворачиваем текст в футере, первом слева виджете
     (){
         try{
@@ -450,13 +428,11 @@ function stack_prepare(){
     (function //делаем однотипные виджеты на главной (хочу быть здесь) v.2.1
     (){
         if(is('main-page')){
-            var sections = $('#main > div.main-sections > section:nth-child(2)').find('section'),
-                col3 = $(sections[0]),
-                col1 = $(sections[1]);
+            var col1 = $('#main > div.main-sections > section.want-to-be-here').find('.elm-item-organizer-container > .item.item-last');
+            console.log(col1);
             col1.find('div.item-thumbnail > a > img').attr('src','/wp-content/themes/FGC/design/img/want-to-be-here.jpg');
             col1.find('div.item-header > .item-title > a > *').html(dictionary.translate('want to be here'));
             col1.find('div.item-footer').css('display','none');
-            col1.find('div.item-header').height($(col3.find('div.item-header')[0]).height());
             subscribe(col1.find('a').removeAttr('href'));
         }
     })();

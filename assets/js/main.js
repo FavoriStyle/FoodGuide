@@ -743,7 +743,7 @@ function stack_prepare(){
     (){
         var userPanel = document.querySelector('.menu-tools .user-panel'),
             menuPanel = $(document.querySelector('.menu-tools .menu-container'));
-        $(window).resize(function onResize(){
+        function onResize(){
             var top = userPanel.getBoundingClientRect().top;
             if (window.innerWidth > 1200 && top != 32 && top != 0 && top != 37.5){ // bad pos
                 menuPanel.find('li > a').each((i, e)=>{
@@ -757,10 +757,15 @@ function stack_prepare(){
                 });
                 setTimeout(onResize, 100);
             }
+        }
+        $(window).resize(onResize);
+        $(window).load(onResize);
+        $(window).load(function(){
+            for (var i = 0; i < 10; i++) setTimeout(onResize, 100 * i);
         });
     })();
     //*/
-    
+
     /* Локальные функции (для исполнения по вызовам) */
 
     // Модульная система: перед каждой функцией есть //*

@@ -1306,17 +1306,17 @@ body .half .advanced-filters-wrap > .header-like.h2 {
     margin: 0 !important;
 }
 @media all and (min-width: 641px){
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > :not(.title){
+	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > :not(.title){
 		display:  none;
 	}
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > .title{
+	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > .title{
 		white-space: nowrap;
 		margin-left: auto;
 		margin-right: auto;
 		display: inline;
 		color: #fff;
 	}
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div{
+	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div{
 		text-align: center;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -1329,7 +1329,7 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 		height:  35px;
 	}
 	*/
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
+	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
 		width: calc(100% / 5 - 20px);
 		clear: unset;
 		border: 1px solid #825bae;
@@ -1337,12 +1337,12 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 		border-radius: 8px;
 		background: #825bae;
 	}
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a{
+	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a{
 		padding: 10px 0;
 	}
 }
 @media all and (min-width: 981px){
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
+	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
 		width: calc(100% / 9 - 20px);
 	}
 }

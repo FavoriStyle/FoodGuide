@@ -1330,7 +1330,7 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 	}
 	*/
 	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
-		width: calc(100% / 4 - 20px);
+		width: calc(100% / 5 - 20px);
 		clear: unset;
 		border: 1px solid #825bae;
 		margin: 10px;

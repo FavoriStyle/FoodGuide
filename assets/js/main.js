@@ -426,7 +426,7 @@ function stack_prepare(){
         }
     })();
     //*/
-    //*
+    /*
     (function //делаем однотипные виджеты на главной (хочу быть здесь)
     (){
         if(is('main-page')){
@@ -439,6 +439,21 @@ function stack_prepare(){
             resized(col3.find('.elm-item-organizer-container > div > div')[0],function(){
                 col1.find('.elm-item-organizer-container > div').height(this.height());
             });
+            col1.find('div.item-header > .item-title > a > *').html(dictionary.translate('want to be here'));
+            col1.find('div.item-footer').css('display','none');
+            col1.find('div.item-header').height($(col3.find('div.item-header')[0]).height());
+            subscribe(col1.find('a').removeAttr('href'));
+        }
+    })();
+    //*/
+    //*
+    (function //делаем однотипные виджеты на главной (хочу быть здесь) v.2.1
+    (){
+        if(is('main-page')){
+            var sections = $('#main > div.main-sections > section:nth-child(2)').find('section'),
+                col3 = $(sections[0]),
+                col1 = $(sections[1]);
+            col1.find('div.item-thumbnail > a > img').attr('src','/wp-content/themes/FGC/design/img/want-to-be-here.jpg');
             col1.find('div.item-header > .item-title > a > *').html(dictionary.translate('want to be here'));
             col1.find('div.item-footer').css('display','none');
             col1.find('div.item-header').height($(col3.find('div.item-header')[0]).height());

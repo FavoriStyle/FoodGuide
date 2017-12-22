@@ -429,7 +429,7 @@ function stack_prepare(){
     (){
         if(is('main-page')){
             var col1 = $('#main > div.main-sections > section.want-to-be-here').find('.elm-item-organizer-container > .item.item-last');
-            console.log(col1);
+            col1.find('div.item-thumbnail > a > div').remove();
             col1.find('div.item-thumbnail > a > img').attr('src','/wp-content/themes/FGC/design/img/want-to-be-here.jpg');
             col1.find('div.item-header > .item-title > a > *').html(dictionary.translate('want to be here'));
             col1.find('div.item-footer').css('display','none');

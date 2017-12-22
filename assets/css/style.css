@@ -1349,3 +1349,30 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 #masthead > .tools-bar > .tools-bar-right{
 	display: none;
 }
+.single-item-page button.read-more{
+	position: absolute;
+	top: 158px;
+	left: 40%;
+	color: #825bae;
+	background-color: #ededed;
+	border: 0;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	cursor: pointer;
+	padding: 0 15px 5px 15px;
+	font: inherit;
+	font-weight: bold;
+}
+.single-item-page .footer-items-bottom-grayscale.grayscale-on-top-readmore{
+    left: 0;
+    top: 78px;
+    background: linear-gradient(to bottom, transparent 0%, #EDEDED 80%, #EDEDED 100%);
+}
+.single-item-page .entry-content{
+	position: relative;
+}
+.single-item-page .entry-content > div:last-child{
+	max-height: 124px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

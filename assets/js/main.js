@@ -756,6 +756,12 @@ function stack_prepare(){
         });
     })();
     //*/
+    //*
+    (function // Читать дальше
+    (){
+        $('.single-item-page .entry-content > div:last-child').before('<div class="footer-items-bottom-grayscale grayscale-on-top-readmore"></div><button class="read-more">Read more</button>');
+    })();
+    //*/
 
     /* Локальные функции (для исполнения по вызовам) */
 
@@ -803,7 +809,7 @@ function stack_prepare(){
                     focusOn(getTxtIdFromUrl(a.children('a').attr('href')));
                 }
             };
-            $('.ajax-container.special-offer-container').on("DOMSubtreeModified",onMod);
+            $('.ajax-container.special-offer-container').on("DOMSubtreeModified", onMod);
             onMod();
         }
     };

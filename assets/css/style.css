@@ -1305,41 +1305,44 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 .categories-page .advanced-filters-wrap, .archive.tax-ait-locations .advanced-filters-wrap{
     margin: 0 !important;
 }
+.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > :not(.title){
+	display:  none;
+}
+.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > .title{
+	white-space: nowrap;
+	margin-left: auto;
+	margin-right: auto;
+	display: inline;
+	color: #fff;
+	font-size: 15px;
+}
+.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div{
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: #fff;
+	font-size: 18px;
+}
+/*
+div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > img{
+	width:  35px;
+	height:  35px;
+}
+*/
+.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
+	width: calc(100% / 2 - 20px);
+	clear: unset;
+	border: 1px solid #825bae;
+	margin: 10px;
+	border-radius: 8px;
+	background: #825bae;
+}
+.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a{
+	padding: 10px 0;
+}
 @media all and (min-width: 641px){
-	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > :not(.title){
-		display:  none;
-	}
-	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > .title{
-		white-space: nowrap;
-		margin-left: auto;
-		margin-right: auto;
-		display: inline;
-		color: #fff;
-		font-size: 15px;
-	}
-	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div{
-		text-align: center;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		color: #fff;
-		font-size: 18px;
-	}
-	/*
-	div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a > div > img{
-		width:  35px;
-		height:  35px;
-	}
-	*/
 	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li{
 		width: calc(100% / 5 - 20px);
-		clear: unset;
-		border: 1px solid #825bae;
-		margin: 10px;
-		border-radius: 8px;
-		background: #825bae;
-	}
-	.main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a{
-		padding: 10px 0;
 	}
 }
 @media all and (min-width: 981px){

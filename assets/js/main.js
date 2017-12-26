@@ -765,7 +765,7 @@ function stack_prepare(){
             a.remove();
             $('.single-item-page .entry-content > div:last-child,.categories-page #content > .entry-content > div:last-child').css('max-height', 'unset');
         });
-        console.log('Read more appended val = %O', a);
+        //console.log('Read more appended val = %O', a);
     })();
     //*/
 

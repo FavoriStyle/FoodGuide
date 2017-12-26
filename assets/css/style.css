@@ -1349,7 +1349,7 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 #masthead > .tools-bar > .tools-bar-right{
 	display: none;
 }
-.single-item-page button.read-more{
+.single-item-page button.read-more,.categories-page button.read-more{
 	position: absolute;
 	top: 158px;
 	left: 40%;
@@ -1363,15 +1363,15 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 	font: inherit;
 	font-weight: bold;
 }
-.single-item-page .footer-items-bottom-grayscale.grayscale-on-top-readmore{
+.single-item-page .footer-items-bottom-grayscale.grayscale-on-top-readmore,.categories-page .footer-items-bottom-grayscale.grayscale-on-top-readmore{
     left: 0;
     top: 78px;
     background: linear-gradient(to bottom, transparent 0%, #EDEDED 80%, #EDEDED 100%);
 }
-.single-item-page .entry-content{
+.single-item-page .entry-content,.categories-page .entry-content{
 	position: relative;
 }
-.single-item-page .entry-content > div:last-child{
+.single-item-page .entry-content > div:last-child,.categories-page .entry-content > div:last-child{
 	max-height: 124px;
 	overflow: hidden;
 	text-overflow: ellipsis;

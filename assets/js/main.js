@@ -759,10 +759,10 @@ function stack_prepare(){
     //*
     (function // Читать дальше
     (){
-        var a = $('<div class="footer-items-bottom-grayscale grayscale-on-top-readmore"></div><button class="read-more">Read more</button>').insertBefore('.single-item-page .entry-content > div:last-child');
+        var a = $('<div class="footer-items-bottom-grayscale grayscale-on-top-readmore"></div><button class="read-more">Read more</button>').insertBefore('.single-item-page .entry-content > div:last-child,.categories-page .entry-content > div:last-child');
         $(a[a.length - 1]).click(() => {
             a.remove();
-            $('.single-item-page .entry-content > div:last-child').css('max-height', 'unset');
+            $('.single-item-page .entry-content > div:last-child,.categories-page .entry-content > div:last-child').css('max-height', 'unset');
         });
         console.log('Read more appended val = %O', a);
     })();

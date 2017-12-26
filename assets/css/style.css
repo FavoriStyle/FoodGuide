@@ -1387,3 +1387,21 @@ div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul 
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+h1.logo-text{
+	text-align: center;
+	padding-top: 9px;
+	font-size: 25px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+@media all and (max-width: 479px){
+	h1.logo-text{
+		padding-top: 4px;
+	}
+}
+@media all and (min-width: 414px){
+	h1.logo-text{
+		font-size: 20px;
+	}
+}

@@ -1336,6 +1336,7 @@ div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul 
 	margin: 10px;
 	border-radius: 8px;
 	background: #825bae;
+	float: left;
 }
 .main-page div.cat-tabs-contents > div.cat-tabs-content.cat-option-active > div > div > ul > li > a{
 	padding: 10px 0;

@@ -759,7 +759,8 @@ function stack_prepare(){
     //*
     (function // Читать дальше
     (){
-        $('.single-item-page .entry-content > div:last-child').before('<div class="footer-items-bottom-grayscale grayscale-on-top-readmore"></div><button class="read-more">Read more</button>');
+        var a = $('.single-item-page .entry-content > div:last-child').before('<div class="footer-items-bottom-grayscale grayscale-on-top-readmore"></div><button class="read-more">Read more</button>');
+        console.log('Read more appended val = %O', a);
     })();
     //*/
 

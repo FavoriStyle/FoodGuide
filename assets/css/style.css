@@ -1352,7 +1352,7 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 .single-item-page button.read-more,.categories-page button.read-more{
 	position: absolute;
 	top: 158px;
-	left: 40%;
+	left: calc(50% - (105.233px / 2));
 	color: #825bae;
 	background-color: #ededed;
 	border: 0;
@@ -1362,6 +1362,12 @@ body .half .advanced-filters-wrap > .header-like.h2 {
 	padding: 0 15px 5px 15px;
 	font: inherit;
 	font-weight: bold;
+}
+.categories-page button.read-more{
+	top: 174px;
+}
+.categories-page .entry-content{
+	margin-bottom: 30px;
 }
 .single-item-page .footer-items-bottom-grayscale.grayscale-on-top-readmore,.categories-page .footer-items-bottom-grayscale.grayscale-on-top-readmore{
     left: 0;

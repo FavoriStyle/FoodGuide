@@ -445,7 +445,7 @@ function stack_prepare(){
         f.append('<input type="hidden" name="lang" value="' + lang.replace(/-/g,'_') + '">');
     })();
     //*/
-    //*
+    /*
     (function //нормализируем размер логотипа
     (){
         var a = $('#masthead > .header-container');

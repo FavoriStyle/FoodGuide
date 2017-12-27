@@ -1401,7 +1401,7 @@ h1.logo-text{
 		padding-top: 4px;
 	}
 }
-@media all and (max-width: 414px){
+@media all and (max-width: 436px){
 	h1.logo-text{
 		font-size: 20px;
 	}

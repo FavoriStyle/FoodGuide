@@ -104,6 +104,7 @@ function stack_prepare(){
             'months-1'                  : 'months',
             'months-2'                  : 'months',
             'want to be here'           : 'Want to be here!',
+            'read more'                 : 'Read more',
         },
         'ru-RU' : {
             'submit-button-faq-page'    : 'Отправить',
@@ -114,6 +115,7 @@ function stack_prepare(){
             'months-1'                  : 'месяца',
             'months-2'                  : 'месяцев',
             'want to be here'           : 'Хочу быть здесь!',
+            'read more'                 : 'Читать далее',
         },
         'uk'    : {
             'submit-button-faq-page'    : 'Відправити',
@@ -124,6 +126,7 @@ function stack_prepare(){
             'months-1'                  : 'місяці',
             'months-2'                  : 'місяців',
             'want to be here'           : 'Хочу тут бути!',
+            'read more'                 : 'Читати далі',
         },
         'translate' : function(phrase){
             if (dictionary[lang] != undefined && dictionary[lang][phrase] != undefined) return dictionary[lang][phrase];
@@ -760,7 +763,7 @@ function stack_prepare(){
     (function // Читать дальше
     (){
         $('.categories-page .entry-content').html('<div>' + $('.categories-page .entry-content').html() + '</div>');
-        var a = $('<div class="footer-items-bottom-grayscale grayscale-on-top-readmore"></div><button class="read-more">Read more</button>').insertBefore('.single-item-page .entry-content > div:last-child,.categories-page #content > .entry-content > div:last-child');
+        var a = $('<div class="footer-items-bottom-grayscale grayscale-on-top-readmore"></div><button class="read-more">' + dictionary.translate('read more') + '</button>').insertBefore('.single-item-page .entry-content > div:last-child,.categories-page #content > .entry-content > div:last-child');
         $(a[a.length - 1]).click(() => {
             a.remove();
             $('.single-item-page .entry-content > div:last-child,.categories-page #content > .entry-content > div:last-child').css('max-height', 'unset');

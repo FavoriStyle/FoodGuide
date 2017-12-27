@@ -1020,6 +1020,7 @@ nav.nav-single.pagination-below[role="navigation"]{
 }
 #masthead > .header-container img[alt="logo"]{
 	max-height: 82px;
+	height: 100%;
 }
 .nearest-header{
     padding: 0;
@@ -1404,8 +1405,4 @@ h1.logo-text{
 	h1.logo-text{
 		font-size: 20px;
 	}
-}
-img[alt="logo"]{
-	height: 100%;
-	max-height: 82px;
 }

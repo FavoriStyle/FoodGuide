@@ -180,7 +180,7 @@
         }
         public static function getCurrentGitHubRelease(){
             $latest_release = OpenpartsCache::cache('gh_latest_release');
-            if (!$latest_release){
+            if (!$latest_release || $latest_release == 'latest'){
                 $latest_release = (function() use ($settings){
                     $result = file_get_contents('https://api.github.com/graphql', false, stream_context_create([
                         'http' => [

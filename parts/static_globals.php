@@ -182,6 +182,9 @@
             $latest_release = OpenpartsCache::cache('gh_latest_release');
             if (!$latest_release || $latest_release == 'latest'){
                 $latest_release = (function() use ($settings){
+                    ob_start();
+                    echo '$settings = ';
+                    var_dump($settings);
                     $result = file_get_contents('https://api.github.com/graphql', false, stream_context_create([
                         'http' => [
                             'header'  => "User-Agent: FoodGuide server-side API/0.1\r\nAuthorization: bearer " . Secrets::$github_graphql_token . "\r\n", // используем токен ограниченой функциональности. Ничего не умеет, ничего не знает... он просто есть, ибо требование
@@ -191,6 +194,9 @@
                             ])
                         ]
                     ]));
+                    echo '$result = ';
+                    var_dump($result);
+                    OpenpartsCache::cache('gh_debug_info', ob_get_clean());
                     if ($result && ($result = json_decode($result, true)) && !isset($result['errors'])){
                         return $result['data']['repository']['releases']['edges'][0]['node']['tag']['name'];
                     }

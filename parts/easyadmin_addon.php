@@ -199,8 +199,11 @@
     */
     $queue = [ // Приоретизация пунктов главного меню
         'profile.php', // Профиль
-        'admin.php?page=items_page_new', // Заведения
         'upload.php', // Медиа
+        'admin.php?page=items_page_new', // Заведения // blue
+        'edit.php?post_type=ait-special-offer', // Акции // fa-star #ff9f03
+        'edit.php?post_type=ait-food-menu', // Меню // fa-cutlery #bf2929
+        'edit.php?post_type=ait-ad-space', // Афиша // fa-newspaper-o #cb3ecf
         'edit.php', // Блог
         'admin.php?page=helpme', // Помощь
     ];
@@ -213,6 +216,7 @@
             remove_submenu_page('upload.php', 'wp-smush-bulk');
             remove_menu_page('edit-comments.php');
             remove_menu_page('tools.php');
+            remove_menu_page('edit.php');
         }
     }, 9999);
     add_action('admin_enqueue_scripts', function() use ($queue){

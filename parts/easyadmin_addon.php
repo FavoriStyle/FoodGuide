@@ -197,6 +197,17 @@
         return 'Тупо кастомная страница';
     }, null, $parent);
     */
+    $queue = [ // Приоретизация пунктов главного меню
+        'profile.php', // Профиль
+        'admin.php?page=items_page_new', // Заведения
+        'upload.php', // Медиа
+        'edit.php', // Блог
+        'admin.php?page=helpme', // Помощь
+    ];
+    foreach ($queue as $key => $value){
+        unset($queue[$key]);
+        $queue[$value] = $key;
+    }
     add_action('admin_menu', function(){
         if (!current_user_can('use-native-admin-panel')){
             remove_submenu_page('upload.php', 'wp-smush-bulk');
@@ -204,4 +215,26 @@
             remove_menu_page('tools.php');
         }
     }, 9999);
+    add_action('admin_enqueue_scripts', function() use ($queue){
+        ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function(){
+                var priorities = <?php echo json_encode($queue); ?>, sorted = [], list = document.querySelectorAll('#easyadmin-main-menu > li');
+                for(var i = 0; i < list.length; i++){
+                    if (list[i].children[0].attributes.href){
+                        if (priorities[list[i].children[0].attributes.href.nodeValue] !== undefined){
+                            sorted[priorities[list[i].children[0].attributes.href.nodeValue]] = list[i];
+                        }
+                    }
+                }
+                sorted = sorted.reverse();
+                sorted.forEach((e) => {
+                    if (e){
+                        list[0].parentNode.prepend(e);
+                    }
+                });
+            });
+        </script>
+        <?php
+    });
 ?>

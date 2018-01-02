@@ -197,5 +197,11 @@
         return 'Тупо кастомная страница';
     }, null, $parent);
     */
-   
+    add_action('admin_menu', function(){
+        if (!current_user_can('use-native-admin-panel')){
+            remove_submenu_page('upload.php', 'wp-smush-bulk');
+            remove_menu_page('edit-comments.php');
+            remove_menu_page('tools.php');
+        }
+    }, 9999);
 ?>

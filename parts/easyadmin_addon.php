@@ -30,7 +30,25 @@
             'blue' => '#0000ff',
         ];
         public function __get($name){
-            if(!in_array($name, $this -> stack) && !isset($this -> colors[$name])) $this -> stack[] = $name; elseif(isset($this -> colors[$name])){
+            $check_color = function(&$str, $safe = false){
+                if (mb_substr($str, 0, 7) == 'color||'){
+                    if (!$safe){
+                        $str = mb_substr($str, 7);
+                        $setted_unique_codename = false;
+                        while(!$setted_unique_codename){
+                            $codename = substr(md5(uniqid(rand(), true)), 0, 5);
+                            if (!isset($this -> colors[$codename])){
+                                $this -> colors[$codename] = $str;
+                                $setted_unique_codename = true;
+                            }
+                        }
+                        $str = $codename;
+                    }
+                    return true;
+                }
+                return false;
+            };
+            if(!in_array($name, $this -> stack) && !isset($this -> colors[$name]) && !$check_color($name, true)) $this -> stack[] = $name; elseif(isset($this -> colors[$name]) || $check_color($name)){
                 if (!in_array($name, $this -> colors_stack)) $this -> colors_stack[] = $name;
                 return "dashicons-fa-color-$name";
             }
@@ -197,20 +215,23 @@
         return 'Тупо кастомная страница';
     }, null, $parent);
     */
+    $fa = function() use (&$FontAwesome){
+        $arr = func_get_args();
+        foreach ($arr as $key => $value){
+            $arr[$key] = $FontAwesome -> $value;
+        }
+        return 'dashicons-fa-special-holder ' . implode(' ', $arr);
+    };
     $queue = [ // Приоретизация пунктов главного меню
-        'profile.php', // Профиль
-        'upload.php', // Медиа
-        'admin.php?page=items_page_new', // Заведения // blue
-        'edit.php?post_type=ait-special-offer', // Акции // fa-star #ff9f03
-        'edit.php?post_type=ait-food-menu', // Меню // fa-cutlery #bf2929
-        'edit.php?post_type=ait-ad-space', // Афиша // fa-newspaper-o #cb3ecf
-        'edit.php', // Блог
-        'admin.php?page=helpme', // Помощь
+        'profile.php'                           => $fa('color||#898700'),           // Профиль
+        'upload.php'                            => $fa('color||#649b7c'),           // Медиа
+        'admin.php?page=items_page_new'         => $fa('color||#7a7ae3'),           // Заведения
+        'edit.php?post_type=ait-special-offer'  => $fa('f005', 'color||#ff9f03'),   // Акции
+        'edit.php?post_type=ait-food-menu'      => $fa('f0f5', 'color||#b75c5c'),   // Меню
+        'edit.php?post_type=ait-ad-space'       => $fa('f1ea', 'color||#cb3ecf'),   // Афиша
+        'edit.php',                                                                 // Блог
+        'admin.php?page=helpme',                                                    // Помощь
     ];
-    foreach ($queue as $key => $value){
-        unset($queue[$key]);
-        $queue[$value] = $key;
-    }
     add_action('admin_menu', function(){
         if (!current_user_can('use-native-admin-panel')){
             remove_submenu_page('upload.php', 'wp-smush-bulk');
@@ -223,11 +244,38 @@
         ?>
         <script>
             document.addEventListener('DOMContentLoaded', function(){
-                var priorities = <?php echo json_encode($queue); ?>, sorted = [], list = document.querySelectorAll('#easyadmin-main-menu > li');
+                var priorities = <?php
+                    $temp = [];
+                    foreach ($queue as $key => $value){
+                        if (gettype($key) == "integer"){
+                            $temp[] = $value;
+                        } else {
+                            $temp[] = $key;
+                        }
+                    }
+                    foreach ($temp as $key => $value){
+                        unset($temp[$key]);
+                        $temp[$value] = $key;
+                    }
+                    echo json_encode($temp);
+                ?>, sorted = [], list = document.querySelectorAll('#easyadmin-main-menu > li'), customClass = <?php
+                    $temp = [];
+                    foreach ($queue as $key => $value){
+                        if (gettype($key) == "string"){
+                            $temp[$key] = $value;
+                        }
+                    }
+                    echo json_encode($temp);
+                ?>;
+                console.log(priorities);
                 for(var i = 0; i < list.length; i++){
                     if (list[i].children[0].attributes.href){
                         if (priorities[list[i].children[0].attributes.href.nodeValue] !== undefined){
                             sorted[priorities[list[i].children[0].attributes.href.nodeValue]] = list[i];
+                        }
+                        if (customClass[list[i].children[0].attributes.href.nodeValue] && list[i].children[0].children[1]){
+                            list[i].children[0].children[1].className += " " + customClass[list[i].children[0].attributes.href.nodeValue];
+                            if(list[i].children[0].children[1].children[0]) list[i].children[0].children[1].children[0].remove();
                         }
                     }
                 }

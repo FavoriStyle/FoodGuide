@@ -1,5 +1,11 @@
 <?php
-
+    function ea_add_action(){
+        $args = func_get_args();
+        $args[1] = function () use ($args){
+            if (!current_user_can('use-native-admin-panel')) $args[1]();
+        };
+        call_user_func_array('add_action', $args);
+    }
     class eaPage{
         private $text = '';
         public function __construct($tpl){
@@ -20,7 +26,105 @@
             return $this -> text;
         }
     }
-
+    ea_add_action('admin_enqueue_scripts', function(){
+        ?>
+<style id="main-menu-loading-animation">
+    #easyadmin-main-menu{
+        height: 55.2px !important;
+        overflow: hidden;
+        padding-left: 20px;
+        padding-top: 4px;
+    }
+    #easyadmin-main-menu > li:nth-child(1) > *{
+        display: none;
+    }
+    #easyadmin-main-menu > li:nth-child(1),
+    #easyadmin-main-menu > li:nth-child(1):before,
+    #easyadmin-main-menu > li:nth-child(1):after {
+      background: #ffffff;
+      -webkit-animation: load1 1s infinite ease-in-out;
+      animation: load1 1s infinite ease-in-out;
+      width: 1em;
+      height: 4em;
+    }
+    #easyadmin-main-menu > li:nth-child(1) {
+      color: #ffffff;
+      text-indent: -9999em;
+      margin: 10px auto;
+      position: relative;
+      font-size: 8px;
+      -webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+    }
+    #easyadmin-main-menu > li:nth-child(1):before,
+    #easyadmin-main-menu > li:nth-child(1):after {
+      position: absolute;
+      top: 0;
+      content: '';
+    }
+    #easyadmin-main-menu > li:nth-child(1):before {
+      left: -1.5em;
+      -webkit-animation-delay: -0.32s;
+      animation-delay: -0.32s;
+    }
+    #easyadmin-main-menu > li:nth-child(1):after {
+      left: 1.5em;
+    }
+    @-webkit-keyframes load1 {
+      0%,
+      80%,
+      100% {
+        box-shadow: 0 0;
+        height: 4em;
+      }
+      40% {
+        box-shadow: 0 -2em;
+        height: 5em;
+      }
+    }
+    @keyframes load1 {
+      0%,
+      80%,
+      100% {
+        box-shadow: 0 0;
+        height: 4em;
+      }
+      40% {
+        box-shadow: 0 -2em;
+        height: 5em;
+      }
+    }
+    #easyadmin-main-menu > *:not(:nth-last-child(2)):not(:nth-child(1)){
+        display: none;
+    }
+</style>
+<style>
+    .notice,
+    #your-profile > p:nth-of-type(1),
+    #your-profile > p:nth-of-type(1) + h2,
+    #your-profile > p:nth-of-type(1) + h2 + table,
+    #your-profile > p:nth-of-type(1) + h2 + table + h3,
+    #your-profile > p:nth-of-type(1) + h2 + table + h3 + table,
+    #your-profile > table:nth-of-type(4) + h2,
+    #your-profile > table:nth-of-type(5),
+    #your-profile > h3:last-of-type,
+    .post-type-attachment #postbox-container-2,
+    .post-type-attachment .compat-attachment-fields,
+    .attachment-info .compat-attachment-fields
+    {
+        display: none;
+    }
+    .media-frame-content .view-switch > a{
+        max-width: 0;
+        overflow: hidden;
+    }
+</style>
+        <?php
+    });
+    $before_loaded_menu_css = "";
     $FontAwesome = new class{
         private $stack = [];
         private $colors_stack = [];
@@ -55,7 +159,7 @@
             return "dashicons-fa-u-$name";
         }
         public function __construct(){
-            add_action('admin_enqueue_scripts', function(){
+            ea_add_action('admin_enqueue_scripts', function(){
                 $css = '';
                 foreach($this -> stack as $symbol){
                     $css .= ",.dashicons-fa-special-holder.dashicons-fa-u-$symbol:before";
@@ -100,7 +204,7 @@
         }
         public function __construct(){
             $stack = [];
-            add_action('admin_menu', function() use (&$stack){
+            ea_add_action('admin_menu', function() use (&$stack){
                 foreach ($this -> menu as $element){
                     $stack[] = [$element['header'], $element['classes']];
                     add_menu_page($element['header'], $element['header'], /* capability */ 'read', $element['href'], [$this, $element['callback']], $element['icon']);
@@ -109,7 +213,7 @@
                     }
                 }
             });
-            add_action('admin_enqueue_scripts', function() use (&$stack){
+            ea_add_action('admin_enqueue_scripts', function() use (&$stack){
                 ?>
                 <script>
                     document.addEventListener('DOMContentLoaded', function(){
@@ -232,15 +336,13 @@
         'edit.php',                                                                 // Блог
         'admin.php?page=helpme',                                                    // Помощь
     ];
-    add_action('admin_menu', function(){
-        if (!current_user_can('use-native-admin-panel')){
-            remove_submenu_page('upload.php', 'wp-smush-bulk');
-            remove_menu_page('edit-comments.php');
-            remove_menu_page('tools.php');
-            remove_menu_page('edit.php');
-        }
+    ea_add_action('admin_menu', function(){
+        remove_submenu_page('upload.php', 'wp-smush-bulk');
+        remove_menu_page('edit-comments.php');
+        remove_menu_page('tools.php');
+        remove_menu_page('edit.php');
     }, 9999);
-    add_action('admin_enqueue_scripts', function() use ($queue){
+    ea_add_action('admin_enqueue_scripts', function() use ($queue){
         ?>
         <script>
             document.addEventListener('DOMContentLoaded', function(){
@@ -267,7 +369,6 @@
                     }
                     echo json_encode($temp);
                 ?>;
-                console.log(priorities);
                 for(var i = 0; i < list.length; i++){
                     if (list[i].children[0].attributes.href){
                         if (priorities[list[i].children[0].attributes.href.nodeValue] !== undefined){
@@ -285,6 +386,7 @@
                         list[0].parentNode.prepend(e);
                     }
                 });
+                document.getElementById('main-menu-loading-animation').remove();
             });
         </script>
         <?php

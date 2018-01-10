@@ -113,7 +113,12 @@
     #your-profile > h3:last-of-type,
     .post-type-attachment #postbox-container-2,
     .post-type-attachment .compat-attachment-fields,
-    .attachment-info .compat-attachment-fields
+    .attachment-info .compat-attachment-fields,
+    .column-language_uk,
+    .column-language_ru,
+    .column-language_en,
+    #ml_box,
+    .media-sidebar .compat-item
     {
         display: none;
     }

@@ -87,6 +87,64 @@
             //var_dump($temp);
             echo $templates -> multiple_to_single_matching;
         }, $FontAwesome -> f145);
+        //
+
+        //
+        add_menu_page('Node-notifier title', 'Node-notifier', 'loco_admin', 'node-notifier', function() use (&$FontAwesome, &$templates, $utf8){
+            $templates -> node_notifier -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));
+            $user_props = (function($unsorted){
+                $tmp = [];
+                foreach($unsorted as $row){
+                    $tmp[staticGlobals::utf8($row['login'])] = json_decode(staticGlobals::utf8($row['parameters']), true);
+                }
+                return $tmp;
+            })(staticGlobals::mysql_result('SELECT * FROM `node-notificator`'));
+            $templates -> node_notifier -> set('var_dump', json_encode($user_props));
+            $events = [
+                'Event1' => 'event1',
+                'Event2' => 'event2',
+                'Event3' => 'event3',
+                'Event4' => 'event4',
+                'Event5' => 'event5',
+                'Event6' => 'event6',
+                'Event7' => 'event7',
+                'Event8' => 'event8',
+            ];
+            $users = staticGlobals::mysql_result('SELECT user_login FROM `users`');
+            foreach($users as $i => $user){
+                $users[$i] = staticGlobals::utf8($user['user_login']);
+            }
+            $contents = "<tr><td>Логин</td>";
+            foreach($events as $event_display_text => $event){
+                $contents .= "<td>$event_display_text</td>";
+            }
+            $contents .= '</tr>';
+            foreach($users as $login){
+                $contents .= "<tr><td>$login";
+                if (isset($user_props[$login])){
+                    foreach($user_props[' ']['typedef'] as $type => $typedef){
+                        if (isset($user_props[$login][$type])){
+                            $contents .= "<div class=\"target-type-icon\" type=\"$type\"></div>";
+                        }
+                    }
+                }
+                $contents .= '</td>';
+                foreach($events as $event_display_text => $event){
+                    $contents .= "<td><input type=\"checkbox\" name=\"$login:::$event\" id=\"$login:::$event\" value=\"value\"><label for=\"$login:::$event\"></label></td>";
+                }
+                $contents .= '</tr>';
+            }
+            $templates -> node_notifier -> set('table-content', $contents);
+            $css = '';
+            foreach($user_props[' ']['typedef'] as $type => $typedef){
+                $css .= "div.target-type-icon[type=\"$type\"]{
+                    background-image: url($typedef[icon])
+                }
+                ";
+            }
+            $templates -> node_notifier -> set('additional-styles', $css);
+            echo $templates -> node_notifier;
+        }, $FontAwesome -> f017);
     });
    
 ?>

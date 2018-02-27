@@ -91,6 +91,38 @@
 
         //
         add_menu_page('Node-notifier title', 'Node-notifier', 'loco_admin', 'node-notifier', function() use (&$FontAwesome, &$templates, $utf8){
+
+            if(isset($_GET['save-table'])){
+                $json = json_encode((function(){
+                    $settings = json_decode(staticGlobals::utf8(staticGlobals::mysql_result('SELECT parameters FROM `node-notificator` WHERE login = " "')[0]['parameters']), true);
+                    foreach($_POST as $event => $users){
+                        if (isset($settings['eventdef'][$event])){
+                            $settings['eventdef'][$event]['users'] = $users;
+                        }
+                    }
+                    $res = [
+                        'updated' => (function($sql){
+                            $sql = preg_replace_callback('/(UPDATE)\s+`(.+?)`/ms', function($matches){
+                                global $wpdb;
+                                if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
+                                return $matches[1] . ' `' . $matches[2] . '`';
+                            }, $sql);
+                            $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                            if (!$mysqli -> connect_errno){
+                                $mysqli -> query($sql);
+                                return $mysqli -> affected_rows;
+                            }
+                            return false;
+                        })('UPDATE `node-notificator` SET parameters = FROM_BASE64("' . base64_encode(json_encode($settings)) . '") WHERE login = " "') == 1
+                    ];
+                    return $res;
+                })());
+                if (!(mb_strlen($json) % 10)){
+                    $json = substr($json, 0, -1) . ' }'; // Дабы при реверсии числа случаем 0 впереди не выскочил
+                }
+                die($json . mb_strlen($json));
+            }
+
             $templates -> node_notifier -> set('heading', __('Multiple and single categories names matching', 'ait-admin'));
             $user_props = (function($unsorted){
                 $tmp = [];
@@ -99,17 +131,10 @@
                 }
                 return $tmp;
             })(staticGlobals::mysql_result('SELECT * FROM `node-notificator`'));
-            $templates -> node_notifier -> set('var_dump', json_encode($user_props));
-            $events = [
-                'Event1' => 'event1',
-                'Event2' => 'event2',
-                'Event3' => 'event3',
-                'Event4' => 'event4',
-                'Event5' => 'event5',
-                'Event6' => 'event6',
-                'Event7' => 'event7',
-                'Event8' => 'event8',
-            ];
+            $events = [];
+            foreach($user_props[' ']['eventdef'] as $event => $ev_props){
+                $events[$ev_props['displayName']] = $event;
+            }
             $users = staticGlobals::mysql_result('SELECT user_login FROM `users`');
             foreach($users as $i => $user){
                 $users[$i] = staticGlobals::utf8($user['user_login']);
@@ -130,7 +155,12 @@
                 }
                 $contents .= '</td>';
                 foreach($events as $event_display_text => $event){
-                    $contents .= "<td><input type=\"checkbox\" name=\"$login:::$event\" id=\"$login:::$event\" value=\"value\"><label for=\"$login:::$event\"></label></td>";
+                    $contents .= "<td><input type=\"checkbox\" name=\"$login:::$event\" id=\"$login:::$event\"";
+                    if (isset($user_props[' ']['eventdef'][$event]) &&
+                        isset($user_props[' ']['eventdef'][$event]['users']) &&
+                        in_array($login, $user_props[' ']['eventdef'][$event]['users'])
+                    ) $contents .= ' checked="checked"';
+                    $contents .= "><label for=\"$login:::$event\"></label></td>";
                 }
                 $contents .= '</tr>';
             }

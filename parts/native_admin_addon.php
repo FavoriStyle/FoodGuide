@@ -133,17 +133,18 @@
             })(staticGlobals::mysql_result('SELECT * FROM `node-notificator`'));
             $events = [];
             foreach($user_props[' ']['eventdef'] as $event => $ev_props){
-                $events[$ev_props['displayName']] = $event;
+                $events[$event] = md5($event);
             }
             $users = staticGlobals::mysql_result('SELECT user_login FROM `users`');
             foreach($users as $i => $user){
                 $users[$i] = staticGlobals::utf8($user['user_login']);
             }
-            $contents = "<tr><td>Логин</td>";
+            $contents = "<tr><th><div>Логин</div></th>";
             foreach($events as $event_display_text => $event){
-                $contents .= "<td>$event_display_text</td>";
+                $contents .= "<th><div>$event_display_text</div></th>";
             }
-            $contents .= '</tr>';
+            $templates -> node_notifier -> set('table-header', $contents . '</tr>');
+            $contents = '';
             foreach($users as $login){
                 $contents .= "<tr><td>$login";
                 if (isset($user_props[$login])){
@@ -156,9 +157,9 @@
                 $contents .= '</td>';
                 foreach($events as $event_display_text => $event){
                     $contents .= "<td><input type=\"checkbox\" name=\"$login:::$event\" id=\"$login:::$event\"";
-                    if (isset($user_props[' ']['eventdef'][$event]) &&
-                        isset($user_props[' ']['eventdef'][$event]['users']) &&
-                        in_array($login, $user_props[' ']['eventdef'][$event]['users'])
+                    if (isset($user_props[' ']['eventdef'][$event_display_text]) &&
+                        isset($user_props[' ']['eventdef'][$event_display_text]['users']) &&
+                        in_array($login, $user_props[' ']['eventdef'][$event_display_text]['users'])
                     ) $contents .= ' checked="checked"';
                     $contents .= "><label for=\"$login:::$event\"></label></td>";
                 }
@@ -174,7 +175,7 @@
             }
             $templates -> node_notifier -> set('additional-styles', $css);
             echo $templates -> node_notifier;
-        }, $FontAwesome -> f017);
+        }, $FontAwesome -> f0f3);
     });
    
 ?>

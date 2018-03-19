@@ -91,35 +91,56 @@
 
         //
         add_menu_page('Node-notifier title', 'Node-notifier', 'loco_admin', 'node-notifier', function() use (&$FontAwesome, &$templates, $utf8){
+            function update_settings($settings){
+                return (function($sql){
+                    $sql = preg_replace_callback('/(UPDATE)\s+`(.+?)`/ms', function($matches){
+                        global $wpdb;
+                        if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
+                        return $matches[1] . ' `' . $matches[2] . '`';
+                    }, $sql);
+                    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                    if (!$mysqli -> connect_errno){
+                        $mysqli -> query($sql);
+                        return $mysqli -> affected_rows;
+                    }
+                    return false;
+                })('UPDATE `node-notificator` SET parameters = FROM_BASE64("' . base64_encode(json_encode($settings)) . '") WHERE login = " "') == 1;
+            }
+
+            function normalize_json($json){ // Дабы при реверсии числа случаем 0 впереди не выскочил
+                if (!(mb_strlen($json) % 10)){
+                    $json = substr($json, 0, -1) . ' }';
+                }
+                return $json;
+            }
+
+            function getSettings(){
+                return json_decode(staticGlobals::utf8(staticGlobals::mysql_result('SELECT parameters FROM `node-notificator` WHERE login = " "')[0]['parameters']), true);
+            }
 
             if(isset($_GET['save-table'])){
                 $json = json_encode((function(){
-                    $settings = json_decode(staticGlobals::utf8(staticGlobals::mysql_result('SELECT parameters FROM `node-notificator` WHERE login = " "')[0]['parameters']), true);
-                    foreach($_POST as $event => $users){
+                    $settings = getSettings();
+                    foreach($_POST['data'] as $event => $users){
                         if (isset($settings['eventdef'][$event])){
                             $settings['eventdef'][$event]['users'] = $users;
                         }
                     }
-                    $res = [
-                        'updated' => (function($sql){
-                            $sql = preg_replace_callback('/(UPDATE)\s+`(.+?)`/ms', function($matches){
-                                global $wpdb;
-                                if(!(mb_strpos($matches[2], $wpdb -> prefix) === 0)) $matches[2] = $wpdb -> prefix . $matches[2];
-                                return $matches[1] . ' `' . $matches[2] . '`';
-                            }, $sql);
-                            $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                            if (!$mysqli -> connect_errno){
-                                $mysqli -> query($sql);
-                                return $mysqli -> affected_rows;
-                            }
-                            return false;
-                        })('UPDATE `node-notificator` SET parameters = FROM_BASE64("' . base64_encode(json_encode($settings)) . '") WHERE login = " "') == 1
-                    ];
-                    return $res;
+                    return ['updated' => update_settings($settings)];
                 })());
-                if (!(mb_strlen($json) % 10)){
-                    $json = substr($json, 0, -1) . ' }'; // Дабы при реверсии числа случаем 0 впереди не выскочил
-                }
+                $json = normalize_json($json);
+                die($json . mb_strlen($json));
+            }
+
+            if(isset($_GET['add-event'])){
+                $json = json_encode((function(){
+                    $settings = getSettings();
+                    if (isset($settings['eventdef'][$_POST['name']])) return false;
+                    $settings['eventdef'][$_POST['name']] = $settings['eventTpl'];
+                    if($_POST['message'] && $_POST['message'] != '') $settings['eventdef'][$_POST['name']]['message'] = $_POST['message'];
+                    return ['updated' => update_settings($settings)];
+                })());
+                $json = normalize_json($json);
                 die($json . mb_strlen($json));
             }
 
@@ -139,22 +160,14 @@
             foreach($users as $i => $user){
                 $users[$i] = staticGlobals::utf8($user['user_login']);
             }
-            $contents = "<tr><th><div>Логин</div></th>";
+            $contents = "<tr><th><div><span>Логин</span></div></th>";
             foreach($events as $event_display_text => $event){
-                $contents .= "<th><div>$event_display_text</div></th>";
+                $contents .= "<th><div><span>$event_display_text</span></div></th>";
             }
             $templates -> node_notifier -> set('table-header', $contents . '</tr>');
             $contents = '';
             foreach($users as $login){
-                $contents .= "<tr><td>$login";
-                if (isset($user_props[$login])){
-                    foreach($user_props[' ']['typedef'] as $type => $typedef){
-                        if (isset($user_props[$login][$type])){
-                            $contents .= "<div class=\"target-type-icon\" type=\"$type\"></div>";
-                        }
-                    }
-                }
-                $contents .= '</td>';
+                $contents .= "<tr><td><div class=\"target-type-icon\" type=\"" . (isset($user_props[$login]) && isset($user_props[$login]['primary_receiver']) ? $user_props[$login]['primary_receiver'] : 'email') . "\"></div>$login</td>";
                 foreach($events as $event_display_text => $event){
                     $contents .= "<td><input type=\"checkbox\" name=\"$login:::$event\" id=\"$login:::$event\"";
                     if (isset($user_props[' ']['eventdef'][$event_display_text]) &&

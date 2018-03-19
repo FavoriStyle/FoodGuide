@@ -355,6 +355,8 @@
                 },
                 'telephone_counter' => function () use ($API){
                     $API -> tel_count_incr($_GET['number']);
+                    require_once($_SERVER['DOCUMENT_ROOT'] . '/addons/node_notifier/autoload.php'); 
+                    Node_notifier::throwEvent("Клик на телефон");
                 },
                 'telephone_counter_all' => function () use ($API){
                     $API -> mail_tel_count();
@@ -402,7 +404,16 @@
                         'cat' => isset($_GET['cat']) ? $_GET['cat'] : null,
                     ]);
                     return json_encode($resp);
-                }
+                },
+                'N!event' => function(){
+                    require_once($_SERVER['DOCUMENT_ROOT'] . '/addons/node_notifier/autoload.php');
+                    Node_notifier::throwEvent(base64_decode($_GET['N!ev_name']), $_GET['N!ev_data'] ? json_decode(base64_decode($_GET['N!ev_data']), true) : []);
+                    ob_start();
+                    var_dump(get_current_user_id());
+                    return [
+                        response => ob_get_clean()
+                    ];
+                },
                 
                 // Пока хватит
                 

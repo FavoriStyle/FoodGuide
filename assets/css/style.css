@@ -1406,3 +1406,8 @@ h1.logo-text{
 		font-size: 20px;
 	}
 }
+
+html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .user-panel,
+html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .user-panel > .user-info{
+	height: 82px;
+}

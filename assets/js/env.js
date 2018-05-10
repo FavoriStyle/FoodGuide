@@ -1,5 +1,10 @@
 const html = document.getElementsByTagName('html')[0],
     body = document.getElementsByTagName('body')[0];
+function jsoToUrle(obj){
+    var res = '', i;
+    for(i in obj) res += `${encodeURIComponent(i)}=${encodeURIComponent(obj[i])}&`;
+    return res.slice(0, -1)
+}
 /**
  * Checks if html or body matches selector
  * @param {String} selector Selector to check
@@ -98,5 +103,41 @@ module.exports = {
                 })
             }
         }
-    })()
+    })(),
+    http: new (class HTTP{
+        /**
+         * Gets contents from url
+         * @param {String} url
+         * @return {Promise<String>}
+         */
+        get(url){
+            var xhr = new XMLHttpRequest();
+            return new Promise((resolve, reject) => {
+                xhr.open('GET', url, true);
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState != 4) return;
+                    if (xhr.status != 200) reject(new Error(`Cannot get requested url. Error ${xhr.status}: ${xhr.statusText}`)); else resolve(xhr.responseText);
+                };
+                xhr.send()
+            })
+        }
+        /**
+         * Sends POST to url
+         * @param {String} url
+         * @param {Object} data
+         * @return {Promise<String>}
+         */
+        post(url, data){
+            var xhr = new XMLHttpRequest();
+            return new Promise((resolve, reject) => {
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState != 4) return;
+                    if (xhr.status != 200) reject(new Error(`Cannot post to requested url. Error ${xhr.status}: ${xhr.statusText}`)); else resolve(xhr.responseText);
+                };
+                xhr.send(jsoToUrle(data));
+            })
+        }
+    })(),
 }

@@ -43,6 +43,18 @@
         private function tel_count(){
             return $this -> mysql_result('SELECT SUM(`count`) FROM `tel_analytics`')[0]['SUM(`count`)'] * 1;
         }
+        public function locateMe($IP){
+            $str = file_get_contents('https://allbooms.com:3008/?act=getIPinfo&token=' . Secrets::$gogs_token . '&params=' . urlencode(json_encode([
+                'ip' => $IP
+            ])));
+            if($str){
+                $str = json_decode($str, true);
+                if($str && $str['type'] == 'success'){
+                    if(!$str['mobile'] && $str['city']) return $str['city']; elseif($str['country']) return $str['country'];
+                }
+            }
+            return 'UA';
+        }
         public function mail_tel_count($lang = 'uk', $address = 'it.styles88@gmail.com'){
             $dic = (function($dic, $lang){
                 $res = [];
@@ -370,6 +382,9 @@
                         $res .= "<tr><td>$item[title]</td><td>" . implode('<br/>', $item['telephones']) . "</td><td>$item[address]</td>";
                     }
                     return $res . '</tbody><table>';
+                },
+                'locateMe' => function () use ($API){
+                    return json_encode($API -> locateMe($_SERVER['REMOTE_ADDR']));
                 },
                 'get_nearest_items_beta' => function () use ($API){
                     var_dump($_GET);

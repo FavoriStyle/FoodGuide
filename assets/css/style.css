@@ -1411,3 +1411,11 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
 html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .user-panel > .user-info{
 	height: 82px;
 }
+
+#masthead .site-logo .logo-extender-location{
+	position: relative;
+	top: -28px;
+	color:  white;
+	right: -165px;
+	font-size: 18px;
+}

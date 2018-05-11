@@ -1068,3 +1068,29 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
 //document.addEventListener('DOMContentLoaded', center_copyright);
 //document.addEventListener('DOMContentLoaded', center_item_headers_in_footer);
 //document.addEventListener('DOMContentLoaded', faq_page_submit_translator);
+
+(()=>{const require=(()=>{const require=exports=>{exports=(url=>{return{url,xhr:new XMLHttpRequest()}})(exports);exports.xhr.open('GET',exports.url,false);exports.xhr.send();if(exports.xhr.status!=200)throw new Error(`Cannot require module ${exports.url}: ${exports.xhr.status} (${exports.xhr.statusText})`);else{try{let module={exports:{}};eval(`(({__filename,__dirname,exports})=>{${exports.xhr.responseText}})({__filename:${JSON.stringify(exports.url)},__dirname:${JSON.stringify((a=>{a.pop();return a.join('/')})(exports.url.split('/')))},exports:new Proxy(module.exports,{})})`);return module.exports}catch(e){throw e}}};return exports=>{exports=(url=>{return{url,xhr:new XMLHttpRequest()}})(exports);return new Promise((__filename,__dirname)=>{exports.xhr.open('GET',exports.url,true);exports.xhr.send();exports.xhr.onreadystatechange=()=>{if(exports.xhr.readyState!=4)return;if(exports.xhr.status != 200)__dirname(new Error(`Cannot require module ${exports.url}: ${exports.xhr.status} (${exports.xhr.statusText})`));else{try{let module = {exports:{}};eval(`(({__filename,__dirname,exports})=>{${exports.xhr.responseText}})({__filename:${JSON.stringify(exports.url)},__dirname:${JSON.stringify((a=>{a.pop();return a.join('/')})(exports.url.split('/')))},exports:new Proxy(module.exports,{})})`);__filename(module.exports)}catch(e){__dirname(e)}}}})}})();(()=>{
+    // Пример: require('https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js').then($=>{console.log($('body'))})
+    // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
+    // Внутри модулей используется синхронная реализация этой же функции (см. require в Node.js)
+    require('https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.2-j/assets/js/env.js').then(({html, body, is, isAll, $, Cookies, http, apiv4pjs, _}) => {
+        [
+            {
+                cond: true,
+                func: () => {
+                    apiv4pjs.locateMe().then(location => {
+                        $('#masthead .site-logo')[0].appendChild(_({
+                            name: 'div',
+                            attrs: {
+                                class: 'logo-extender-location'
+                            },
+                            html: location
+                        }))
+                    }).catch(e => {
+                        console.error(e)
+                    })
+                }
+            }
+        ].forEach(({cond,func})=>{if(cond)func()})
+    })
+})()})()

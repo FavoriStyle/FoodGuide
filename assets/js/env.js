@@ -142,9 +142,13 @@ module.exports = {
     })(),
     http,
     apiv4pjs: new Proxy({}, {
-        get(name){
+        get(target, act){
             return data => {
-                return http.get(`${location.origin}/addons/apiv4pjs?act=${encodeURIComponent(name)}&${jsoToUrle(data)}`);
+                return new Promise((resolve, reject) => {
+                    http.get(`${location.origin}/addons/apiv4pjs?act=${encodeURIComponent(act)}&${jsoToUrle(data)}`).then(result => {
+                        resolve(JSON.parse(result))
+                    }).catch(reject)
+                })
             }
         },
         set(){

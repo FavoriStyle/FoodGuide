@@ -10,6 +10,15 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
+$target_version = '1e3d61a6ee2aa0635df62a855057215cf55acdf5';
+(function() use ($target_version){
+    add_action('wp_enqueue_scripts', function() use ($target_version){ ?>
+        <script src="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/js/main.js" async defer></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/css/style.css">
+    <?php });
+})();
+
+/*
 (function(){
     
     $settings = [
@@ -169,5 +178,6 @@ License: MIT
         <?php
     });
 })();
+*/
 
 ?>

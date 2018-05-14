@@ -1412,10 +1412,15 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
 	height: 82px;
 }
 
-#masthead .site-logo .logo-extender-location{
-	position: relative;
-	top: -28px;
-	color:  white;
-	right: -165px;
-	font-size: 18px;
+#masthead .site-logo .logo-extender-location {
+    position: relative;
+    top: -24px;
+    right: -7px;
+    font-size: 18px;
+    display: inline;
+    background-color: white;
+    color: #825bae;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 0 10px;
 }

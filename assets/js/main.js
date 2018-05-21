@@ -1069,28 +1069,196 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
 //document.addEventListener('DOMContentLoaded', center_item_headers_in_footer);
 //document.addEventListener('DOMContentLoaded', faq_page_submit_translator);
 
-(()=>{const require=(()=>{const require=exports=>{exports=(url=>{return{url,xhr:new XMLHttpRequest()}})(exports);exports.xhr.open('GET',exports.url,false);exports.xhr.send();if(exports.xhr.status!=200)throw new Error(`Cannot require module ${exports.url}: ${exports.xhr.status} (${exports.xhr.statusText})`);else{try{let module={exports:{}};eval(`(({__filename,__dirname,exports})=>{${exports.xhr.responseText}})({__filename:${JSON.stringify(exports.url)},__dirname:${JSON.stringify((a=>{a.pop();return a.join('/')})(exports.url.split('/')))},exports:new Proxy(module.exports,{})})`);return module.exports}catch(e){throw e}}};return exports=>{exports=(url=>{return{url,xhr:new XMLHttpRequest()}})(exports);return new Promise((__filename,__dirname)=>{exports.xhr.open('GET',exports.url,true);exports.xhr.send();exports.xhr.onreadystatechange=()=>{if(exports.xhr.readyState!=4)return;if(exports.xhr.status!=200)__dirname(new Error(`Cannot require module ${exports.url}: ${exports.xhr.status} (${exports.xhr.statusText})`));else{try{let module={exports:{}};eval(`(({__filename,__dirname,exports})=>{${exports.xhr.responseText}})({__filename:${JSON.stringify(exports.url)},__dirname:${JSON.stringify((a=>{a.pop();return a.join('/')})(exports.url.split('/')))},exports:new Proxy(module.exports,{})})`);__filename(module.exports)}catch(e){__dirname(e)}}}})}})(),__filename=(a=>{return `${a[a.length-3]}://${a[a.length-2]}`})((new Error('')).stack.split(/(\w+):\/\/(\S+):\d+:\d+/)),__dirname=(a=>{a.pop();return a.join('/')})(__filename.split('/'));(()=>{
+(()=>{const require=(()=>{return exports=>{exports=(url=>{return{url,xhr:new XMLHttpRequest()}})(exports);return new Promise((__filename,__dirname)=>{exports.xhr.open('GET',exports.url,true);exports.xhr.send();exports.xhr.onreadystatechange=()=>{if(exports.xhr.readyState!=4)return;if(exports.xhr.status!=200)__dirname(new Error(`Cannot require module ${exports.url}: ${exports.xhr.status} (${exports.xhr.statusText})`));else{try{let module={exports:{}};eval(`Promise.resolve((async({__filename,__dirname,exports})=>{${exports.xhr.responseText}})({__filename:${JSON.stringify(exports.url)},__dirname:${JSON.stringify((a=>{a.pop();return a.join('/')})(exports.url.split('/')))},exports:new Proxy(module.exports,{})})).then(()=>{__filename(module.exports)})`);}catch(e){__dirname(e)}}}})}})(),__filename=(a=>{return `${a[a.length-3]}://${a[a.length-2]}`})((new Error('')).stack.split(/(\w+):\/\/(\S+):\d+:\d+/)),__dirname=(a=>{a.pop();return a.join('/')})(__filename.split('/'));(async()=>{
     // Пример: require('https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js').then($=>{console.log($('body'))})
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
-    // Внутри модулей используется синхронная реализация этой же функции (см. require в Node.js)
-    require('https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.2-j/assets/js/env.js').then(({html, body, is, isAll, $, Cookies, http, apiv4pjs, _}) => {
-        [
-            {
-                cond: true,
-                func: () => {
-                    apiv4pjs.locateMe().then(location => {
-                        $('#masthead .site-logo')[0].appendChild(_({
-                            name: 'div',
-                            attrs: {
-                                class: 'logo-extender-location'
-                            },
-                            html: location
-                        }))
-                    }).catch(e => {
-                        console.error(e)
+    const {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI} = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.3-b/assets/js/env.js');
+
+    (async ({mapid, mapProvider, defView}) => {
+        // LeafLet map
+        // Parallel download
+        var [pins, llcss, lljs] = await Promise.all([
+            gogsAPI.FG_getPins({lang:'ru'}),
+            http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
+            http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'),
+        ]);
+        body.appendChild(_({
+            name: 'style',
+            html: llcss
+        }));
+        body.appendChild(_({
+            attrs: {
+                id: mapid,
+                style: 'height: 900px',
+            }
+        }));
+        const L = await require('data:application/javascript;base64,' + Base64.encode(lljs)),
+            createPinContainer = (t => {
+                var a = [];
+                for(let i in t) a[i] = t[i];
+                return count => {
+                    var w, src;
+                    a.forEach((t, i) => {
+                        if (count >= i) [w, src] = t;
+                    });
+                    return L.divIcon({
+                        className: 'pin-container',
+                        html: `<img style="position:absolute;width:${w}px;z-index:-1;top:-${w/2-6}px;left:-${w/2-6}px;" src="${src}"/>${count}`
                     })
                 }
+            })({
+                // Размеры контейнеров в зависимости от количества со ссылками на их бекграунды
+                0   :   [50,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster1.png'],
+                10  :   [60,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster2.png'],
+                100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
+            });
+        var mymap = L.map(mapid).setView(...defView);
+        L.tileLayer(...mapProvider).addTo(mymap);
+        var neededCSS = `
+.leaflet-marker-icon.pin-container{
+    display: flex;
+    justify-content: center;
+    line-height: 14px;
+    font-weight: bold;
+}
+.leaflet-popup > .leaflet-popup-tip-container{
+    display: none;
+}
+.leaflet-popup > .leaflet-popup-content-wrapper{
+    border-radius: 0;
+}
+.leaflet-popup-pane > .leaflet-popup{
+    bottom: -7px !important;
+    left: 30px !important;
+}
+.leaflet-popup-content{
+    width: 280px !important;
+    margin: 0;
+}
+.leaflet-popup-content > .ll-popup-heading{
+    height: 105px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+.leaflet-popup-content > .ll-popup-heading:before {
+    content: "";
+    position: absolute;
+    top: -30px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: -webkit-linear-gradient(top,#443b4e,rgba(0,0,0,0));
+    background: -o-linear-gradient(top,#443b4e,rgba(0,0,0,0));
+    background: -moz-linear-gradient(top,#443b4e,rgba(0,0,0,0));
+    background: linear-gradient(to top,#443b4e,rgba(0,0,0,0));
+}
+.leaflet-popup-content-wrapper{
+    padding: 0;
+}
+.ll-popup-content{
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 14px;
+    color: #888;
+    line-height: 24px;
+    padding: 15px 20px 20px;
+}
+.ll-popup-content > .ll-item-address:before{
+    font-family: 'FontAwesome';
+    content: "\f041";
+    margin-right: 7px;
+}
+.ll-popup-content > a,.ll-popup-content > .ll-item-address{
+    color: #fff;
+    font: inherit;
+}
+.ll-popup-content > a{
+    font-size: 18px;
+    position: absolute;
+    top: 57px;
+    left: 10px;
+    font-weight: 700;
+}
+.ll-popup-content > .ll-item-address{
+    margin: 0;
+    position: absolute;
+    top: 80px;
+    left: 20px;
+}
+.leaflet-popup-close-button{
+    color: black !important;
+    background-color: #fff !important;
+    border-radius: 50% !important;
+    height: 18px !important;
+    padding-left: 2px !important;
+    padding-top: 4px !important;
+    padding-right: 2px !important;
+    top: 4px !important;
+    right: 4px !important;
+}
+`;
+        body.appendChild(_({
+            name: 'style',
+            html: neededCSS
+        }));
+        pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
+            L.marker([lat, lng], {icon: L.icon({
+                iconUrl: pin,
+                iconAnchor: [31, 64],
+            })}).on('click', ev => {
+                console.log(ev)
+            }).addTo(mymap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
+        });
+        mymap.on('zoom', ev => {
+            console.log(ev)
+        })
+        //*
+        //
+        /*/
+        L.marker([50.9058366, 34.7944168], {icon: createPinContainer(1445)}).addTo(mymap);
+        L.marker([50.2678812, 28.6386983], {icon: createPinContainer(7)}).addTo(mymap);
+        L.marker([50.4019514, 30.3926097], {icon: createPinContainer(34)}).addTo(mymap);
+
+
+        L.marker([51.5, -0.09]).addTo(mymap);
+        L.circle([51.508, -0.11], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 500
+        }).addTo(mymap);
+        L.polygon([
+            [51.509, -0.08],
+            [51.503, -0.06],
+            [51.51, -0.047]
+        ]).addTo(mymap);
+        //*/
+    })({
+        mapid: 'mapid',
+        mapProvider: [
+            'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
+                minZoom: 1,
+                maxZoom: 18,
+                attribution: '<a href="https://wikimediafoundation.org/wiki/Maps_Terms_of_Use">Wikimedia</a>',
             }
-        ].forEach(({cond,func})=>{if(cond)func()})
-    })
+        ],
+        defView: [[49.0275, 31.4828], 6]
+        // End Leaflet
+    });
+    [
+        {
+            cond: true,
+            func: async () => {
+                let location = await apiv4pjs.locateMe();
+                $('#masthead .site-logo')[0].appendChild(_({
+                    name: 'div',
+                    attrs: {
+                        class: 'logo-extender-location'
+                    },
+                    html: location
+                }))
+            }
+        }
+    ].forEach(({cond,func})=>{if(cond)func()})
 })()})()

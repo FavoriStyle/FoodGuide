@@ -1072,7 +1072,8 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
 (()=>{const require=(()=>{return exports=>{exports=(url=>{return{url,xhr:new XMLHttpRequest()}})(exports);return new Promise((__filename,__dirname)=>{exports.xhr.open('GET',exports.url,true);exports.xhr.send();exports.xhr.onreadystatechange=()=>{if(exports.xhr.readyState!=4)return;if(exports.xhr.status!=200)__dirname(new Error(`Cannot require module ${exports.url}: ${exports.xhr.status} (${exports.xhr.statusText})`));else{try{let module={exports:{}};eval(`Promise.resolve((async({__filename,__dirname,exports})=>{${exports.xhr.responseText}})({__filename:${JSON.stringify(exports.url)},__dirname:${JSON.stringify((a=>{a.pop();return a.join('/')})(exports.url.split('/')))},exports:new Proxy(module.exports,{})})).then(()=>{__filename(module.exports)})`);}catch(e){__dirname(e)}}}})}})(),__filename=(a=>{return `${a[a.length-3]}://${a[a.length-2]}`})((new Error('')).stack.split(/(\w+):\/\/(\S+):\d+:\d+/)),__dirname=(a=>{a.pop();return a.join('/')})(__filename.split('/'));(async()=>{
     // Пример: require('https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js').then($=>{console.log($('body'))})
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
-    const {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI} = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.3-b/assets/js/env.js');
+    const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
+        {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
     [
         {
             cond: true,

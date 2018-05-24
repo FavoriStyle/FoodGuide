@@ -50,10 +50,10 @@
             if($str){
                 $str = json_decode($str, true);
                 if($str && $str['type'] == 'success'){
-                    if(!$str['mobile'] && $str['city']) return $str['city']; elseif($str['country']) return $str['country'];
+                    if(!$str['mobile'] && $str['city']) return ['location' => $str['city'], [$str['location']['lat'], $str['location']['lng']]]; elseif($str['country']) return ['location' => $str['country']];
                 }
             }
-            return 'UA';
+            return ['location' => 'UA'];
         }
         public function mail_tel_count($lang = 'uk', $address = 'it.styles88@gmail.com'){
             $dic = (function($dic, $lang){

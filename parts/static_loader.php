@@ -10,7 +10,7 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
-$target_version = '9316416c6fcf385c0d9a0e87a1096ac286acfb0d';
+$target_version = '74d37d14f76e3ebd0a040b63dcff47f24b7130af';
 (function() use ($target_version){
     add_action('wp_enqueue_scripts', function() use ($target_version){ ?>
         <script src="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/js/main.js" async defer></script>

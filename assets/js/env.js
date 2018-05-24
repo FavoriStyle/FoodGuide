@@ -49,7 +49,7 @@ const html = document.getElementsByTagName('html')[0],
 function is(selector){
     function match(el){
         el.matches = (el.matches || el.matchesSelector || (() => {return false}))
-    return selector => {return el.matches(selector)}
+        return selector => {return el.matches(selector)}
     }
     try {
         return match(body)(selector) || match(html)(selector)

@@ -1085,7 +1085,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     },
                     html: location
                 }));
-                if (!is('main-page')) return;
+                if (!is('.main-page')) return;
                 // MAP
                 const mapid = 'll-map-container',
                     mapProvider = [

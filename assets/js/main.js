@@ -1073,74 +1073,91 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     // Пример: require('https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js').then($=>{console.log($('body'))})
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
     const {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI} = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@0.0.3-b/assets/js/env.js');
-
-    (async ({mapid, mapProvider, defView}) => {
-        // LeafLet map
-        function distance([lat1, long1], [lat2, long2]){
-            //радиус Земли
-            var R = 6372795;
-            //перевод коордитат в радианы
-            lat1 *= Math.PI / 180;
-            lat2 *= Math.PI / 180;
-            long1 *= Math.PI / 180;
-            long2 *= Math.PI / 180;
-            //вычисление косинусов и синусов широт и разницы долгот
-            var cl1 = Math.cos(lat1),
-                cl2 = Math.cos(lat2),
-                sl1 = Math.sin(lat1),
-                sl2 = Math.sin(lat2),
-                delta = long2 - long1,
-                cdelta = Math.cos(delta),
-                sdelta = Math.sin(delta),
-            //вычисления длины большого круга
-                y = Math.sqrt(Math.pow(cl2 * sdelta, 2) + Math.pow(cl1 * sl2 - sl1 * cl2 * cdelta, 2)),
-                x = sl1 * sl2 + cl1 * cl2 * cdelta,
-                ad = Math.atan2(y, x),
-                dist = ad * R; //расстояние между двумя координатами в метрах
-            return dist
-        }
-        function mid([lat1, long1], [lat2, long2]){
-            return [(lat1 + lat2) / 2, (long1 + long2) / 2]
-        }
-        // Parallel download
-        var [pins, llcss, lljs] = await Promise.all([
-            gogsAPI.FG_getPins({lang:'ru'}),
-            http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
-            http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'),
-        ]);
-        body.appendChild(_({
-            name: 'style',
-            html: llcss
-        }));
-        body.appendChild(_({
-            attrs: {
-                id: mapid,
-                style: 'height: 900px',
-            }
-        }));
-        const L = await require('data:application/javascript;base64,' + Base64.encode(lljs)),
-            createPinContainer = (t => {
-                var a = [];
-                for(let i in t) a[i] = t[i];
-                return count => {
-                    var w, src;
-                    a.forEach((t, i) => {
-                        if (count >= i) [w, src] = t;
-                    });
-                    return L.divIcon({
-                        className: 'pin-container',
-                        html: `<img style="position:absolute;width:${w}px;z-index:-1;top:-${w/2-6}px;left:-${w/2-6}px;" src="${src}"/>${count}`
-                    })
+    [
+        {
+            cond: true,
+            func: async () => {
+                let {location, geoposition} = await apiv4pjs.locateMe();
+                $('#masthead .site-logo')[0].appendChild(_({
+                    name: 'div',
+                    attrs: {
+                        class: 'logo-extender-location'
+                    },
+                    html: location
+                }));
+                if (!is('main-page')) return;
+                // MAP
+                const mapid = 'll-map-container',
+                    mapProvider = [
+                        'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
+                            minZoom: 1,
+                            maxZoom: 18,
+                            attribution: (a=>{var r=[],i;for(i in a)r.push(`<a href="${a[i].replace('"','%22')}">${i}</a>`);return r.join(' | ')})({
+                                Wikimedia: 'https://wikimediafoundation.org/wiki/Maps_Terms_of_Use',
+                                FavoriStyle: 'https://favoristyle.com.ua',
+                            })
+                        }
+                    ],
+                    defView = geoposition ? [geoposition, 15] : [[49.0275, 31.4828], 6];
+                function distance([lat1, long1], [lat2, long2]){
+                    //радиус Земли
+                    var R = 6372795;
+                    //перевод коордитат в радианы
+                    lat1 *= Math.PI / 180;
+                    lat2 *= Math.PI / 180;
+                    long1 *= Math.PI / 180;
+                    long2 *= Math.PI / 180;
+                    //вычисление косинусов и синусов широт и разницы долгот
+                    var cl1 = Math.cos(lat1),
+                        cl2 = Math.cos(lat2),
+                        sl1 = Math.sin(lat1),
+                        sl2 = Math.sin(lat2),
+                        delta = long2 - long1,
+                        cdelta = Math.cos(delta),
+                        sdelta = Math.sin(delta),
+                    //вычисления длины большого круга
+                        y = Math.sqrt(Math.pow(cl2 * sdelta, 2) + Math.pow(cl1 * sl2 - sl1 * cl2 * cdelta, 2)),
+                        x = sl1 * sl2 + cl1 * cl2 * cdelta,
+                        ad = Math.atan2(y, x),
+                        dist = ad * R; //расстояние между двумя координатами в метрах
+                    return dist
                 }
-            })({
-                // Размеры контейнеров в зависимости от количества со ссылками на их бекграунды
-                0   :   [50,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster1.png'],
-                10  :   [60,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster2.png'],
-                100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
-            });
-        var mymap = L.map(mapid).setView(...defView);
-        L.tileLayer(...mapProvider).addTo(mymap);
-        var neededCSS = `
+                function mid([lat1, long1], [lat2, long2]){
+                    return [(lat1 + lat2) / 2, (long1 + long2) / 2]
+                }
+                // Parallel download
+                var [pins, llcss, lljs] = await Promise.all([
+                    gogsAPI.FG_getPins({lang:'ru'}),
+                    http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
+                    http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'),
+                ]);
+                body.appendChild(_({
+                    name: 'style',
+                    html: llcss
+                }));
+                const L = await require('data:application/javascript;base64,' + Base64.encode(lljs)),
+                    createPinContainer = (t => {
+                        var a = [];
+                        for(let i in t) a[i] = t[i];
+                        return count => {
+                            var w, src;
+                            a.forEach((t, i) => {
+                                if (count >= i) [w, src] = t;
+                            });
+                            return L.divIcon({
+                                className: 'pin-container',
+                                html: `<img style="position:absolute;width:${w}px;z-index:-1;top:-${w/2-6}px;left:-${w/2-6}px;" src="${src}"/>${count}`
+                            })
+                        }
+                    })({
+                        // Размеры контейнеров в зависимости от количества со ссылками на их бекграунды
+                        0   :   [50,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster1.png'],
+                        10  :   [60,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster2.png'],
+                        100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
+                    });
+                var mymap = L.map(mapid).setView(...defView);
+                L.tileLayer(...mapProvider).addTo(mymap);
+                var neededCSS = `
 .leaflet-marker-icon.pin-container{
     display: flex;
     justify-content: center;
@@ -1205,6 +1222,10 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     top: 57px;
     left: 10px;
     font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 270px;
 }
 .ll-popup-content > .ll-item-address{
     margin: 0;
@@ -1224,67 +1245,17 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     right: 4px !important;
 }
 `;
-        body.appendChild(_({
-            name: 'style',
-            html: neededCSS
-        }));
-        pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
-            L.marker([lat, lng], {icon: L.icon({
-                iconUrl: pin,
-                iconAnchor: [31, 64],
-            })}).on('click', ev => {
-                console.log(ev)
-            }).addTo(mymap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
-        });
-        mymap.on('zoom', ev => {
-            console.log(ev)
-        })
-        //*
-        //
-        /*/
-        L.marker([50.9058366, 34.7944168], {icon: createPinContainer(1445)}).addTo(mymap);
-        L.marker([50.2678812, 28.6386983], {icon: createPinContainer(7)}).addTo(mymap);
-        L.marker([50.4019514, 30.3926097], {icon: createPinContainer(34)}).addTo(mymap);
-
-
-        L.marker([51.5, -0.09]).addTo(mymap);
-        L.circle([51.508, -0.11], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 500
-        }).addTo(mymap);
-        L.polygon([
-            [51.509, -0.08],
-            [51.503, -0.06],
-            [51.51, -0.047]
-        ]).addTo(mymap);
-        //*/
-    })({
-        mapid: 'mapid',
-        mapProvider: [
-            'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-                minZoom: 1,
-                maxZoom: 18,
-                attribution: '<a href="https://wikimediafoundation.org/wiki/Maps_Terms_of_Use">Wikimedia</a>',
+                body.appendChild(_({
+                    name: 'style',
+                    html: neededCSS
+                }));
+                pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
+                    L.marker([lat, lng], {icon: L.icon({
+                        iconUrl: pin,
+                        iconAnchor: [31, 64],
+                    })}).addTo(mymap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
+                });
             }
-        ],
-        defView: [[49.0275, 31.4828], 6]
-        // End Leaflet
-    });
-    [
-        {
-            cond: true,
-            func: async () => {
-                let location = await apiv4pjs.locateMe();
-                $('#masthead .site-logo')[0].appendChild(_({
-                    name: 'div',
-                    attrs: {
-                        class: 'logo-extender-location'
-                    },
-                    html: location
-                }))
-            }
-        }
+        },
     ].forEach(({cond,func})=>{if(cond)func()})
 })()})()

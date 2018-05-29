@@ -40,7 +40,21 @@ const html = document.getElementsByTagName('html')[0],
                 xhr.send(jsoToUrle(data));
             })
         }
-    })();
+    })(),
+    gogsAPI = new Proxy({}, {
+        get(target, act){
+            return data => {
+                return new Promise((resolve, reject) => {
+                    http.get(`https://allbooms.com:3008/?act=${encodeURIComponent(act)}&params=${encodeURIComponent(JSON.stringify(data))}&token=1`).then(result => {
+                        resolve(JSON.parse(result))
+                    }).catch(reject)
+                })
+            }
+        },
+        set(){
+            return true
+        }
+    });
 /**
  * Checks if html or body matches selector
  * @param {String} selector Selector to check
@@ -161,18 +175,18 @@ module.exports = {
         elem.innerHTML = html || '';
         return elem;
     },
-    gogsAPI: new Proxy({}, {
-        get(target, act){
-            return data => {
-                return new Promise((resolve, reject) => {
-                    http.get(`https://allbooms.com:3008/?act=${encodeURIComponent(act)}&params=${encodeURIComponent(JSON.stringify(data))}&token=1`).then(result => {
-                        resolve(JSON.parse(result))
-                    }).catch(reject)
-                })
-            }
-        },
-        set(){
-            return true
+    gogsAPI,
+    console: new (class Console{
+        log(...args){
+            window.console.log(...args)
         }
-    }),
+        warn(...args){
+            window.console.warn(...args)
+        }
+        err(e){
+            http.get(gogsAPI.FG_log_err({
+                stack: e.stack || e
+            }))
+        }
+    })
 }

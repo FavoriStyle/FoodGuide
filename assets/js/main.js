@@ -1073,7 +1073,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     // Пример: require('https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js').then($=>{console.log($('body'))})
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
     const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
-        {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
+        {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
     [
         {
             cond: true,

@@ -6,6 +6,13 @@
  * Restructured by KaMeHb-UA <marlock@etlgr.com>
  *
  **/
+(function(){
+    window.onerror = function(msg, url, lno, cno, err){
+        console.log('На странице произошла ошибка. Оболочка ещё не была загружена, и нашим специалистам НЕ БЫЛО отправлено уведомление. Если вы хотите помочь, напишите о проблеме в Telegram: @KaMeHb_UA');
+        console.error(err);
+        return true;
+    };
+})();
 var Base64 = (()=>{
     var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
     function utf8_encode(string){

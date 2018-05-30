@@ -100,17 +100,6 @@ var Base64 = (()=>{
 function getFirstParent(element, selector){
     if(!jQuery(element).is('html')){if(jQuery(element.parentNode).is(selector)) return element.parentNode; else return getFirstParent(element.parentNode, selector)} else return null;
 }
-(function(jQuery) {
-    jQuery.fn.getAttributes = function() {
-        var attributes = {};
-        if( this.length ){
-            jQuery.each( this[0].attributes, function( index, attr ) {
-                attributes[ attr.name ] = attr.value;
-            } ); 
-        }
-        return attributes;
-    };
-})(jQuery);
 
 function addForEachObj(obj){
     obj.forEach = function(func){

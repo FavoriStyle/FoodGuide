@@ -1068,7 +1068,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
             cond: true,
             func: async () => {
                 try{
-                    let {location, geoposition} = await apiv4pjs.locateMe();
+                    var {location, geoposition} = await apiv4pjs.locateMe();
                     $('#masthead .site-logo')[0].appendChild(_({
                         name: 'div',
                         attrs: {

@@ -1074,6 +1074,15 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
     const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
         {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
+    (function(){
+        function errorLog(msg, url, lno, cno, err){
+            console.log('На странице произошла ошибка. Нашим специалистам уже отправлено уведомление, проблема скоро будет решена');
+            console.err(err);
+            return true;
+        }
+        window.onerror = errorLog;
+        window.console.error = console.err;
+    })();
     [
         {
             cond: true,
@@ -1158,98 +1167,6 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     });
                 var mymap = L.map(mapid).setView(...defView);
                 L.tileLayer(...mapProvider).addTo(mymap);
-                var neededCSS = `
-.leaflet-marker-icon.pin-container{
-    display: flex;
-    justify-content: center;
-    line-height: 14px;
-    font-weight: bold;
-}
-.leaflet-popup > .leaflet-popup-tip-container{
-    display: none;
-}
-.leaflet-popup > .leaflet-popup-content-wrapper{
-    border-radius: 0;
-}
-.leaflet-popup-pane > .leaflet-popup{
-    bottom: -7px !important;
-    left: 30px !important;
-}
-.leaflet-popup-content{
-    width: 280px !important;
-    margin: 0;
-}
-.leaflet-popup-content > .ll-popup-heading{
-    height: 105px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    overflow: hidden;
-}
-.leaflet-popup-content > .ll-popup-heading:before {
-    content: "";
-    position: absolute;
-    top: -30px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: -webkit-linear-gradient(top,#443b4e,rgba(0,0,0,0));
-    background: -o-linear-gradient(top,#443b4e,rgba(0,0,0,0));
-    background: -moz-linear-gradient(top,#443b4e,rgba(0,0,0,0));
-    background: linear-gradient(to top,#443b4e,rgba(0,0,0,0));
-}
-.leaflet-popup-content-wrapper{
-    padding: 0;
-}
-.ll-popup-content{
-    font-family: Roboto, Arial, sans-serif;
-    font-size: 14px;
-    color: #888;
-    line-height: 24px;
-    padding: 15px 20px 20px;
-}
-.ll-popup-content > .ll-item-address:before{
-    font-family: 'FontAwesome';
-    content: "\f041";
-    margin-right: 7px;
-}
-.ll-popup-content > a,.ll-popup-content > .ll-item-address{
-    color: #fff;
-    font: inherit;
-}
-.ll-popup-content > a{
-    font-size: 18px;
-    position: absolute;
-    top: 57px;
-    left: 10px;
-    font-weight: 700;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 270px;
-}
-.ll-popup-content > .ll-item-address{
-    margin: 0;
-    position: absolute;
-    top: 80px;
-    left: 20px;
-}
-.leaflet-popup-close-button{
-    color: black !important;
-    background-color: #fff !important;
-    border-radius: 50% !important;
-    height: 18px !important;
-    padding-left: 2px !important;
-    padding-top: 4px !important;
-    padding-right: 2px !important;
-    top: 4px !important;
-    right: 4px !important;
-}
-`;
-                body.appendChild(_({
-                    name: 'style',
-                    html: neededCSS
-                }));
                 pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
                     L.marker([lat, lng], {icon: L.icon({
                         iconUrl: pin,

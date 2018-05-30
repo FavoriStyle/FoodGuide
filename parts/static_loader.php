@@ -10,7 +10,7 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
-$target_version = '14bf55fe6ef7805c3ae2532605455fbc7e15523c';
+$target_version = '3318dc87709153ac07fc0f88df9aaa9714490ee4';
 (function() use ($target_version){
     add_action('wp_enqueue_scripts', function() use ($target_version){ ?>
         <script src="https://foodguide.in.ua/wp-includes/js/jquery/jquery.js"></script>

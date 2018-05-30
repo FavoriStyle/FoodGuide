@@ -183,13 +183,14 @@ module.exports = {
         warn(...args){
             window.console.warn(...args)
         }
-        err(e){
-            gogsAPI.FG_log_err({
+        async err(e){
+            window.console.log('На странице произошла восстановимая ошибка. Нашим специалистам уже отправлено уведомление, проблема скоро будет решена');
+            return await gogsAPI.FG_log_err({
                 stack: e.stack || e
             })
         }
         error(e){
-            this.err(e)
+            return this.err(e)
         }
     })
 }

@@ -1070,15 +1070,6 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
     const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
         {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
-    (function(){
-        function errorLog(...args){
-            console.log('На странице произошла ошибка. Нашим специалистам уже отправлено уведомление, проблема скоро будет решена');
-            console.err(JSON.stringify(args));
-            return true;
-        }
-        window.onerror = errorLog;
-        window.console.error = console.err;
-    })();
     [
         {
             cond: true,

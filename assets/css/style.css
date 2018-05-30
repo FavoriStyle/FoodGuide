@@ -952,3 +952,6 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
     top: 4px !important;
     right: 4px !important;
 }
+#ll-map-container{
+	height: 600px;
+}

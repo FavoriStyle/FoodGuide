@@ -1077,7 +1077,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                         html: location
                     }));
                 } catch(e){
-                    console.err(e);
+                    console.err(e)
                 }
                 if (!is('.main-page')) return;
                 // MAP

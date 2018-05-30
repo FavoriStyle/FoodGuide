@@ -188,5 +188,8 @@ module.exports = {
                 stack: e.stack || e
             }))
         }
+        error(e){
+            this.err(e)
+        }
     })
 }

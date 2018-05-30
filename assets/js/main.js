@@ -1150,13 +1150,18 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                             10  :   [60,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster2.png'],
                             100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
                         });
-                    var mymap = L.map(mapid).setView(...defView);
-                    L.tileLayer(...mapProvider).addTo(mymap);
+                    var mainMap = L.map(mapid, {
+                        zoomControl: false
+                    }).setView(...defView);
+                    (new L.Control.Zoom({
+                        position: 'bottomright'
+                    })).addTo(mainMap);
+                    L.tileLayer(...mapProvider).addTo(mainMap);
                     pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
                         L.marker([lat, lng], {icon: L.icon({
                             iconUrl: pin,
                             iconAnchor: [31, 64],
-                        })}).addTo(mymap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
+                        })}).addTo(mainMap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
                     });
                 } catch(e){
                     console.err(e)

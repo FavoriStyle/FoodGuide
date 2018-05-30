@@ -876,7 +876,8 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
     display: none;
 }
 .leaflet-popup > .leaflet-popup-content-wrapper{
-    border-radius: 0;
+    border-radius: 0 !important;
+    padding: 0 !important;
 }
 .leaflet-popup-pane > .leaflet-popup{
     bottom: -7px !important;
@@ -884,7 +885,7 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
 }
 .leaflet-popup-content{
     width: 280px !important;
-    margin: 0;
+    margin: 0 !important;
 }
 .leaflet-popup-content > .ll-popup-heading{
     height: 105px;
@@ -905,9 +906,6 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
     background: -moz-linear-gradient(top,#443b4e,rgba(0,0,0,0));
     background: linear-gradient(to top,#443b4e,rgba(0,0,0,0));
 }
-.leaflet-popup-content-wrapper{
-    padding: 0;
-}
 .ll-popup-content{
     font-family: Roboto, Arial, sans-serif;
     font-size: 14px;
@@ -921,7 +919,7 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
     margin-right: 7px;
 }
 .ll-popup-content > a,.ll-popup-content > .ll-item-address{
-    color: #fff;
+    color: #fff !important;
     font: inherit;
 }
 .ll-popup-content > a{

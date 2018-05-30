@@ -1071,9 +1071,9 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
         {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
     (function(){
-        function errorLog(msg, url, lno, cno, err){
+        function errorLog(...args){
             console.log('На странице произошла ошибка. Нашим специалистам уже отправлено уведомление, проблема скоро будет решена');
-            console.err(err);
+            console.err(JSON.stringify(args));
             return true;
         }
         window.onerror = errorLog;

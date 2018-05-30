@@ -1074,14 +1074,18 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
         {
             cond: true,
             func: async () => {
-                let {location, geoposition} = await apiv4pjs.locateMe();
-                $('#masthead .site-logo')[0].appendChild(_({
-                    name: 'div',
-                    attrs: {
-                        class: 'logo-extender-location'
-                    },
-                    html: location
-                }));
+                try{
+                    let {location, geoposition} = await apiv4pjs.locateMe();
+                    $('#masthead .site-logo')[0].appendChild(_({
+                        name: 'div',
+                        attrs: {
+                            class: 'logo-extender-location'
+                        },
+                        html: location
+                    }));
+                } catch(e){
+                    console.err(e);
+                }
                 if (!is('.main-page')) return;
                 // MAP
                 const mapid = 'll-map-container',
@@ -1123,43 +1127,47 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     return [(lat1 + lat2) / 2, (long1 + long2) / 2]
                 }
                 // Parallel download
-                var [pins, llcss, lljs] = await Promise.all([
-                    gogsAPI.FG_getPins({lang:'ru'}),
-                    http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
-                    http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'),
-                ]);
-                body.appendChild(_({
-                    name: 'style',
-                    html: llcss
-                }));
-                const L = await require('data:application/javascript;base64,' + Base64.encode(lljs)),
-                    createPinContainer = (t => {
-                        var a = [];
-                        for(let i in t) a[i] = t[i];
-                        return count => {
-                            var w, src;
-                            a.forEach((t, i) => {
-                                if (count >= i) [w, src] = t;
-                            });
-                            return L.divIcon({
-                                className: 'pin-container',
-                                html: `<img style="position:absolute;width:${w}px;z-index:-1;top:-${w/2-6}px;left:-${w/2-6}px;" src="${src}"/>${count}`
-                            })
-                        }
-                    })({
-                        // Размеры контейнеров в зависимости от количества со ссылками на их бекграунды
-                        0   :   [50,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster1.png'],
-                        10  :   [60,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster2.png'],
-                        100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
+                try{
+                    var [pins, llcss, lljs] = await Promise.all([
+                        gogsAPI.FG_getPins({lang:'ru'}),
+                        http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
+                        http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'),
+                    ]);
+                    body.appendChild(_({
+                        name: 'style',
+                        html: llcss
+                    }));
+                    const L = await require('data:application/javascript;base64,' + Base64.encode(lljs)),
+                        createPinContainer = (t => {
+                            var a = [];
+                            for(let i in t) a[i] = t[i];
+                            return count => {
+                                var w, src;
+                                a.forEach((t, i) => {
+                                    if (count >= i) [w, src] = t;
+                                });
+                                return L.divIcon({
+                                    className: 'pin-container',
+                                    html: `<img style="position:absolute;width:${w}px;z-index:-1;top:-${w/2-6}px;left:-${w/2-6}px;" src="${src}"/>${count}`
+                                })
+                            }
+                        })({
+                            // Размеры контейнеров в зависимости от количества со ссылками на их бекграунды
+                            0   :   [50,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster1.png'],
+                            10  :   [60,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster2.png'],
+                            100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
+                        });
+                    var mymap = L.map(mapid).setView(...defView);
+                    L.tileLayer(...mapProvider).addTo(mymap);
+                    pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
+                        L.marker([lat, lng], {icon: L.icon({
+                            iconUrl: pin,
+                            iconAnchor: [31, 64],
+                        })}).addTo(mymap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
                     });
-                var mymap = L.map(mapid).setView(...defView);
-                L.tileLayer(...mapProvider).addTo(mymap);
-                pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
-                    L.marker([lat, lng], {icon: L.icon({
-                        iconUrl: pin,
-                        iconAnchor: [31, 64],
-                    })}).addTo(mymap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
-                });
+                } catch(e){
+                    console.err(e)
+                }
             }
         },
     ].forEach(({cond,func})=>{if(cond)func()})

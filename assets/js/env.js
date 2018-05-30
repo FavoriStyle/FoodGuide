@@ -159,8 +159,13 @@ module.exports = {
         get(target, act){
             return data => {
                 return new Promise((resolve, reject) => {
-                    http.get(`${location.origin}/addons/apiv4pjs?act=${encodeURIComponent(act)}&${jsoToUrle(data)}`).then(result => {
-                        resolve(JSON.parse(result))
+                    var targetURI = `${location.origin}/addons/apiv4pjs?act=${encodeURIComponent(act)}&${jsoToUrle(data)}`;
+                    http.get(targetURI).then(result => {
+                        try{
+                            resolve(JSON.parse(result))
+                        } catch(e){
+                            reject(new SyntaxError(`Document at ${targetURI} is not in JSON format`))
+                        }
                     }).catch(reject)
                 })
             }

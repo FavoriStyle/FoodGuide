@@ -184,9 +184,9 @@ module.exports = {
             window.console.warn(...args)
         }
         err(e){
-            http.get(gogsAPI.FG_log_err({
+            gogsAPI.FG_log_err({
                 stack: e.stack || e
-            }))
+            })
         }
         error(e){
             this.err(e)

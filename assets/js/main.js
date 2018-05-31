@@ -1063,7 +1063,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
     async function main(){
         const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
-            {html, body, is, isAll, isOneOf, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
+            {html, body, is, isAll, isOneOf, $, Cookies, http, apiv4pjs, _, gogsAPI, console, GET} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
         [
             {
                 cond: true,
@@ -1084,6 +1084,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                         '.main-page',
                         '.items-list-page',
                         '.archive.post-type-archive-ait-special-offer',
+                        '.search.search-results',
                     ])) return;
                     // MAP
                     const mapid = 'll-map-container',
@@ -1124,8 +1125,8 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     function mid([lat1, long1], [lat2, long2]){
                         return [(lat1 + lat2) / 2, (long1 + long2) / 2]
                     }
-                    // Parallel download
                     try{
+                        // Parallel download
                         var [pins, llcss, lljs] = await Promise.all([
                             gogsAPI.FG_getPins({lang:'ru'}),
                             http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
@@ -1168,6 +1169,16 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                                 iconAnchor: [31, 64],
                             })}).addTo(mainMap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
                         });
+                        if(is('.search.search-results') && GET['lat'] && GET['lon'] && GET['rad'] && GET['runits']){
+                            var fill = '006fa7',
+                                center = [GET['lat'] * 1, GET['lon'] * 1];
+                            L.circle(center, GET['runits'] == 'km' ? GET['rad'] * 1000 : GET['rad'] * 1, {
+                                color: `#${fill}99`,
+                                fillColor: `#${fill}`,
+                                fillOpacity: 0.3
+                            }).addTo(mainMap);
+                            mainMap.setView(...center, 14)
+                        }
                     } catch(e){
                         console.err(e)
                     }

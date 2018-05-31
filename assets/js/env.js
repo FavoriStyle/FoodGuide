@@ -201,5 +201,13 @@ module.exports = {
         error(e){
             return this.err(e)
         }
-    })
+    }),
+    GET: (() => {
+        var res = {}, tmp;
+        window.location.search.substr(1).split("&").forEach(item => {
+            tmp = item.split("=");
+            res[decodeURIComponent(tmp.shift())] = decodeURIComponent(tmp.join('=')) || null;
+        });
+        return res
+    })(),
 }

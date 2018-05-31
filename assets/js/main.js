@@ -1080,7 +1080,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     } catch(e){
                         console.err(e)
                     }
-                    if (!is('.main-page')) return;
+                    if (!is('.main-page') || !is('.items-list-page')) return;
                     // MAP
                     const mapid = 'll-map-container',
                         mapProvider = [

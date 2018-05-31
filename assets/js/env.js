@@ -76,16 +76,20 @@ function is(selector){
  * @param {Array<String>} selectors Array of selectors to check
  * @return {Boolean}
  */
-function isAll(selectors){
-    var res = true;
-    selectors.forEach(sel => {res = res && is(sel)});
-    return res;
-}
 module.exports = {
     html,
     body,
     is,
-    isAll,
+    isAll: selectors => {
+        var res = true;
+        selectors.forEach(sel => {res = res && is(sel)});
+        return res;
+    },
+    isOneOf: selectors => {
+        var res = true;
+        selectors.forEach(sel => {res = res || is(sel)});
+        return res;
+    },
     /**
      * jQ-like selecting i-face
      * @param {String} selector

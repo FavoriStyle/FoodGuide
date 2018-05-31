@@ -1063,7 +1063,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
     async function main(){
         const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
-            {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
+            {html, body, is, isAll, isOneOf, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
         [
             {
                 cond: true,
@@ -1080,7 +1080,11 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     } catch(e){
                         console.err(e)
                     }
-                    if (!is('.main-page') && !is('.items-list-page')) return;
+                    if (!isOneOf([
+                        '.main-page',
+                        '.items-list-page',
+                        '.archive.post-type-archive-ait-special-offer',
+                    ])) return;
                     // MAP
                     const mapid = 'll-map-container',
                         mapProvider = [

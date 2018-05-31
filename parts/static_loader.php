@@ -13,6 +13,7 @@ License: MIT
 $target_version = '3318dc87709153ac07fc0f88df9aaa9714490ee4';
 (function() use ($target_version){
     add_action('wp_enqueue_scripts', function() use ($target_version){ ?>
+        <script>document.addEventListener('DOMContentLoaded',()=>{window.__DOMLoaded = true})</script>
         <script src="https://foodguide.in.ua/wp-includes/js/jquery/jquery.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/js/main.js" async defer></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/css/style.css">

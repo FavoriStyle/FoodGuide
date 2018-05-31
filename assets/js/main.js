@@ -1061,112 +1061,115 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
 (()=>{const require=(()=>{return exports=>{exports=(url=>{return{url,xhr:new XMLHttpRequest()}})(exports);return new Promise((__filename,__dirname)=>{exports.xhr.open('GET',exports.url,true);exports.xhr.send();exports.xhr.onreadystatechange=()=>{if(exports.xhr.readyState!=4)return;if(exports.xhr.status!=200)__dirname(new Error(`Cannot require module ${exports.url}: ${exports.xhr.status} (${exports.xhr.statusText})`));else{try{let module={exports:{}};eval(`Promise.resolve((async({__filename,__dirname,exports})=>{${exports.xhr.responseText}})({__filename:${JSON.stringify(exports.url)},__dirname:${JSON.stringify((a=>{a.pop();return a.join('/')})(exports.url.split('/')))},exports:new Proxy(module.exports,{})})).then(()=>{__filename(module.exports)})`);}catch(e){__dirname(e)}}}})}})(),__filename=(a=>{return `${a[a.length-3]}://${a[a.length-2]}`})((new Error('')).stack.split(/(\w+):\/\/(\S+):\d+:\d+/)),__dirname=(a=>{a.pop();return a.join('/')})(__filename.split('/'));(async()=>{
     // Пример: require('https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js').then($=>{console.log($('body'))})
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
-    const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
-        {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
-    [
-        {
-            cond: true,
-            func: async () => {
-                try{
-                    var {location, geoposition} = await apiv4pjs.locateMe();
-                    $('#masthead .site-logo')[0].appendChild(_({
-                        name: 'div',
-                        attrs: {
-                            class: 'logo-extender-location'
-                        },
-                        html: location
-                    }));
-                } catch(e){
-                    console.err(e)
-                }
-                if (!is('.main-page')) return;
-                // MAP
-                const mapid = 'll-map-container',
-                    mapProvider = [
-                        'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-                            minZoom: 1,
-                            maxZoom: 18,
-                            attribution: (a=>{var r=[],i;for(i in a)r.push(`<a href="${a[i].replace('"','%22')}">${i}</a>`);return r.join(' | ')})({
-                                Wikimedia: 'https://wikimediafoundation.org/wiki/Maps_Terms_of_Use',
-                                FavoriStyle: 'https://favoristyle.com.ua',
-                            })
-                        }
-                    ],
-                    defView = geoposition ? [geoposition, 15] : [[49.0275, 31.4828], 6];
-                function distance([lat1, long1], [lat2, long2]){
-                    //радиус Земли
-                    var R = 6372795;
-                    //перевод коордитат в радианы
-                    lat1 *= Math.PI / 180;
-                    lat2 *= Math.PI / 180;
-                    long1 *= Math.PI / 180;
-                    long2 *= Math.PI / 180;
-                    //вычисление косинусов и синусов широт и разницы долгот
-                    var cl1 = Math.cos(lat1),
-                        cl2 = Math.cos(lat2),
-                        sl1 = Math.sin(lat1),
-                        sl2 = Math.sin(lat2),
-                        delta = long2 - long1,
-                        cdelta = Math.cos(delta),
-                        sdelta = Math.sin(delta),
-                    //вычисления длины большого круга
-                        y = Math.sqrt(Math.pow(cl2 * sdelta, 2) + Math.pow(cl1 * sl2 - sl1 * cl2 * cdelta, 2)),
-                        x = sl1 * sl2 + cl1 * cl2 * cdelta,
-                        ad = Math.atan2(y, x),
-                        dist = ad * R; //расстояние между двумя координатами в метрах
-                    return dist
-                }
-                function mid([lat1, long1], [lat2, long2]){
-                    return [(lat1 + lat2) / 2, (long1 + long2) / 2]
-                }
-                // Parallel download
-                try{
-                    var [pins, llcss, lljs] = await Promise.all([
-                        gogsAPI.FG_getPins({lang:'ru'}),
-                        http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
-                        http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'),
-                    ]);
-                    body.appendChild(_({
-                        name: 'style',
-                        html: llcss
-                    }));
-                    const L = await require('data:application/javascript;base64,' + Base64.encode(lljs)),
-                        createPinContainer = (t => {
-                            var a = [];
-                            for(let i in t) a[i] = t[i];
-                            return count => {
-                                var w, src;
-                                a.forEach((t, i) => {
-                                    if (count >= i) [w, src] = t;
-                                });
-                                return L.divIcon({
-                                    className: 'pin-container',
-                                    html: `<img style="position:absolute;width:${w}px;z-index:-1;top:-${w/2-6}px;left:-${w/2-6}px;" src="${src}"/>${count}`
+    async function main(){
+        const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
+            {html, body, is, isAll, $, Cookies, http, apiv4pjs, _, gogsAPI, console} = await require(`https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@${currentVersion}/assets/js/env.js`);
+        [
+            {
+                cond: true,
+                func: async () => {
+                    try{
+                        var {location, geoposition} = await apiv4pjs.locateMe();
+                        $('#masthead .site-logo')[0].appendChild(_({
+                            name: 'div',
+                            attrs: {
+                                class: 'logo-extender-location'
+                            },
+                            html: location
+                        }));
+                    } catch(e){
+                        console.err(e)
+                    }
+                    if (!is('.main-page')) return;
+                    // MAP
+                    const mapid = 'll-map-container',
+                        mapProvider = [
+                            'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
+                                minZoom: 1,
+                                maxZoom: 18,
+                                attribution: (a=>{var r=[],i;for(i in a)r.push(`<a href="${a[i].replace('"','%22')}">${i}</a>`);return r.join(' | ')})({
+                                    Wikimedia: 'https://wikimediafoundation.org/wiki/Maps_Terms_of_Use',
+                                    FavoriStyle: 'https://favoristyle.com.ua',
                                 })
                             }
-                        })({
-                            // Размеры контейнеров в зависимости от количества со ссылками на их бекграунды
-                            0   :   [50,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster1.png'],
-                            10  :   [60,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster2.png'],
-                            100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
+                        ],
+                        defView = geoposition ? [geoposition, 15] : [[49.0275, 31.4828], 6];
+                    function distance([lat1, long1], [lat2, long2]){
+                        //радиус Земли
+                        var R = 6372795;
+                        //перевод коордитат в радианы
+                        lat1 *= Math.PI / 180;
+                        lat2 *= Math.PI / 180;
+                        long1 *= Math.PI / 180;
+                        long2 *= Math.PI / 180;
+                        //вычисление косинусов и синусов широт и разницы долгот
+                        var cl1 = Math.cos(lat1),
+                            cl2 = Math.cos(lat2),
+                            sl1 = Math.sin(lat1),
+                            sl2 = Math.sin(lat2),
+                            delta = long2 - long1,
+                            cdelta = Math.cos(delta),
+                            sdelta = Math.sin(delta),
+                        //вычисления длины большого круга
+                            y = Math.sqrt(Math.pow(cl2 * sdelta, 2) + Math.pow(cl1 * sl2 - sl1 * cl2 * cdelta, 2)),
+                            x = sl1 * sl2 + cl1 * cl2 * cdelta,
+                            ad = Math.atan2(y, x),
+                            dist = ad * R; //расстояние между двумя координатами в метрах
+                        return dist
+                    }
+                    function mid([lat1, long1], [lat2, long2]){
+                        return [(lat1 + lat2) / 2, (long1 + long2) / 2]
+                    }
+                    // Parallel download
+                    try{
+                        var [pins, llcss, lljs] = await Promise.all([
+                            gogsAPI.FG_getPins({lang:'ru'}),
+                            http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
+                            http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'),
+                        ]);
+                        body.appendChild(_({
+                            name: 'style',
+                            html: llcss
+                        }));
+                        const L = await require('data:application/javascript;base64,' + Base64.encode(lljs)),
+                            createPinContainer = (t => {
+                                var a = [];
+                                for(let i in t) a[i] = t[i];
+                                return count => {
+                                    var w, src;
+                                    a.forEach((t, i) => {
+                                        if (count >= i) [w, src] = t;
+                                    });
+                                    return L.divIcon({
+                                        className: 'pin-container',
+                                        html: `<img style="position:absolute;width:${w}px;z-index:-1;top:-${w/2-6}px;left:-${w/2-6}px;" src="${src}"/>${count}`
+                                    })
+                                }
+                            })({
+                                // Размеры контейнеров в зависимости от количества со ссылками на их бекграунды
+                                0   :   [50,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster1.png'],
+                                10  :   [60,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster2.png'],
+                                100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
+                            });
+                        var mainMap = L.map(mapid, {
+                            zoomControl: false
+                        }).setView(...defView);
+                        (new L.Control.Zoom({
+                            position: 'bottomright'
+                        })).addTo(mainMap);
+                        L.tileLayer(...mapProvider).addTo(mainMap);
+                        pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
+                            L.marker([lat, lng], {icon: L.icon({
+                                iconUrl: pin,
+                                iconAnchor: [31, 64],
+                            })}).addTo(mainMap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
                         });
-                    var mainMap = L.map(mapid, {
-                        zoomControl: false
-                    }).setView(...defView);
-                    (new L.Control.Zoom({
-                        position: 'bottomright'
-                    })).addTo(mainMap);
-                    L.tileLayer(...mapProvider).addTo(mainMap);
-                    pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
-                        L.marker([lat, lng], {icon: L.icon({
-                            iconUrl: pin,
-                            iconAnchor: [31, 64],
-                        })}).addTo(mainMap).bindPopup(`<div class="ll-popup-heading" style="background-image:url(${thumbnail});"></div><div class="ll-popup-content"><a href="${link}">${title}</a><p class="ll-item-address">${addr}</p>${desc}</div>`);
-                    });
-                } catch(e){
-                    console.err(e)
+                    } catch(e){
+                        console.err(e)
+                    }
                 }
-            }
-        },
-    ].forEach(({cond,func})=>{if(cond)func()})
+            },
+        ].forEach(({cond,func})=>{if(cond)func()})
+    }
+    if(window.__DOMLoaded) main(); else document.addEventListener('DOMContentLoaded', main);
 })()})()

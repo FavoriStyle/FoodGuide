@@ -1177,7 +1177,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                                 fillColor: `#${fill}`,
                                 fillOpacity: 0.3
                             }).addTo(mainMap);
-                            mainMap.setView(...center, 14)
+                            mainMap.setView(center, 14)
                         }
                     } catch(e){
                         console.err(e)

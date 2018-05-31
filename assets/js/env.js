@@ -195,7 +195,7 @@ module.exports = {
         async err(e){
             window.console.log('На странице произошла восстановимая ошибка. Нашим специалистам уже отправлено уведомление, проблема скоро будет решена');
             return await gogsAPI.FG_log_err({
-                stack: e.stack || e
+                stack: `На странице ${window.location.href} произошла следующая ошибка:\`\`\`${e.stack || e}\`\`\``
             })
         }
         error(e){

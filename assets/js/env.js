@@ -86,7 +86,7 @@ module.exports = {
         return res;
     },
     isOneOf: selectors => {
-        var res = true;
+        var res = false;
         selectors.forEach(sel => {res = res || is(sel)});
         return res;
     },

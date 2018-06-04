@@ -1157,24 +1157,51 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                                 100 :   [66,    'https://foodguide.in.ua/wp-content/themes/FGC/design/img/pins/clusters/cluster3.png'],
                             });
                         var mainMap = L.map(mapid, {
-                            zoomControl: false
-                        }).setView(...defView);
-                        (new (L.Control.Zoom.extend({
-                            onAdd: function(map) {
-                                return '<i class="fa fa-unlock-alt" aria-hidden="true"></i>';
+                                zoomControl: false
+                            }).setView(...defView),
+                            zoomControls = (new L.Control.Zoom({
+                                position: 'bottomright'
+                            })).addTo(mainMap)._container;
+                        zoomControls.parentNode.insertBefore(_({
+                            attrs: {
+                                class: 'leaflet-control-lock leaflet-bar leaflet-control'
                             },
-                            onClick: function(map) {
-                                console.log(1);
-                            },
-                            onRemove: function(map) {
-                                // Nothing to do here
+                            html: '<a href="#" role="button"><i class="fa" aria-hidden="true"></i></a>'
+                        }), zoomControls);
+                        (c => {
+                            c.children[0].setAttribute('class', 'leaflet-control-locker');
+                            c.setAttribute('class', 'leaflet-control-lock leaflet-bar leaflet-control');
+                            function unlock(){
+                                mainMap.dragging.enable();
+                                mainMap.touchZoom.enable();
+                                mainMap.doubleClickZoom.enable();
+                                mainMap.scrollWheelZoom.enable();
+                                mainMap.boxZoom.enable();
+                                mainMap.keyboard.enable();
+                                if (mainMap.tap) mainMap.tap.enable();
+                                document.getElementById(mapid).style.cursor='grab';
+                                c.children[0].setAttribute('title', 'Lock');
+                                c.children[0].setAttribute('aria-label', 'Lock');
+                                c.children[0].children[0].setAttribute('class', 'fa fa-unlock-alt');
+                                c.children[0].onclick = lock;
                             }
-                        }))({
-                            position: 'bottomright'
-                        })).addTo(mainMap);
-                        (new L.Control.Zoom({
-                            position: 'bottomright'
-                        })).addTo(mainMap);
+                            function lock(){
+                                mainMap.dragging.disable();
+                                mainMap.touchZoom.disable();
+                                mainMap.doubleClickZoom.disable();
+                                mainMap.scrollWheelZoom.disable();
+                                mainMap.boxZoom.disable();
+                                mainMap.keyboard.disable();
+                                if (mainMap.tap) mainMap.tap.disable();
+                                document.getElementById(mapid).style.cursor='default';
+                                c.children[0].setAttribute('title', 'Unlock');
+                                c.children[0].setAttribute('aria-label', 'Unlock');
+                                c.children[0].children[0].setAttribute('class', 'fa fa-lock');
+                                c.children[0].onclick = unlock;
+                            }
+                            lock();
+                        })(zoomControls.parentNode.children[0])
+                        console.log([zoomControls.parentNode.children[0]]);
                         L.tileLayer(...mapProvider).addTo(mainMap);
                         pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
                             L.marker([lat, lng], {icon: L.icon({

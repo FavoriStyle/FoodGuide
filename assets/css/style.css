@@ -959,3 +959,6 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
 .leaflet-control-container > *{
 	z-index: 999 !important;
 }
+.leaflet-control-lock .leaflet-control-locker{
+    font-size: 17px;
+}

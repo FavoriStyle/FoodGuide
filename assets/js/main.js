@@ -1159,6 +1159,19 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                         var mainMap = L.map(mapid, {
                             zoomControl: false
                         }).setView(...defView);
+                        (new (L.Control.Zoom.extend({
+                            onAdd: function(map) {
+                                return '<i class="fa fa-unlock-alt" aria-hidden="true"></i>';
+                            },
+                            onClick: function(map) {
+                                console.log(1);
+                            },
+                            onRemove: function(map) {
+                                // Nothing to do here
+                            }
+                        }))({
+                            position: 'bottomright'
+                        })).addTo(mainMap);
                         (new L.Control.Zoom({
                             position: 'bottomright'
                         })).addTo(mainMap);
@@ -1173,11 +1186,12 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                             var fill = '006fa7',
                                 center = [GET['lat'] * 1, GET['lon'] * 1];
                             L.circle(center, GET['runits'] == 'km' ? GET['rad'] * 1000 : GET['rad'] * 1, {
-                                color: `#${fill}99`,
+                                color: `#${fill}66`,
                                 fillColor: `#${fill}`,
                                 fillOpacity: 0.3
                             }).addTo(mainMap);
-                            mainMap.setView(center, 14)
+                            mainMap.setView(center, 14);
+                            mainMap.on('zoom', ev => {console.log(ev.target._animateToZoom)})
                         }
                     } catch(e){
                         console.err(e)

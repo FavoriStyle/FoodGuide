@@ -1078,7 +1078,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                             html: location
                         }));
                     } catch(e){
-                        console.err(e)
+                        console.error(e)
                     }
                     if (!isOneOf([
                         '.main-page',
@@ -1201,7 +1201,6 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                             }
                             lock();
                         })(zoomControls.parentNode.children[0])
-                        console.log([zoomControls.parentNode.children[0]]);
                         L.tileLayer(...mapProvider).addTo(mainMap);
                         pins.res.forEach(({lat, lng, pin, thumbnail, addr, link, desc, title}) => {
                             L.marker([lat, lng], {icon: L.icon({
@@ -1211,17 +1210,17 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                         });
                         if(is('.search.search-results') && GET['lat'] && GET['lon'] && GET['rad'] && GET['runits']){
                             var fill = '006fa7',
-                                center = [GET['lat'] * 1, GET['lon'] * 1];
-                            L.circle(center, GET['runits'] == 'km' ? GET['rad'] * 1000 : GET['rad'] * 1, {
+                                center = [GET['lat'] * 1, GET['lon'] * 1],
+                                radius = GET['runits'] == 'km' ? GET['rad'] * 1000 : GET['rad'] * 1;
+                            L.circle(center, radius, {
                                 color: `#${fill}66`,
                                 fillColor: `#${fill}`,
                                 fillOpacity: 0.3
                             }).addTo(mainMap);
-                            mainMap.setView(center, 14);
-                            mainMap.on('zoom', ev => {console.log(ev.target._animateToZoom)})
+                            mainMap.setView(center, (14 - 3 * Math.log10(radius / 1000)).toFixed() * 1); // зум карты - (14 - 3lg(x)), где x - радиус в км
                         }
                     } catch(e){
-                        console.err(e)
+                        console.error(e)
                     }
                 }
             },

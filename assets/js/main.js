@@ -1086,6 +1086,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                         '.archive.post-type-archive-ait-special-offer',
                         '.search.search-results',
                         '.archive.tax-ait-items',
+                        '.archive.tax-ait-locations',
                     ])) return;
                     // MAP
                     const mapid = 'll-map-container',
@@ -1128,7 +1129,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     }
                     try{
                         var pinParameters = {lang: html.getAttribute('lang').slice(0,2)};
-                        if (is('.archive.tax-ait-items')){
+                        if (is('.archive.tax-ait-items') || is('.archive.tax-ait-locations')){
                             var term_id = body.getAttribute('class').replace(/^.*\sterm-(\d+)\s.*$/, '$1') * 1;
                             if(!isNaN(term_id)) pinParameters.term_id = term_id
                         }

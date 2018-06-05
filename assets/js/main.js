@@ -1085,6 +1085,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                         '.items-list-page',
                         '.archive.post-type-archive-ait-special-offer',
                         '.search.search-results',
+                        '.archive.tax-ait-items',
                     ])) return;
                     // MAP
                     const mapid = 'll-map-container',
@@ -1126,9 +1127,14 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                         return [(lat1 + lat2) / 2, (long1 + long2) / 2]
                     }
                     try{
+                        var pinParameters = {lang: html.getAttribute('lang').slice(0,2)};
+                        if (is('.archive.tax-ait-items')){
+                            var term_id = body.getAttribute('class').replace(/^.*\sterm-(\d+)\s.*$/, '$1') * 1;
+                            if(!isNaN(term_id)) pinParameters.term_id = term_id
+                        }
                         // Parallel download
                         var [pins, llcss, lljs] = await Promise.all([
-                            gogsAPI.FG_getPins({lang:'ru'}),
+                            gogsAPI.FG_getPins(pinParameters),
                             http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'),
                             http.get('https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'),
                         ]);

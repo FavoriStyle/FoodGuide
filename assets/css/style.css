@@ -967,10 +967,14 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
     background: #ffffffa6;
     position:  relative;
     top: -100%;
-    padding-top: 120px;
-    padding-bottom: 60px;
+    padding: 120px 20px 60px 20px;
 }
 .single-item-page .header-wrap.has-image{
     background-image: url('https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@91bc87987935709d83f0c62d4fdf6b093e9506b3/assets/images/item-r-bg.png');
     filter: blur(5px);
+}
+.single-item-page #item-right-actions-panel > div{
+    background-color:  white;
+    padding:  20px;
+    border-radius:  4px;
 }

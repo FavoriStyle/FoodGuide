@@ -553,7 +553,7 @@ function stack_prepare(){
             var app = {};
             window.app = app;
         }
-        if(is('plan-listing-page') && window.app && app.paymentBlocked){
+        if(is('plan-listing-page') && app && app.paymentBlocked){
             var a = $('.elm-main.elm-price-table-main > div > div > div > div > div.ptable-item:not(:nth-of-type(1))'),
                 b = '#969696', c = '#cecece';
             a.find('div.table-footer > div > div > a').each(function(){

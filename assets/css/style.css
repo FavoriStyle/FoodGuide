@@ -970,8 +970,8 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
     padding: 120px 20px 60px 20px;
 }
 .single-item-page .header-wrap.has-image{
-    background-image: url('https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@91bc87987935709d83f0c62d4fdf6b093e9506b3/assets/images/item-r-bg.png');
-    filter: blur(5px);
+    background-image: url('https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@391831dbf7d971f727606d32ef70b33419b712d8/assets/images/item-r-bg.png');
+    background-size: auto;
 }
 .single-item-page #item-right-actions-panel > div{
     background-color:  white;

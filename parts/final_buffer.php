@@ -439,7 +439,7 @@
             }, $output); else return $output;
         });
         add_filter('logo_text', function($output) use (&$html){
-            if ($html -> hasClass('main-page')){
+            if ($html -> attr('lang')){
                 return preg_replace_callback('/(<div[^>]+class="tools\\-bar"[^>]*>[\\s\\S]*)(<div[^>]+class="tools\\-bar\\-right"[^>]*>)/', function($matches) use (&$html){
                     return (function($str){
                         return preg_replace_callback('/([\\s\\S]*)<\\/div>/', function($matches){

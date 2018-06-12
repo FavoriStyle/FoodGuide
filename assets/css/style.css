@@ -851,7 +851,7 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
 	height: 82px;
 }
 
-#masthead .site-logo .logo-extender-location {
+#masthead .site-logo .logo-extender-location{
     position: relative;
     top: -24px;
     right: -7px;
@@ -862,6 +862,13 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
     font-weight: bold;
     border-radius: 5px;
     padding: 0 10px;
+}
+
+@media (max-width: 479px){
+    #masthead .site-logo .logo-extender-location{
+        top: -43px;
+        right: -213px;
+    }
 }
 
 /* Leaflet maps */

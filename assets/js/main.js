@@ -1232,13 +1232,13 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                 }
             },
             {
-                cond: document.body.classList.contains('single-ait-item'),
+                cond: false,//document.body.classList.contains('single-ait-item'),
                 async func(){
                     var regexp = /^postid-(\d+)$/;
                     for(var i = 0; i < document.body.classList.length - 1; i++){
                         var a = regexp.exec(document.body.classList[i]);
                         if(a && a[1]){
-                            var CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@1/comments/widget.min.js');
+                            //var CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@1/comments/widget.min.js');
                             document.getElementById('item-right-actions-panel').appendChild(new CommentsWidget('lSgmGGAVrVta3X9xeO3D', 'single-ait-item-' + a[1], {
                                 // widget settings
                             }))

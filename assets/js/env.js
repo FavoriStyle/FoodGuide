@@ -109,7 +109,7 @@ module.exports = {
             /**
              * Gets selected cookie
              * @param {String} name
-             * @return {void}
+             * @return {String}
              */
             this.get = name => {
                 var matches = document.cookie.match(new RegExp(
@@ -194,7 +194,7 @@ module.exports = {
         }
         async err(e){
             window.console.log('На странице произошла восстановимая ошибка. Нашим специалистам уже отправлено уведомление, проблема скоро будет решена');
-            return await gogsAPI.FG_log_err({
+            await gogsAPI.FG_log_err({
                 stack: `На странице ${window.location.href} произошла следующая ошибка:\`\`\`${e.stack || e}\`\`\``
             })
         }

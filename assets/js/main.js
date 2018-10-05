@@ -1064,7 +1064,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     // Код перенести в эту оболочку. Доступна нестандартная реализация функции require (возвращает промис, который резолвится в экспортируемый объект указанного модуля)
     async function main(){
         const currentVersion = __filename.replace(/^.*\/[^\/@]+@([^\/]+)\/.*$/, '$1'),
-            {html, body, is, isAll, isOneOf, $, Cookies, http, apiv4pjs, _, gogsAPI, console, GET} = await require('assets/js/env.js');
+            {html, body, is, isAll, isOneOf, $, Cookies, http, apiv4pjs, _, gogsAPI, console, GET} = await require('env.js');
         [
             {
                 cond: true,

@@ -90,7 +90,7 @@ namespace Environment{
 declare const __dirname: string
 declare const __filename: string
 declare function require(url: 'https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@1/comments/widget.min.js'): Promise<typeof CommentsWidget>
-declare function require(url: '/assets/js/env.js' | 'assets/js/env.js'): Promise<{
+declare function require(url: 'env.js' | './env.js'): Promise<{
     html: HTMLHtmlElement,
     body: HTMLBodyElement,
     is(selector): boolean,

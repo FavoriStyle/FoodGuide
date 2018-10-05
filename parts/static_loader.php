@@ -10,13 +10,14 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
-$target_version = '010b319c85e9ff509c3691403bc681254d47ab18';
+$target_version = '408818ef38ce3d1cdb91a9a1e1eb779d4ec870ba';
+$use_minified = false;
 (function() use ($target_version){
     add_action('wp_enqueue_scripts', function() use ($target_version){ ?>
         <script>document.addEventListener('DOMContentLoaded',()=>{window.__DOMLoaded = true})</script>
         <script src="https://foodguide.in.ua/wp-includes/js/jquery/jquery.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/js/main.js" async defer></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/css/style.css">
+        <script src="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/js/main<?php if($use_minified) echo '.min'?>.js" async defer></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/css/style<?php if($use_minified) echo '.min'?>.css">
     <?php });
 })();
 

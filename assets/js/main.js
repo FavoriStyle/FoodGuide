@@ -1,3 +1,4 @@
+/// <reference path="./index.d.ts" />
 const {__dirname, __filename} = (()=>{var _window={};(()=>{'use strict';function a(i,j){Object.defineProperty(_window,i,{writable:!1,configurable:!1,enumerable:!0,value:j})}function b(i){var j=new XMLHttpRequest;return new Promise((k,l)=>{j.open('GET',i,!0),j.onreadystatechange=()=>{4!=j.readyState||(200==j.status?k(j.responseText):l(new Error(`Cannot get requested module from ${i}. Error ${j.status}: ${j.statusText}`)))},j.send()})}const d=Object.getPrototypeOf(async()=>{}).constructor,f=/^(\w+):\/\//,g=(i=>{return`${i[i.length-3]}://${i[i.length-2]}`})(new Error('').stack.split(/(\w+):\/\/(\S+):\d+:\d+/)),h=(i=>{return i.pop(),i.join('/')})(g.split('/'));a('require',async function(i){var j,k=i.split('/'),l=(this||{}).constructor===String?`${this}`:h;k.pop();try{j=await b(f.test(i)?i:`${l}/${i}`)}catch(m){throw console.warn('Download error [[Need to handle next error]]:'),m}return await new d(`const[__filename,__dirname]=${JSON.stringify([i,k.join('/')])},module={exports:{}},exports=new Proxy(module.exports,{}),require=url=>window.require.apply(__dirname,[url]);try{await(async()=>{\n${j}\n})();}catch(e){console.warn('Eval error [[Need to handle next error]]:');throw e}return module.exports`)()}),a('__filename',g),a('__dirname',h)})();window.require=_window.require;return{__dirname:_window.__dirname, __filename:_window.__filename}})();
 /**
  *
@@ -1238,7 +1239,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     for(var i = 0; i < document.body.classList.length - 1; i++){
                         var a = regexp.exec(document.body.classList[i]);
                         if(a && a[1]){
-                            //var CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@1/comments/widget.min.js');
+                            const CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@1/comments/widget.min.js');
                             document.getElementById('item-right-actions-panel').appendChild(new CommentsWidget('lSgmGGAVrVta3X9xeO3D', 'single-ait-item-' + a[1], {
                                 // widget settings
                             }))

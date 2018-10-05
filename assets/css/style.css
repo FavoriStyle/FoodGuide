@@ -852,9 +852,9 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
 }
 
 #masthead .site-logo .logo-extender-location{
-    position: relative;
-    top: -24px;
-    right: -7px;
+    position: absolute;
+    top: 32px;
+    left: 265px;
     font-size: 18px;
     display: inline;
     background-color: white;
@@ -866,8 +866,17 @@ html.user-logged #masthead > .header-container > .menu-tools > .site-tools > .us
 
 @media (max-width: 479px){
     #masthead .site-logo .logo-extender-location{
-        top: -43px;
-        right: -213px;
+        top: 22px;
+        left: 212px;
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 981px) and (max-width: 1200px){
+    .header-container .menu-tools .menu-container{
+        margin-left: 34px;
+        margin-top: 4px;
+        background: transparent;
     }
 }
 

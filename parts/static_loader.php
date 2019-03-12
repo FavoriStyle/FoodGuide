@@ -10,7 +10,7 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
-$target_version = 'd8754d6f2703893f985bb969ab6c4dbe134d9218';
+$target_version = '9a852f4232b942761147a797f2a0d93272d6432b';
 $use_minified = false;
 (function() use ($target_version){
     add_action('wp_enqueue_scripts', function() use ($target_version){ ?>

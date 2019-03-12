@@ -1,7 +1,7 @@
 declare class CommentsWidget extends HTMLElement{
     constructor(appID: string, wingetID: string, settings: {})
 }
-namespace Environment{
+declare namespace Environment{
     class Cookies{
         get(name: string): string
         set(name: string, value: string, options?: Cookies.Options): void
@@ -17,7 +17,7 @@ namespace Environment{
     }
     class HTTP{
         get(url: string): Promise<string>
-        post(url: string, data:{ [string]: string | number }): Promise<string>
+        post(url: string, data:{ [x: string]: string | number }): Promise<string>
     }
     class GOGSAPI{ // Described with 74c1baf8d7 specification
         getRaw(props: { user: string, repo: string, path: string }): Promise<{
@@ -99,10 +99,10 @@ declare function require(url: 'env.js' | './env.js'): Promise<{
     $(selector): NodeListOf<HTMLElement>,
     Cookies: Environment.Cookies,
     http: Environment.HTTP,
-    apiv4pjs: { [string]: (data: {}) => Promise<any> }, // Need to be described with specification
-    _: (props: { name: string, attrs: {[string]: string}, html: string }) => HTMLElement,
+    apiv4pjs: { [x: string]: (data: {}) => Promise<any> }, // Need to be described with specification
+    _: (props: { name: string, attrs: {[x: string]: string}, html: string }) => HTMLElement,
     gogsAPI: Environment.GOGSAPI,
     console: Environment.Console,
-    GET: {[string]: string},
+    GET: {[x: string]: string},
 }>
 declare function require(url: string):Promise<any>

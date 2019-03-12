@@ -1239,7 +1239,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     for(var i = 0; i < document.body.classList.length - 1; i++){
                         var a = regexp.exec(document.body.classList[i]);
                         if(a && a[1]){
-                            const CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@8d35b9a93aa1220f332806db5360a06fd84b1d5e/comments/widget.min.js');
+                            const CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@6b18eb0fc5089054dae778b80fe7a4f14feb4e52/comments/widget.min.js');
                             document.getElementById('item-right-actions-panel').appendChild(new CommentsWidget('lSgmGGAVrVta3X9xeO3D', 'single-ait-item-' + a[1], {
                                 // widget settings
                             }))

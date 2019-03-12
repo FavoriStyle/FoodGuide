@@ -1239,7 +1239,7 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                     for(var i = 0; i < document.body.classList.length - 1; i++){
                         var a = regexp.exec(document.body.classList[i]);
                         if(a && a[1]){
-                            const CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@2.0.0-RC3/comments/widget.min.js');
+                            const CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@2.0.0-RC4/comments/widget.min.js');
                             document.getElementById('item-right-actions-panel').appendChild(new CommentsWidget('lSgmGGAVrVta3X9xeO3D', 'single-ait-item-' + a[1], {
                                 // widget settings
                             }))

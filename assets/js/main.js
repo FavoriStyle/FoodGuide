@@ -1231,23 +1231,14 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
                         console.error(e)
                     }
                 }
-            },
-            {
-                cond: document.body.classList.contains('single-ait-item'),
-                async func(){
-                    var regexp = /^postid-(\d+)$/;
-                    for(var i = 0; i < document.body.classList.length - 1; i++){
-                        var a = regexp.exec(document.body.classList[i]);
-                        if(a && a[1]){
-                            const CommentsWidget = await require('https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@2/comments/widget.min.js');
-                            document.getElementById('item-right-actions-panel').appendChild(new CommentsWidget('lSgmGGAVrVta3X9xeO3D', 'single-ait-item-' + a[1], {
-                                // widget settings
-                            }))
-                        }
-                    }
-                }
             }
         ].forEach(({cond,func})=>{if(cond)func()})
     }
     if(window.__DOMLoaded) main(); else document.addEventListener('DOMContentLoaded', main);
-})()
+})();
+
+// new system
+const scr = document.createElement('script');
+scr.setAttribute('type', 'module');
+scr.setAttribute('src', 'https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide/assets/js/next/index.js');
+document.head.appendChild(scr)

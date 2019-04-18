@@ -1,4 +1,4 @@
-import CommentsWidget from 'https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets@3/dist/comments/widget.js'
+import CommentsWidget from 'https://cdn.jsdelivr.net/gh/FavoriStyle/AllBoooms-APIAssets/dist/comments/widget.js'
 
 const appId = 'lSgmGGAVrVta3X9xeO3D',
     currentPostIdRegex = /^postid-(\d+)$/;

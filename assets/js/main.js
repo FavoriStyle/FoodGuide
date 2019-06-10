@@ -872,7 +872,7 @@ function stack_prepare(){
         }, 1000);
     })();
     //*/
-    //*
+    /*
     (function // нормализируем поведение верхнего меню
     (){
         var userPanel = document.querySelector('.menu-tools .user-panel'),

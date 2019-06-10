@@ -1,5 +1,6 @@
 const parts = {
     allboomsCommentsWidget: () => document.body.classList.contains('single-ait-item'),
+    topMenuNormalize: () => true,
 };
 
 function loader(){

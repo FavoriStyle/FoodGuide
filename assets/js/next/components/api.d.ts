@@ -6,4 +6,6 @@ type API = {
     [Method in keyof MethodList]: (data: MethodList[Method] extends (data: infer Args) => any ? Args : never ) => Promise<ReturnType<MethodList[Method]>>
 }
 
-export default API
+const API: API
+
+export default API 

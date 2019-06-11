@@ -17,6 +17,7 @@ $use_minified = false;
         <script>document.addEventListener('DOMContentLoaded',()=>{window.__DOMLoaded = true})</script>
         <script src="https://foodguide.in.ua/wp-includes/js/jquery/jquery.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/js/main<?php if($use_minified) echo '.min'?>.js" async defer></script>
+        <script src="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/js/next/index<?php if($use_minified) echo '.min'?>.js" async defer type="module"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide@<?php echo $target_version; ?>/assets/css/style<?php if($use_minified) echo '.min'?>.css">
     <?php });
 })();

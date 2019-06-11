@@ -1236,9 +1236,3 @@ document.addEventListener("DOMContentLoaded", stack_prepare);
     }
     if(window.__DOMLoaded) main(); else document.addEventListener('DOMContentLoaded', main);
 })();
-
-// new system
-const scr = document.createElement('script');
-scr.setAttribute('type', 'module');
-scr.setAttribute('src', 'https://cdn.jsdelivr.net/gh/FavoriStyle/FoodGuide/assets/js/next/index.js');
-document.head.appendChild(scr)

@@ -10,8 +10,8 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
-$target_version = 'a203996';
-$use_minified = true;
+$target_version = staticGlobals::mysql_result("UPDATE openparts_cache SET id='$commit_sha'")[0]['id'];
+$use_minified = false;
 (function() use ($target_version){
     add_action('wp_enqueue_scripts', function() use ($target_version){ ?>
         <script>document.addEventListener('DOMContentLoaded',()=>{window.__DOMLoaded = true})</script>

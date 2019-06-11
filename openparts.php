@@ -10,6 +10,17 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
+function get_request($url, $headers){
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);	
+	$data = curl_exec($ch);
+	curl_close($ch);
+	return $data;
+}
+
 require($_SERVER['DOCUMENT_ROOT'] . '/openparts_secrets.php');
 
 define('_USER_DEBUG_MODE', (isset($_GET['--debug']) || isset($_GET['--devel'])));
@@ -33,9 +44,11 @@ if (isset($_GET['--remove-cache'])){
 					}
 				}
 				rmdir($dirPath);
-			}		
+			}
 		}
 		_Fops::deleteDir('openparts/cache');
+		$commit_sha = json_decode(get_request('https://api.github.com/repos/FavoriStyle/FoodGuide/commits/master', array('Accept: application/vnd.github.v3+json'))) -> sha;
+		staticGlobals::mysql_result("UPDATE openparts_cache SET id='$commit_sha'");
 		die('Кэш очищен');
 	}
 	die('Кэш НЕ БЫЛ очищен');

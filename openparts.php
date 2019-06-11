@@ -48,7 +48,7 @@ if (isset($_GET['--remove-cache'])){
 		}
 		_Fops::deleteDir('openparts/cache');
 		$commit_sha = json_decode(get_request('https://api.github.com/repos/FavoriStyle/FoodGuide/commits/master', array('Accept: application/vnd.github.v3+json'))) -> sha;
-		staticGlobals::mysql_result("UPDATE openparts_cache SET id='$commit_sha'");
+		staticGlobals::mysql_result("UPDATE `openparts_cache` SET id='$commit_sha'");
 		die('Кэш очищен');
 	}
 	die('Кэш НЕ БЫЛ очищен');

@@ -10,6 +10,39 @@ Author URI: https://github.com/KaMeHb-UA
 License: MIT
 */
 
+function dump($var){
+	ob_start();
+	var_dump($var);
+	return substr(ob_get_clean(), 0, -1);
+}
+
+function mysql_result($sql, $debugConsole = false){
+	$dbConfig = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/dbconfig.json'));
+	if (!$debugConsole) $debugConsole = new class{
+		function log(){}
+		function warn(){}
+		function error(){}
+	};
+	$sql = preg_replace_callback('/(FROM|JOIN|INTO|UPDATE)\s+`(.+?)`/ms', function($matches) use ($debugConsole, $dbConfig){
+		if(!(mb_strpos($matches[2], $dbConfig -> table_prefix) === 0)) $matches[2] = $dbConfig -> table_prefix . $matches[2];
+		return $matches[1] . ' `' . $matches[2] . '`';
+	}, $sql);
+	$debugConsole -> log($sql);
+	$mysqli = new mysqli($dbConfig -> host, $dbConfig -> user, $dbConfig -> pass, $dbConfig -> db);
+	if (!$mysqli -> connect_errno){
+		$res = [];
+		$result = $mysqli -> query($sql);
+		if($result){
+			if($result === true) return $result;
+			while($res[] = $result -> fetch_assoc()){/*like a null loop*/}
+			array_pop($res);
+			$debugConsole -> log($res);
+			return $res;
+		}
+	} else $debugConsole -> error('DB Connection error ' . $mysqli -> connect_errno . ' ($mysqli -> error: ' . dump($mysqli -> error) . ')');
+	return false;
+}
+
 function get_request($url, $headers){
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
@@ -46,9 +79,12 @@ if (isset($_GET['--remove-cache'])){
 				rmdir($dirPath);
 			}
 		}
-		_Fops::deleteDir('openparts/cache');
-		$commit_sha = json_decode(get_request('https://api.github.com/repos/FavoriStyle/FoodGuide/commits/master', array('Accept: application/vnd.github.v3+json'))) -> sha;
-		staticGlobals::mysql_result("UPDATE `openparts_cache` SET id='$commit_sha'");
+		try{ _Fops::deleteDir('openparts/cache'); } catch(Exception $e){}
+		$commit_sha = json_decode(get_request('https://api.github.com/repos/FavoriStyle/FoodGuide/commits/master', array(
+			'Accept: application/vnd.github.v3+json',
+			'User-Agent: Mozilla/5.0 (compatible; Foodguide/0.9; +https://foodguide.in.ua)'
+		))) -> sha;
+		mysql_result("UPDATE `openparts_cache` SET id='$commit_sha'");
 		die('Кэш очищен');
 	}
 	die('Кэш НЕ БЫЛ очищен');

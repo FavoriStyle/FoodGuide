@@ -1,4 +1,4 @@
-const apiDomain = 'allbooms.com:3008';
+const apiDomain = 'api.foodguide.in.ua';
 
 export default new Proxy({}, {
     get(_, act){
